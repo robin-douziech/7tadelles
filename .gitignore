@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+.env
+staticfiles/
+db.sqlite3
+uploads/
+
+sept_tadelles/*/migrations/*
+!sept_tadelles/*/migrations/__init__.py

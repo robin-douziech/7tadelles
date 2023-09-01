@@ -1,0 +1,82 @@
+{% extends 'wiki/base.html' %}
+
+
+{% load static %}
+{% load custom_filters %}
+
+
+{% block extra_headers %}
+<link rel="stylesheet" type="text/css" href="{% static 'wiki/detail.css' %}">
+<script src="https://www.youtube.com/iframe_api"></script>
+{% endblock %}
+
+
+{% block middlebar %}
+<div class="heading">
+	<h1>{{game.name}}</h1>
+</div>
+
+<div class="preview">
+
+	<div class="preview__fig">
+		<img class="preview__img" src="{% static 'wiki/games/' %}/{{game.short_name}}/{{game.short_name}}.png">
+	</div>
+
+	<div class="preview__txt">
+		<div class="preview__players">
+			<img class="preview__txtimg" src="{% static 'wiki/boardgame_players.png' %}" />
+			<p>{{game.players_min}} - {{game.players_max}} joueurs</p>
+		</div>
+		<div class="preview__age">
+			<img class="preview__txtimg" src="{% static 'wiki/boardgame_age.png' %}" />
+			<p>{{game.age_min}}+</p>
+		</div>
+		<div class="preview__duration">
+			<img class="preview__txtimg" src="{% static 'wiki/boardgame_duration.png' %}" />
+			<p>{{game.duration}}</p>
+		</div>
+	</div>	
+
+</div>
+
+<div class="description">
+	<div><h2>Description :</h2></div>
+	<div><p>{{game.description|linebreaks}}</p></div>
+</div>
+
+<div class="video">
+	<div><h2>La vidéo de Ludochrono :</h2></div>
+
+	{% if game.video_url != "none" %}
+		<div class="video__player">
+			<div id="player">
+				<script>
+				    // Fonction d'initialisation appelée lorsque l'API JavaScript de YouTube est prête
+				    function onYouTubeIframeAPIReady() {
+				        // Créez un lecteur vidéo YouTube
+				        var player = new YT.Player('player', {
+				            videoId: '{{game.video_url}}',
+				            width: 560*1.5,
+				            height: 315*1.5,
+				            playerVars: {
+				                // Options supplémentaires (facultatives)
+				            }
+				        });
+				    }
+				</script>
+			</div>
+		</div>
+	{% else %}
+		<div class="no-video">(oups, pas de vidéo de Ludochrono sur {{game.name}} malheureusement)</div>	
+	{% endif %}
+</div>
+
+<div class="downloads">
+	<h2>Règles complètes :</h2>
+	<div class="downloads__btnsdiv">
+		{% for txt in game.downloads_txt|split:";;" %}
+			<a class="btn btn--round btn--big" href="{% static 'wiki/games' %}/{{ game.short_name }}/{{ txt|split:';'|index:1 }}" target="_blank" download="{{ game.short_name }}-rules.pdf"><div>{{ txt|split:";"|index:0 }}</div></a>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'account/base_form.html' %}
+
+{% block title %}
+<h1>Update profile photo</h1>
+{% endblock %}
+
+{% block pre-text %}
+{% endblock %}
+
+{% block errors %}
+    {% if form.errors %}
+        {{ forms.errors }}
+    {% endif %}
+{% endblock %}
+
+{% block form %}
+<form method="post" enctype="multipart/form-data">
+
+    {% if forms.errors %}
+        <p>You can't upload this image</p>
+    {% endif %}
+	{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit"/>
+</form>
+{% endblock %}

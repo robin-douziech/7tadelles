@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'TimesNewRoman';
+    src: url('fonts/TimesNewRoman/TimesNewRomanMTStd.otf')
+}
+
+@font-face {
+    font-family: 'Coolvetica-rg';
+    src: url('fonts/Coolvetica/coolvetica_rg.otf')
+}
+
+@font-face {
+    font-family: 'Coolvetica-condensed-rg';
+    src: url('fonts/Coolvetica/coolvetica_condensed_rg.otf')
+}

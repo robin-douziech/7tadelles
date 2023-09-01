@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+	<head>
+		<title>7tadelles</title>
+		<link rel="icon" href="{% static 'welcome/7tadelles_icon.png' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'welcome/style.css' %}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+	</head>
+<body>
+
+	<header>
+
+		<div class="centre">
+			<a href="{% url 'wiki:index' %}" class="btn">WIKI</a>
+		</div>
+
+	</header>
+
+	<div class="background">
+		<div class="text"></div>
+	</div>
+
+	<div class="foreground">
+
+		<div class="foreground__btnbar">
+			{% for button in buttons %}
+				{% if button.2 %}
+			        {% with bouton_args=button.2 %}
+			            <div class="foreground__btn"><a href="{% url button.1 bouton_args %}"><p>{{ button.0 }}</p></a></div>
+			        {% endwith %}
+			    {% else %}
+			        <div class="foreground__btn"><a href="{% url button.1 %}"><p>{{ button.0 }}</p></a></div>
+			    {% endif %}
+			{% endfor %}
+		</div>
+
+
+
+		{% if user.is_authenticated %}
+			<div class="title"><h1>Bienvenue, {{ user.get_username }}</h1></div>
+		{% else %}
+			<div class="title"><h1>7TADELLES</h1></div>
+		{% endif %}
+		<div class="description">
+			<p>
+				Bienvenue sur 7tadelles, un petit site web développé par moi (si si j'ai fait ça tout seul, c'est pas une blague).
+			</p>
+			<p>
+				Ce site a pour thème principal le jeu de société.
+			</p>
+			<p>
+				Le site est un peu vide pour le moment. Vous trouverez uniquement un wiki avec les règles de certains jeux de société (cf. le joli bouton en haut).
+				Si vous avez des suggestions de choses à ajouter au site, n'hésitez pas à ne pas me les communiquer via le formulaire de contact que je n'ai pas ajouté au site.
+			</p>
+		</div>
+	</div>
+
+	<footer>
+		<div class="bottom-right"><p>v1.0.2</p></div>
+	</footer>
+
+</body>
+</html>

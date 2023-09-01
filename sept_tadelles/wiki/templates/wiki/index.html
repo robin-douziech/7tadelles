@@ -1,0 +1,56 @@
+{% extends 'wiki/base.html' %}
+
+
+{% load static %}
+
+
+{% block extra_headers %}
+<link rel="stylesheet" type="text/css" href="{% static 'wiki/index.css' %}">
+{% endblock %}
+
+
+
+{% block left_sidebar %}
+<form action="" method="post">
+	{% csrf_token %}
+	<fieldset name="category">
+		<legend><h2>Catégorie</h2></legend>	
+	    	{% for category in categories %}
+	    		<input type="checkbox" name="{{category.name}}" id="cat{{forloop.counter}}">
+	    		<label for="cat{{forloop.counter}}">{{category.name}}</label><br/>
+	    	{% endfor %}
+	</fieldset>
+	<br/><input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+
+{% block middlebar %}
+<div class="games">
+	{% for game in games %}
+		<div class="game-prev">
+			<a href="{% url 'wiki:detail' game.id %}">
+				<div class="game-prev__fig">
+					<img class="game-prev__img" src="{% static 'wiki/games/' %}/{{game.short_name}}/{{game.short_name}}.png">
+				</div>
+			</a>
+			<div class="game-prev__heading">{{ game.name }}</div>
+		</div>
+	{% endfor %}
+</div>
+{% if prochainement|length > 0 %}
+	<div class="prochainement__title"><h1>Pas encore testés...</h1></div>
+	<div class="prochainement">
+		{% for game in prochainement %}
+			<div class="game-prev">
+				<a href="{% url 'wiki:detail' game.id %}">
+					<div class="game-prev__fig">
+						<img class="game-prev__img" src="{% static 'wiki/games/' %}/{{game.short_name}}/{{game.short_name}}.png">
+					</div>
+				</a>
+				<div class="game-prev__heading">{{ game.name }}</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}
+{% endblock %}

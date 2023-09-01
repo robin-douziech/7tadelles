@@ -1,0 +1,46 @@
+{% extends "account/base_form.html" %}
+
+{% block title %}
+<h1>Connexion</h1>
+{% endblock %}
+
+{% block pre-text %}
+<p>Veuillez renseigner votre nom d'utilisateur et votre mot de passe</p>
+{% endblock %}
+
+{% block errors %}
+
+  {% if unverified_user %}
+    <p>Veuillez activer votre compte avant de vous connecter.</p>
+  {% else %}
+    {% if auth_error %}
+      <p>Ce nom d'utilisateur et ce mot de passe ne correspondent pas, veuillez réessayer.</p>
+    {% endif %}
+  {% endif %}
+
+{% endblock %}
+
+{% block form %}
+
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <table>
+      <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </tr>
+    </table>
+    <input type="submit" value="login">
+  </form>
+
+{% endblock %}
+
+{% block post-text %}
+  <p><a href="{% url 'account:password_reset_email' %}">Mot de passe oublié ?</a></p>
+  <p><a href="{% url 'account:user_creation_form' %}">Créer un compte</a></p>
+{% endblock %}

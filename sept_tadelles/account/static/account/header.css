@@ -1,0 +1,20 @@
+header {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	height: 200px;
+	width: 100%;
+
+	background-color: #BC9E82;
+}
+
+.header__logo {
+	height: 80%;
+}
+
+.header__logo img {
+	height: 100%;
+	width: 100%;
+}

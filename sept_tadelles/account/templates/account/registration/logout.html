@@ -1,0 +1,9 @@
+{% extends "account/base_form.html" %}
+
+{% block title %}
+<h1>Déconnexion</h1>
+{% endblock %}
+
+{% block pre-text %}
+  <p>Vous êtes bien déconnecté, cliquez <a href="{% url 'account:login'%}">ici</a> pour vous reconnecter.</p>
+{% endblock %}
