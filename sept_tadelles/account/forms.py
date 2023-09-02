@@ -29,8 +29,8 @@ class PasswordResetForm(forms.Form) :
 class UserCreationForm(forms.Form) :
 
 	username = forms.CharField(label="username", max_length=50)
-	password1 = forms.CharField(label="password", max_length=50)
-	password2 = forms.CharField(label="confirm password", max_length=50)
+	password1 = forms.CharField(label="password", max_length=50, widget=forms.PasswordInput())
+	password2 = forms.CharField(label="confirm password", max_length=50, widget=forms.PasswordInput())
 	email = forms.EmailField()
 
 	def clean_email(self) :

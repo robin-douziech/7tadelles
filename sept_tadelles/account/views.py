@@ -101,15 +101,20 @@ def logout_view(request) :
 
 
 def detail(request) :
-	
+
+	default_profile_photo = False
 	profile_photo = request.user.profile_photo
+	if not(profile_photo) :
+		default_profile_photo = True
+	print(type(profile_photo))
+	print(profile_photo)
 
 	actions = [
 		('Modifier la photo de profil', 'account:update_profile_photo', ()),
 		('Modifier le mot de passe', 'account:password_reset_email', ())
 	]
 
-	return render(request, "account/detail/detail.html", {'profile_photo': profile_photo, 'actions': actions})
+	return render(request, "account/detail/detail.html", {'profile_photo': profile_photo, 'actions': actions, 'default_profile_photo': default_profile_photo})
 
 
 def update_profile_photo(request) :
@@ -124,7 +129,7 @@ def update_profile_photo(request) :
 
 			old_profile_photo = request.user.profile_photo
 
-			if old_profile_photo is not None :
+			if old_profile_photo :
 
 				if not(delete_media_file(f"{settings.BASE_DIR}{old_profile_photo.url}")) :
 					send_mail(
@@ -171,7 +176,7 @@ def create(request) :
 			if settings.ENV == "PROD" :
 				verification_link = f"https://7tadelles.com/account/verify_email/{user.id}/{user.verification_token}"
 			else :
-				verification_link = f"https://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
+				verification_link = f"http://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
 
 			send_mail(
     			subject="Activation de votre compte",
@@ -236,7 +241,7 @@ def password_reset_email_form(request) :
 			if settings.ENV == "PROD" :
 				verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
 			else :
-				verification_link = f"https://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
+				verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
 
 			send_mail(
 				subject="Réinitialisation de votre mot de passe",

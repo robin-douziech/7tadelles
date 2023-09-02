@@ -7,9 +7,10 @@ from django.core.mail import send_mail
 def index(request) :
     btn_list = []
     if request.user.is_authenticated :
-        btn_list = [("logout"    ,"account:logout"         , ()),
-                    ("Mon compte", "account:detail", ())]
-        print(f"user_id : {request.user.id}")
+        btn_list = [
+            ("logout"    ,"account:logout"         , ()),
+            ("Mon compte", "account:detail", ())
+            ]
     else :
         btn_list = [("login", "account:login", ())]
     return render(request, 'welcome/index.html', {"buttons": btn_list})

@@ -22,7 +22,11 @@
 <div class="preview">
 	<div class="preview__fig">
 		<div class=preview__imgwrapper>
-			<img src="{{ profile_photo.url }}">
+			{% if default_profile_photo %}
+				<img src="{% static 'account/default_profile_photo.png' %}">
+			{% else %}
+				<img src="{{ profile_photo.url }}">
+			{% endif %}
 		</div>
 	</div>
 	<div class="preview__txt">

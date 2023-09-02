@@ -21,7 +21,6 @@ class User(AbstractUser):
 
     verified = models.BooleanField(default=False)
     verification_token = models.CharField(max_length=64, null=True, blank=True)
-
     password_reset_token = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self) :
