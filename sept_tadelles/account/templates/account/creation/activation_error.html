@@ -1,11 +1,16 @@
 {% extends 'account/base_form.html' %}
 
 {% block title %}
-<h1>Something went wrong...</h1>
+<h1>Quelque chose s'est mal passé :(</h1>
 {% endblock %}
 
 {% block pre-text %}
 <p>
-	Your account has not been verified.
+	Votre compte n'a pas pu être vérifié. Cela peut être dû à plusieurs raisons :
+	<ul>
+		<li>Vous avez déjà utilisé le lien que nous vous avons envoyé par mail (dans ce cas, votre compte est déjà vérifié)</li>
+		<li>Vous avez mal cliqué sur le lien (dans ce cas, veuillez suivre <a href="https://www.youtube.com/watch?v=o4zGhWwXzCM">ce tutoriel</a> pour apprendre à utiliser une souris)</li>
+		<li>Vous n'avez pas reçu le mail et tentez de deviner le lien d'activation (dans ce cas, nous vous souhaitons bonne chance)</li>
+	</ul>
 </p>
 {% endblock %}

@@ -1,11 +1,12 @@
 {% extends 'account/base_form.html' %}
 
 {% block title %}
-<h1>Account verified !</h1>
+<h1>Compte vérifié !</h1>
 {% endblock %}
 
 {% block pre-text %}
 <p>
-	Your account has successfully been verified.
+	Votre compte a été vérifié, vous pouvez maintenant vous connecter !
 </p>
+<p><a href="{% url 'account:login' %}">se connecter</a></p>
 {% endblock %}

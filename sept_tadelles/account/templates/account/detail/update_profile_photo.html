@@ -1,7 +1,7 @@
 {% extends 'account/base_form.html' %}
 
 {% block title %}
-<h1>Update profile photo</h1>
+<h1>Modification de la photo de profil</h1>
 {% endblock %}
 
 {% block pre-text %}
@@ -17,7 +17,7 @@
 <form method="post" enctype="multipart/form-data">
 
     {% if forms.errors %}
-        <p>You can't upload this image</p>
+        <p>Vous ne pouvez pas utiliser cette image car au moins une de ses dimensions est trop grande.</p>
     {% endif %}
 	{% csrf_token %}
     {{ form.as_p }}

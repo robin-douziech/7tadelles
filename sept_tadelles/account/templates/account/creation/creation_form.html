@@ -9,17 +9,16 @@
 {% endblock %}
 
 {% block errors %}
-	{% if form.errors %}
-		{{ forms.errors }}
-	{% endif %}
+	{% for error_name, value in errors.items %}
+		{% if value.0 %}
+			<p>{{ value.1 }}</p>
+		{% endif %}
+	{% endfor %}
 {% endblock %}
 
 {% block form %}
 <form action="" method="post">
 	{% csrf_token %}
-	{% if form.errors %}
-      {{ form.errors }}
-    {% endif %}
 	<table>
 		<tr>
 			<td>{{ form.username.label_tag }}</td>

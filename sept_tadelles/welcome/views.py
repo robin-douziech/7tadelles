@@ -8,8 +8,8 @@ def index(request) :
     btn_list = []
     if request.user.is_authenticated :
         btn_list = [
-            ("logout"    ,"account:logout"         , ()),
-            ("Mon compte", "account:detail", ())
+            ("déconnexion"    ,"account:logout"         , ()),
+            ("mon compte", "account:detail", ())
             ]
     else :
         btn_list = [("login", "account:login", ())]

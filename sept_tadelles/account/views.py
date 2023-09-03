@@ -162,6 +162,11 @@ chemin vers le fichier : {settings.BASE_DIR}{old_profile_photo.url}
 def create(request) :
 
 	form = forms.UserCreationForm()
+	errors = {
+		'email_already_used': [False, "Un compte est déjà associé à cette adresse e-mail"],
+		'username_already_used': [False, "Ce nom d'utilisateur est déjà utilisé"],
+		'passwords_dont_match': [False, "Les mots de passe ne sont pas identiques"]
+	}
 
 	if request.method == "POST" :
 
@@ -169,6 +174,23 @@ def create(request) :
 
 		if form.is_valid() :
 
+			# on vérifie qu'aucun compte n'existe avec cet e-mail ou ce nom d'utilisateur
+			for user in models.User.objects.all() :
+				if user.email == form.cleaned_data['email'] :
+					errors['email_already_used'][0] = True
+				if user.username == form.cleaned_data['username'] :
+					errors['username_already_used'][0] = True
+
+			# on vérifie que les mots de passe sont identiques
+			errors['passwords_dont_match'][0] = (form.cleaned_data['password1'] != form.cleaned_data['password2'])
+
+			print(f"errors : {errors}")
+
+			for error in errors :
+				if errors[error][0] :
+					return render(request, 'account/creation/creation_form.html', {'form': form, 'errors': errors})
+
+			# aucune erreur : on crée l'utilisateur
 			user = models.User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'], form.cleaned_data['password1'])
 			user.verification_token = generate_token(64)
 			user.save()
@@ -194,7 +216,7 @@ Lien d'activation : {verification_link}""",
 			return render(request, 'account/creation/activation_email_sent.html', {})
 
 
-	return render(request, "account/creation/creation_form.html", {"form": form})
+	return render(request, "account/creation/creation_form.html", {"form": form, 'errors': errors})
 
 
 def verify_email(request, user_id, token):
@@ -219,7 +241,9 @@ def verify_email(request, user_id, token):
 def password_reset_email_form(request) :
 
 	form = forms.PasswordResetEmailForm()
-	bad_user = False
+	errors = {
+		'unknown_email': [False, "Aucun compte n'a été trouvé avec cette adresse e-mail."]
+	}
 
 	if request.method == "POST" :
 
@@ -227,40 +251,49 @@ def password_reset_email_form(request) :
 
 		if form.is_valid() :
 
-			if request.user.is_authenticated :
-				user = request.user
-				if user.email != form.cleaned_data['email'] :
-					bad_user = True
-					return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'bad_user': bad_user})
-			else :
-				user = find_user_by_email(form.cleaned_data['email'])
+			user = find_user_by_email(form.cleaned_data['email'])
+			if user is None :
+				errors['unknown_email'][0] = True
 
-			user.password_reset_token = generate_token(64)
-			user.save()
+			email = user.email
 
-			if settings.ENV == "PROD" :
-				verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
-			else :
-				verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
+	elif request.user.is_authenticated :
 
-			send_mail(
-				subject="Réinitialisation de votre mot de passe",
-				message=f"""
+		user = request.user
+		email = user.email
+
+	for error in errors :
+		if errors[error][0] :
+			return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
+
+	if (request.method == "POST" and form.is_valid()) or request.user.is_authenticated :
+
+		user.password_reset_token = generate_token(64)
+		user.save()
+
+		if settings.ENV == "PROD" :
+			verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
+		else :
+			verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
+
+		send_mail(
+			subject="Réinitialisation de votre mot de passe",
+			message=f"""
 Bonjour !
 
 Quelqu'un a demandé la réinitialisation du mot de passe du compte lié à votre adresse e-mail sur 7tadelles.com.
 Si ce n'est pas vous, ignorez ce message. Sinon, cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.
 
 {verification_link}
-					""",
-				from_email="info@7tadelles.com",
-				recipient_list=[form.cleaned_data['email']],
-				fail_silently=False
-			)
+				""",
+			from_email="info@7tadelles.com",
+			recipient_list=[email],
+			fail_silently=False
+		)
 
-			return render(request, 'account/password_reset/password_reset_email_sent.html', {})
+		return render(request, 'account/password_reset/password_reset_email_sent.html', {})
 
-	return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form})
+	return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
 
 
 

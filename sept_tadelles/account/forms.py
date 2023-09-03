@@ -9,8 +9,8 @@ from . import models
 
 class LoginForm(forms.Form) :
 
-	username = forms.CharField(max_length=50)
-	password = forms.CharField(max_length=50, widget=forms.PasswordInput())
+	username = forms.CharField(label="Nom d'utilisateur", max_length=50)
+	password = forms.CharField(label="Mot de passe", max_length=50, widget=forms.PasswordInput())
 
 
 
@@ -32,33 +32,6 @@ class UserCreationForm(forms.Form) :
 	password1 = forms.CharField(label="password", max_length=50, widget=forms.PasswordInput())
 	password2 = forms.CharField(label="confirm password", max_length=50, widget=forms.PasswordInput())
 	email = forms.EmailField()
-
-	def clean_email(self) :
-		email = self.cleaned_data['email']
-
-		for user in models.User.objects.all() :
-			if user.email == email :
-				raise ValidationError(_('Invalid email : An account already exists with this email'))
-
-		return email
-
-	def clean_username(self) :
-		username = self.cleaned_data['username']
-
-		for user in models.User.objects.all() :
-			if user.username == username :
-				raise ValidationError(_('Invalid username : Someone already has this username'))
-
-		return username
-
-	def clean_password2(self) :
-		password1 = self.cleaned_data['password1']
-		password2 = self.cleaned_data['password2']
-
-		if password2 != password1 :
-			raise ValidationError(_('Invalid password : passwords don\'t match'))
-
-		return password2
 
 
 class UpdateProfilePhotoForm(forms.ModelForm) :
