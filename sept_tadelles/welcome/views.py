@@ -12,5 +12,5 @@ def index(request) :
             ("mon compte", "account:detail", ())
             ]
     else :
-        btn_list = [("login", "account:login", ())]
+        btn_list = [("connexion", "account:login", ())]
     return render(request, 'welcome/index.html', {"buttons": btn_list})
