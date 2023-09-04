@@ -131,7 +131,7 @@ def update_profile_photo(request) :
 
 			if old_profile_photo :
 
-				if not(delete_media_file(f"{settings.BASE_DIR}{old_profile_photo.url}")) :
+				if not(delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url}")) :
 					send_mail(
 						subject="Fichier mal supprimé sur le serveur",
 						message=f"""
