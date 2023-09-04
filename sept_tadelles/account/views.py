@@ -137,7 +137,7 @@ def update_profile_photo(request) :
 						message=f"""
 Une erreur est survenue lors de la suppression d'un fichier sur le serveur.
 
-chemin vers le fichier : {settings.BASE_DIR}{old_profile_photo.url}
+chemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url}
 						""",
 						from_email="info@7tadelles.com",
 						recipient_list=["robin.douziech27@gmail.com"],
