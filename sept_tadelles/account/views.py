@@ -131,13 +131,13 @@ def update_profile_photo(request) :
 
 			if old_profile_photo :
 
-				if not(delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url}")) :
+				if not(delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}")) :
 					send_mail(
 						subject="Fichier mal supprimé sur le serveur",
 						message=f"""
 Une erreur est survenue lors de la suppression d'un fichier sur le serveur.
 
-chemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url}
+chemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}
 						""",
 						from_email="info@7tadelles.com",
 						recipient_list=["robin.douziech27@gmail.com"],
