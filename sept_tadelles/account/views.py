@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from django.core.files.images import get_image_dimensions
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -120,12 +121,23 @@ def detail(request) :
 def update_profile_photo(request) :
 
 	form = forms.UpdateProfilePhotoForm()
+	errors = {
+		'photo_too_big': [False, "Vous ne pouvez pas utiliser cette image car au moins un de ses dimensions est trop grande"]
+	}
 
 	if request.method == "POST" :
 
 		form = forms.UpdateProfilePhotoForm(request.POST, request.FILES)
 
 		if form.is_valid() :
+
+			width, height = get_image_dimensions(form.cleaned_data['profile_photo'])
+			if width >= 1000 or height >=1000 :
+				errors['photo_too_big'][0] = True
+
+			for error in errors :
+				if errors[error] :
+					return render(request, 'account/detail/update_profile_photo.html', {'form': form, 'errors': errors})
 
 			old_profile_photo = request.user.profile_photo
 
@@ -147,11 +159,9 @@ chemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('
 			request.user.profile_photo = form.cleaned_data['profile_photo']
 			request.user.save()
 
+			return redirect('/account/')
 
-
-			return redirect('/')
-
-	return render(request, 'account/detail/update_profile_photo.html', {'form': form})
+	return render(request, 'account/detail/update_profile_photo.html', {'form': form, 'errors': errors})
 
 
 
