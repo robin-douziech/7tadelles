@@ -39,13 +39,3 @@ class UpdateProfilePhotoForm(forms.ModelForm) :
 	class Meta :
 		model = models.User
 		fields = ['profile_photo']
-
-	def clean_profile_photo(self) :
-
-		profile_photo = self.cleaned_data['profile_photo']
-		width, height = get_image_dimensions(profile_photo)
-
-		if height > 1024 or width > 1024 :
-			raise ValidationError(_('Invalid dimensions'))
-
-		return profile_photo
