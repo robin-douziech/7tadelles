@@ -103,6 +103,9 @@ def logout_view(request) :
 
 def detail(request) :
 
+	if not(request.user.is_authenticated) :
+		return redirect('/')
+
 	default_profile_photo = False
 	profile_photo = request.user.profile_photo
 	if not(profile_photo) :
