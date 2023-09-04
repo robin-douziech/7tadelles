@@ -2,6 +2,7 @@
 
 
 {% load static %}
+{% load custom_filters %}
 
 
 {% block extra_headers %}
@@ -74,7 +75,7 @@
 	<h2>Règles complètes :</h2>
 	<div class="downloads__btnsdiv">
 		{% for txt in game.downloads_txt|split:";;" %}
-			<a class="btn btn--round btn--big" href="{% static 'wiki/games' %}/{{ game.short_name }}/{{ txt|split:';'.1 }}" target="_blank" download="{{ game.short_name }}-rules.pdf"><div>{{ txt|split:";".0 }}</div></a>
+			<a class="btn btn--round btn--big" href="{% static 'wiki/games' %}/{{ game.short_name }}/{{ txt|split:';'|index:1 }}" target="_blank" download="{{ game.short_name }}-rules.pdf"><div>{{ txt|split:";"|index:0 }}</div></a>
 		{% endfor %}
 	</div>
 </div>
