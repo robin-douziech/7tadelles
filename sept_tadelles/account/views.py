@@ -139,7 +139,7 @@ def update_profile_photo(request) :
 				errors['photo_too_big'][0] = True
 
 			for error in errors :
-				if errors[error] :
+				if errors[error][0] :
 					return render(request, 'account/detail/update_profile_photo.html', {'form': form, 'errors': errors})
 
 			old_profile_photo = request.user.profile_photo
