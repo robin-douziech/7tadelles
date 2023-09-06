@@ -1,4 +1,4 @@
-venv/
+venv*/
 __pycache__/
 .env
 staticfiles/
@@ -7,3 +7,5 @@ uploads/
 
 sept_tadelles/*/migrations/*
 !sept_tadelles/*/migrations/__init__.py
+
+django.log

@@ -32,6 +32,11 @@
 	<div class="preview__txt">
 		<p>Username : {{user.username}}</p>
 		<p>E-mail   : {{user.email}}</p>
+		{% if user.is_autenticated %}
+			{% if user.discord_verified %}
+				<p>Pseudo discord : {{ user.discord_username }}</p>
+			{% endif %}
+		{% endif %}
 	</div>
 </div>
 {% endblock %}

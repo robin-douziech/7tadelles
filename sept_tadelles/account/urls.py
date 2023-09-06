@@ -15,4 +15,7 @@ urlpatterns = [
 
     path("password_reset_email/", views.password_reset_email_form, name="password_reset_email"),
     path("password_reset/<str:user_id>/<str:token>/", views.password_reset_form, name="password_reset"),
+
+    path("discord_verification_form/", views.discord_verification_form, name="discord_verification_form"),
+    path("discord_verification/<str:user_id>/<str:token>", views.discord_verification, name="discord_verification"),
 ]

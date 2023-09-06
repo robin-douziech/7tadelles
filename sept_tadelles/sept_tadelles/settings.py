@@ -1,5 +1,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
+import logging
 import os
 
 load_dotenv()
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'account',
     'welcome',
     'wiki',
@@ -141,6 +143,7 @@ else :
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = 'account/login/'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'account.User'
@@ -154,3 +157,30 @@ EMAIL_HOST = 'localhost'  # L'adresse de votre serveur SMTP
 EMAIL_PORT = 25  # Le port SMTP (587 est généralement utilisé pour TLS)
 EMAIL_USE_TLS = False  # Utiliser TLS pour chiffrer la connexion
 EMAIL_USE_SSL = False  # Utiliser SSL (désactivé si vous utilisez déjà TLS)
+
+
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'django.log',  # Nom du fichier de journalisation
+        },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'uvicorn.error': {
+            'level': 'INFO',
+            'handlers': ['file'],
+            'propagate': False,
+        },
+    },
+}

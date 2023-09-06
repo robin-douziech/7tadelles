@@ -23,5 +23,9 @@ class User(AbstractUser):
     verification_token = models.CharField(max_length=64, null=True, blank=True)
     password_reset_token = models.CharField(max_length=64, null=True, blank=True)
 
+    discord_verified = models.BooleanField(default=False)
+    discord_username = models.CharField(max_length=50, null=True, blank=True)
+    discord_verification_token = models.CharField(max_length=64, null=True, blank=True)
+
     def __str__(self) :
         return self.username
