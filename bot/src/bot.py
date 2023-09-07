@@ -58,8 +58,7 @@ async def link_account(ctx, username) :
 
 		if username != None :
 
-			requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
-			print(f"http://localhost:8000/account/discord_verification_send_email/{author_name}/{username}/{os.getenv('TOKEN')}")
+			requests.get(f"https://7tadelles.com/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
 			await dm_channel.send(f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail de la part de info@7tadelles.com.")
 
 
