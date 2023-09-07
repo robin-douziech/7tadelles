@@ -2,6 +2,7 @@ from discord.ext import tasks, commands
 import requests
 import json
 import os
+import sys
 
 from SeptTadellesBot import *
 
@@ -52,7 +53,6 @@ async def link_account(ctx, username) :
 		dm_channel = await ctx.author.create_dm()
 
 	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
-	author_name_escape = author_name.replace('#', '\\#')
 
 	if ctx.channel == dm_channel :
 
@@ -63,4 +63,19 @@ async def link_account(ctx, username) :
 			await dm_channel.send(f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail de la part de info@7tadelles.com.")
 
 
+
+@bot.command(name="kill")
+async def kill_bot(ctx) :
+
+	dm_channel = ctx.author.dm_channel
+	if dm_channel == None :
+		dm_channel = await ctx.author.create_dm()
+
+	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
+
+	if ctx.channel == dm_channel :
+
+		if ctx.author.id == bot_owner_id :
+
+			sys.exit()
 
