@@ -1,8 +1,5 @@
 from discord.ext import tasks, commands
-import requests
-import json
-import os
-import sys
+import requests, json, os, sys
 
 from SeptTadellesBot import *
 
@@ -42,7 +39,7 @@ async def on_ready() :
 
 	bot.write_json(bot.members, bot.members_file)
 
-	print(f"{bot.user.display_name} est prêt.")
+	bot.log(f"{bot.user.display_name} est prêt.")
 
 
 @bot.command(name="link")
@@ -58,8 +55,21 @@ async def link_account(ctx, username) :
 
 		if username != None :
 
-			requests.get(f"https://7tadelles.com/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
-			await dm_channel.send(f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail de la part de info@7tadelles.com.")
+			if os.getenv("ENV") == "PROD" :
+				requests.get(f"https://7tadelles.com/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
+			else :
+				requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")			
+		
+			msg =  f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail"
+			msg += f"de la part de info@7tadelles.com à l'adresse e-mail associée à ton compte sur le site."
+			msg += f"Clique sur le lien présent dans ce mail pour lier ton compte discord à ton compte sur le site"
+			await dm_channel.send(msg)
+
+		else :
+
+			msg =  f"Tu dois préciser ton nom d'utilisateur sur 7tadelles.com pour pouvoir le lier à ton compte discord.\n"
+			msg += f"!link [username] où username est ton nom d'utilisateur sur 7tadelles.com."
+			await dm_channel.send(msg)
 
 
 

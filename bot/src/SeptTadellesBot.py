@@ -1,7 +1,15 @@
 from discord.ext import commands
-import discord, json
+import discord, json, logging
 
 from variables import *
+
+# Configuration du logger
+logging.basicConfig(
+    level=logging.INFO,
+    filename='bot.log',
+    format='[%(asctime)s] %(levelname)s - %(message)s',  
+    datefmt='%Y-%m-%d %H:%M:%S'  
+)
 
 class SeptTadellesBot(commands.Bot) :
 
@@ -12,6 +20,9 @@ class SeptTadellesBot(commands.Bot) :
 		self.members = {}
 
 		self.bot_guild = None
+
+	def log(self, message) :
+		logging.info(message)
 
 	def write_json(self, dic, file) :
 		json_object = json.dumps(dic, indent=2)

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.core.mail import send_mail
 from django.core.files.images import get_image_dimensions
@@ -8,11 +8,8 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from asgiref.sync import sync_to_async, async_to_sync
 
-from multiprocessing import Process
-
 from PIL import Image
-import os, random, asyncio
-
+import os, random
 
 from . import forms, models
 
@@ -95,18 +92,20 @@ def logout_view(request) :
 ### DETAIL ###
 
 
-
+@login_required
 def detail(request) :
-
-	if not(request.user.is_authenticated) :
-		return redirect('/')
 
 	default_profile_photo = False
 	profile_photo = request.user.profile_photo
 	if not(profile_photo) :
 		default_profile_photo = True
-	print(type(profile_photo))
-	print(profile_photo)
+
+	profile_info = {
+		'username': request.user.username,
+		'e-mail'   : request.user.email
+	}
+	if request.user.discord_verified :
+		profile_info['pseudo discord'] = request.user.discord_username
 
 	actions = [
 		('Modifier la photo de profil', 'account:update_profile_photo', ()),
@@ -117,7 +116,12 @@ def detail(request) :
 			('Lier le compte discord', 'account:discord_verification_info', ())
 		]
 
-	return render(request, "account/detail/detail.html", {'profile_photo': profile_photo, 'actions': actions, 'default_profile_photo': default_profile_photo})
+	return render(request, "account/detail/detail.html", {
+		'profile_photo': profile_photo,
+		'actions': actions,
+		'default_profile_photo': default_profile_photo,
+		'profile_info': profile_info
+	})
 
 
 def update_profile_photo(request) :
@@ -363,18 +367,15 @@ def discord_verification_info(request) :
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
 	if bot_token != settings.BOT_TOKEN :
-		print("request from unauthorized person")
 		return redirect('/')
 	else :
-
-		print("request from the bot")
 
 		try :
 			user = models.User.objects.get(username=user_name)
 		except :
 			user = None
 
-		if user is not None :
+		if user is not None and not(user.discord_verified) :
 
 			token = generate_token(64)
 			user.discord_verification_token = token
