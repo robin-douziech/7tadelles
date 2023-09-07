@@ -10,8 +10,6 @@ from asgiref.sync import sync_to_async, async_to_sync
 
 from multiprocessing import Process
 
-from bot.src.bot import *
-
 from PIL import Image
 import os, random, asyncio
 
