@@ -1,5 +1,5 @@
 from discord.ext import commands
-import discord
+import discord, json
 
 from variables import *
 
@@ -26,7 +26,11 @@ class SeptTadellesBot(commands.Bot) :
 
 	async def verify_user(self, username, link) :
 
+		print(f"discord_username : {username}")
+
 		if username in self.members :
+
+			print("okok")
 
 			await self.fetch_member(username).dm_channel.send(f"Voici un lien pour lier votre compte discord : {link}")
 

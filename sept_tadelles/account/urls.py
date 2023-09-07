@@ -16,6 +16,8 @@ urlpatterns = [
     path("password_reset_email/", views.password_reset_email_form, name="password_reset_email"),
     path("password_reset/<str:user_id>/<str:token>/", views.password_reset_form, name="password_reset"),
 
-    path("discord_verification_form/", views.discord_verification_form, name="discord_verification_form"),
-    path("discord_verification/<str:user_id>/<str:token>", views.discord_verification, name="discord_verification"),
+    path("discord_verification/", views.discord_verification_info, name="discord_verification_info"),
+    path("discord_verification_send_email/<str:discord_name>/<str:discord_id>/<str:user_name>/<str:bot_token>", views.discord_verification_send_email, name="discord_verification_send_email"),
+    path("discord_verification_link/<str:user_id>/<str:token>", views.discord_verification_link, name="discord_verification_link"),
+
 ]

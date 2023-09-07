@@ -1,29 +1,22 @@
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.mail import send_mail
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.conf import settings
-from asgiref.sync import sync_to_async
+from asgiref.sync import sync_to_async, async_to_sync
 
-
-from django.contrib.auth import authenticate, logout, login
+from multiprocessing import Process
 
 from bot.src.bot import *
 
-import random
 from PIL import Image
-import os
+import os, random, asyncio
 
-from . import forms
-from . import models
+
+from . import forms, models
 
 def generate_token(length) :
 
@@ -123,7 +116,7 @@ def detail(request) :
 	]
 	if not(request.user.discord_verified) :
 		actions += [
-			('Lier le compte discord', 'account:discord_verification_form', ())
+			('Lier le compte discord', 'account:discord_verification_info', ())
 		]
 
 	return render(request, "account/detail/detail.html", {'profile_photo': profile_photo, 'actions': actions, 'default_profile_photo': default_profile_photo})
@@ -361,43 +354,63 @@ def password_reset_form(request, user_id, token) :
 
 
 
-
-@sync_to_async
 @login_required
-async def discord_verification_form(request) :
+def discord_verification_info(request) :
 
 	if request.user.discord_verified :
 		return redirect('/account/')
+	else :
+		return render(request, 'account/discord_verification/info.html', {})
 
-	form = forms.DiscordVerificationForm()
+def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
-	if request.method == "POST" :
+	if bot_token != settings.BOT_TOKEN :
+		print("request from unauthorized person")
+		return redirect('/')
+	else :
 
-		form = forms.DiscordVerificationForm(request.POST)
+		print("request from the bot")
 
-		if form.is_valid() :
+		try :
+			user = models.User.objects.get(username=user_name)
+		except :
+			user = None
 
-			username = form.cleaned_data['discord_username']
+		if user is not None :
+
 			token = generate_token(64)
-
-			request.user.discord_verification_token = token
-			request.user.discord_username = username
-			request.user.save()
+			user.discord_verification_token = token
+			user.discord_username = f"{discord_name}#{discord_id}"
+			user.save()
 
 			if settings.ENV == "PROD" :
-				verification_link = f"https://7tadelles.com/account/discord_verification/{request.user.id}/{token}"
+				verification_link = f"https://7tadelles.com/account/discord_verification_link/{user.id}/{token}"
 			else :
-				verification_link = f"http://localhost:8000/account/discord_verification/{request.user.id}/{token}"
+				verification_link = f"http://localhost:8000/account/discord_verification_link/{user.id}/{token}"
 
-			print(verification_link)
+			send_mail(
+				subject="Lien avec votre compte discord",
+				message=f"""
+Bonjour,
 
-			await bot.bot.verify_user(username, verification_link)
+Quelqu'un tente de lier un compte discord à votre compte sur 7tadelles.com.
+Si ce n'est pas vous, veuillez ignorer ce message. Sinon, veuillez cliquer sur le lien ci-dessous pour lier votre compte discord.
 
-			return render(request, 'account/discord_verification/link_sent.html', {})
+{verification_link}
+				""",
+				from_email = "info@7tadelles.com",
+				recipient_list = [user.email],
+				fail_silently = False
+			)
 
-	return	render(request, 'account/discord_verification/form.html', {'form': form})
+			return JsonResponse({'result': 'success'})
 
-def discord_verification(request, user_id, token) :
+		else :
+
+			return JsonResponse({'result': 'failure'})
+
+
+def discord_verification_link(request, user_id, token) :
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -410,11 +423,9 @@ def discord_verification(request, user_id, token) :
 		user.discord_verification_token = ""
 		user.save()
 
-		return render(request, 'account/discord_verification/confirm.html', {})
+		return render(request, 'account/discord_verification/success.html', {})
 
 	else :
 
 		return render(request, 'account/discord_verification/bad_link.html', {})
-
-
 

@@ -1,5 +1,7 @@
 from discord.ext import tasks, commands
+import requests
 import json
+import os
 
 from SeptTadellesBot import *
 
@@ -14,7 +16,7 @@ async def on_ready() :
 	guild_members = []
 	for member in bot.bot_guild.members :
 		if not(member.bot) :
-			guild_members.append(member)
+			guild_members.append(f"{member.name}#{member.discriminator}")
 			if member.dm_channel == None :
 				await member.create_dm()
 
@@ -40,3 +42,25 @@ async def on_ready() :
 	bot.write_json(bot.members, bot.members_file)
 
 	print(f"{bot.user.display_name} est prêt.")
+
+
+@bot.command(name="link")
+async def link_account(ctx, username) :
+
+	dm_channel = ctx.author.dm_channel
+	if dm_channel == None :
+		dm_channel = await ctx.author.create_dm()
+
+	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
+	author_name_escape = author_name.replace('#', '\\#')
+
+	if ctx.channel == dm_channel :
+
+		if username != None :
+
+			requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
+			print(f"http://localhost:8000/account/discord_verification_send_email/{author_name}/{username}/{os.getenv('TOKEN')}")
+			await dm_channel.send(f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail de la part de info@7tadelles.com.")
+
+
+
