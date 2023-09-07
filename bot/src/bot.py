@@ -55,7 +55,7 @@ async def link_account(ctx, username) :
 
 		if username != None :
 
-			if os.getenv("ENV") == "PROD" :
+			if os.getenv("SITE_ENV") == "PROD" :
 				requests.get(f"https://7tadelles.com/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
 			else :
 				requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")			
