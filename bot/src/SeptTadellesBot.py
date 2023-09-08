@@ -14,7 +14,7 @@ logging.basicConfig(
 class SeptTadellesBot(commands.Bot) :
 
 	def __init__(self, members_file) :
-		super().__init__(command_prefix="!", intents=discord.Intents.all())
+		super().__init__(command_prefix="!", intents=discord.Intents.all(), activity=discord.CustomActivity("Je bot le cul de Léo"))
 
 		self.members_file = members_file
 		self.members = {}

@@ -10,9 +10,6 @@ async def on_ready() :
 
 	bot.bot_guild = bot.get_guild(bot_guild_id)
 
-	activity = discord.CustomActivity("Je bot le cul de Léo")
-	await bot.change_presence(activity=activity)
-
 	# liste des membres non bot du serveur
 	guild_members = []
 	for member in bot.bot_guild.members :
