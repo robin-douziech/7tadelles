@@ -43,7 +43,7 @@ async def on_ready() :
 
 
 @bot.command(name="link")
-async def link_account(ctx, username) :
+async def link_account(ctx, username=None) :
 
 	dm_channel = ctx.author.dm_channel
 	if dm_channel == None :
