@@ -9,3 +9,4 @@ sept_tadelles/*/migrations/*
 !sept_tadelles/*/migrations/__init__.py
 
 django.log
+bot.log

@@ -1,5 +1,5 @@
 from discord.ext import tasks, commands
-import requests, json, os, sys
+import requests, json, os, sys, discord
 
 from SeptTadellesBot import *
 
@@ -9,6 +9,9 @@ bot = SeptTadellesBot(members_file)
 async def on_ready() :
 
 	bot.bot_guild = bot.get_guild(bot_guild_id)
+
+	activity = discord.CustomActivity("Je bot le cul de Léo")
+	await bot.change_presence(activity=activity)
 
 	# liste des membres non bot du serveur
 	guild_members = []
