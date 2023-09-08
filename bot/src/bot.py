@@ -60,8 +60,8 @@ async def link_account(ctx, username) :
 			else :
 				requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")			
 		
-			msg =  f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail"
-			msg += f"de la part de info@7tadelles.com à l'adresse e-mail associée à ton compte sur le site."
+			msg =  f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail "
+			msg += f"de la part de info@7tadelles.com à l'adresse e-mail associée à ton compte sur le site. "
 			msg += f"Clique sur le lien présent dans ce mail pour lier ton compte discord à ton compte sur le site"
 			await dm_channel.send(msg)
 

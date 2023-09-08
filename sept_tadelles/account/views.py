@@ -392,7 +392,7 @@ def discord_verification_send_email(request, discord_name, discord_id, user_name
 				message=f"""
 Bonjour,
 
-Quelqu'un tente de lier un compte discord à votre compte sur 7tadelles.com.
+Quelqu'un tente de lier un compte discord ({user.discord_username}) à votre compte sur 7tadelles.com.
 Si ce n'est pas vous, veuillez ignorer ce message. Sinon, veuillez cliquer sur le lien ci-dessous pour lier votre compte discord.
 
 {verification_link}
@@ -421,6 +421,14 @@ def discord_verification_link(request, user_id, token) :
 		user.discord_verified = True
 		user.discord_verification_token = ""
 		user.save()
+
+		send_mail(
+			subject="Quelqu'un a lié son compte discord",
+			message=f"Le compte {user.username} a été lié au compte discord {user.discord_username}.",
+			from_email="info@7tadelles.com",
+			recipient_list=["robin.douziech27@gmail.com"],
+			fail_silently=False
+		)
 
 		return render(request, 'account/discord_verification/success.html', {})
 
