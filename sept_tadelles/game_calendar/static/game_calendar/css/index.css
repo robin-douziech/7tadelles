@@ -1,0 +1,52 @@
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.foreground > div {
+	width: 100%;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.foreground__heading {
+	text-align: center;
+	font-family: 'NationalPark-ExtraBold';
+}
+
+.soiree {
+	width: 300px;
+
+	margin: 10vh 2vw;
+
+	box-shadow: 0 0 8px #9b9b9b;
+
+	border-radius: 1vw;
+}
+
+.soiree > img {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+	width: 70%;
+	aspect-ratio: auto;
+}
+
+.date {
+	text-align: center;
+}
+
+.lieu {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+	width: 90%;
+}

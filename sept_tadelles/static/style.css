@@ -12,3 +12,8 @@
     font-family: 'Coolvetica-condensed-rg';
     src: url('fonts/Coolvetica/coolvetica_condensed_rg.otf')
 }
+
+@font-face {
+    font-family: 'NationalPark-ExtraBold';
+    src: url('fonts/NationalPark/NationalPark-ExtraBold.otf')
+}

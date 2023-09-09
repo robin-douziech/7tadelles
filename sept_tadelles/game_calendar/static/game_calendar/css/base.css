@@ -1,0 +1,76 @@
+html {
+	height: 100vh;
+	overflow: hidden;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	background: #fff;
+
+	perspective: 1px;
+	transform-style: preserve-3d;
+
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+/*
+header, footer {
+	position: absolute;
+	border: 2px solid red;
+}
+*/
+
+.background, .foreground {
+	width: 100%;
+	min-height: 100vh;
+	position: relative;
+
+	transform-style: preserve-3d;
+}
+
+.background::before {
+	content: "";
+	width: 100vw;
+	height: 300%;
+	position: absolute;
+
+	background: url('../images/background.jpg') top center;
+	background-size: 40%;
+	background-repeat: repeat;
+
+	box-shadow: 0 -50vh 100px -150px #fff inset;
+
+	transform: translateZ(-1px) scale(2);
+}
+
+.foreground {
+	left: 50%;
+	transform: translate(-50%);
+	width: 80%;
+	background-color: white;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.text {
+	width: 80%;
+	top: 20%;
+	left: 50%;
+	position: absolute;
+
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 10vw;
+	color: white;
+	text-align: center;
+
+	text-shadow:
+	0 0 10px #444,
+	0 0 10px #444,
+	0 0 10px #444;
+
+    transform: scale(1,1.1) translate(-50%, 10%);
+}
