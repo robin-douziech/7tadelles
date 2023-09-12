@@ -1,0 +1,63 @@
+{% extends 'account/base_form.html' %}
+
+{% block extra_headers %}
+<style type="text/css">
+	.form {
+		width: 10%;
+	}
+	.form > form {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.item {
+		width: 90%;
+		text-align: start;
+		font-weight: bold;
+	}
+	.desc {
+		width: 80%;
+		text-align: start;
+	}
+</style>
+{% endblock %}
+
+{% block title %}
+	<h1>Quel type de soirée voulez vous créer ?</h1>
+{% endblock %}
+
+{% block pre-text %}
+	<p>Veuillez choisir le type de soirée que vous voulez créer parmi les suivants :</p>
+{% endblock %}
+
+{% block errors %}
+	{% for error_name, value in errors.items %}
+		{% if value.0 %}
+			<p>{{ value.1 }}</p>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block form %}
+<form action="" method="post">
+	{% csrf_token %}
+	<p class='item'>{{ form.type_soiree.0 }} :</p>
+	<p class='desc'>
+		Une soirée avec liste exhaustive d'invités à laquelle tous les invités pourront participer s'ils le souhaitent.
+	</p>
+	<p class='item'>{{ form.type_soiree.1 }} :</p>
+	<p class='desc'>
+		Une soirée sur inscription avec liste étendue d'invités et nombre de places limité. Les invités doivent s'inscrire pour pouvoir y participer et ne peuvent pas s'inscrire s'il ne reste plus de place.
+	</p>
+	<p class='item'>{{ form.type_soiree.2 }} :</p>
+	<p class='desc'>
+		Exactement comme une soirée privée sur inscription mais sans liste d'invités. Tout le monde peut s'inscrire tant qu'il reste de la place.
+	</p>
+	<p class='item'>{{ form.type_soiree.3 }} :</p>
+	<p class='desc'>
+		Type de soirée réservé aux hôtes habitant dans un hangar, tout le monde peut s'inscrire, sans limite de place.
+	</p>
+	<input type="submit" class="btn btn-default btn-lg" value="Suivant">
+</form>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'account/base_form.html' %}
+
+{% block title %}
+	<h1>Soirée créée avec succès</h1>
+{% endblock %}
+
+{% block pre-text %}
+	<p>
+		La soirée a été créée avec succes, vous pouvez voir le détail de celle-ci depuis votre espace utilisateur.
+	</p>
+	<p><a href="{% url 'account:detail' %}">retour au profil</a></p>
+{% endblock %}
+

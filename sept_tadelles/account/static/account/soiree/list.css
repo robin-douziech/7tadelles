@@ -1,0 +1,102 @@
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	font-family: 'NationalPark-ExtraBold';
+}
+
+.foreground > div {
+	width: 100%;
+}
+
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.soiree {
+	text-decoration: none;
+	color: black;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	height: 250px;
+	width: 500px;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+
+	margin: 4vh 2vw;
+}
+
+.soiree__heading {
+	text-align: center;
+}
+
+.soiree__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.soiree__img {
+	height: 100%;
+	width: 60%;
+}
+
+.soiree__txt {
+	width: 40%;
+}
+
+.soiree__img > img {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	max-height: 90%;
+	max-width: 90%;
+	aspect-ratio: auto;
+}
+
+
+/*
+.soiree {
+	width: 20vw;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.soiree > img {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+	width: 70%;
+	aspect-ratio: auto;
+}
+
+.date {
+	text-align: center;
+}
+
+.lieu {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+	width: 90%;
+}
+*/
+

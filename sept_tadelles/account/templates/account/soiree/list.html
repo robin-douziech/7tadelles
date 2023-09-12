@@ -1,0 +1,35 @@
+{% extends 'account/base.html' %}
+
+{% load static account_custom_filters %}
+
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/soiree/list.css' %}">
+{% endblock %}
+
+{% block foreground %}
+	<div class="foreground__heading"><h1>Soirées que je peux modifier</h1></div>
+	<div class="foreground__content">
+		{% for soiree in soirees %}
+			<a class="soiree" href="{% url 'account:event_detail' soiree.id %}">
+				<!--div class="soiree"-->
+				<div class="soiree__heading">
+					<p>Soirée du {{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</p>
+				</div>
+				<div class="soiree__content">
+					<div class="soiree__img">
+						{% if soiree.has_image %}
+							<img src="{{ soiree.image.url }}">
+						{% else %}
+							<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+						{% endif %}
+					</div>
+					<div class="soiree__txt">
+						<p class="lieu">{{ soiree.lieu.adresse }}</p>
+						<p class="lieu">{{ soiree.lieu.code_postal }}, {{ soiree.lieu.ville }}</p>
+					</div>						
+				</div>
+				<!--/div-->
+			</a>
+		{% endfor %}			
+	</div>
+{% endblock %}

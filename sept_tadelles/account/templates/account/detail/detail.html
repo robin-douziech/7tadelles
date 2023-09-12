@@ -1,4 +1,4 @@
-{% extends 'account/base_detail.html' %}
+{% extends 'account/base.html' %}
 
 {% load static %}
 
@@ -18,14 +18,14 @@
 {% endfor %}
 {% endblock %}
 
-{% block middlebar %}
+{% block foreground %}
 <div class="preview">
 	<div class="preview__fig">
 		<div class=preview__imgwrapper>
-			{% if default_profile_photo %}
-				<img src="{% static 'account/default_profile_photo.jpg' %}">
+			{% if user.has_profile_photo %}
+				<img src="{{ user.profile_photo.url }}">
 			{% else %}
-				<img src="{{ profile_photo.url }}">
+				<img src="{% static 'account/default_profile_photo.jpg' %}">
 			{% endif %}
 		</div>
 	</div>

@@ -1,68 +1,17 @@
 from django.contrib import admin as django_admin
-
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.core.files.images import get_image_dimensions
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, logout, login
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.conf import settings
-from asgiref.sync import sync_to_async, async_to_sync
 
-from PIL import Image
-import os, random
-from datetime import datetime
+from account import models, admin
+from account.forms import user as forms
+from . import helpers
 
-from . import forms, models, admin
-
-
-'''
-def generate_token(length) :
-
-	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-	token = ""
-	for i in range(length) :
-		token += alphabet[random.randint(0, len(alphabet)-1)]
-
-	return token
-
-def find_user_by_email(email) :
-
-	for user in models.User.objects.all() :
-		if user.email == email :
-			return user
-
-	return None
-
-def find_photo_by_caption(caption) :
-
-	for photo in models.ProfilePhoto.objects.all() :
-		if photo.caption == caption :
-			return photo
-
-	return None
-
-def delete_media_file(path) :
-	try :
-		if os.path.isfile(path) :
-			os.remove(path)
-			return True
-		else :
-			return False
-	except Exception as e :
-		print(f"Erreur lors de la suppression d'un fichier media : {str(e)}")
-		return False
-'''
-
-
-
-
-### LOGIN/LOGOUT
-
-
-'''
 def login_view(request) :
 
 	form = forms.LoginForm()
@@ -91,12 +40,10 @@ def login_view(request) :
 def logout_view(request) :
 	logout(request)
 	return render(request, 'account/registration/logout.html')
-'''
 
 
-### DETAIL ###
 
-'''
+
 @login_required
 def detail(request) :
 
@@ -121,6 +68,14 @@ def detail(request) :
 		actions += [
 			('Créer une soirée', 'account:create_soiree_step_1', ())
 		]
+	if request.user.soirees_hote.exists() :
+		actions += [
+			('Mes soirées', 'account:my_events', ())
+		]
+	if request.user.soirees_invite.exists() :
+		actions += [
+			('Mes invitations', 'game_calendar:index', ())
+		]
 
 	return render(request, "account/detail/detail.html", {
 		'actions': actions,
@@ -130,14 +85,14 @@ def detail(request) :
 @login_required
 def update_profile_photo(request) :
 
-	form = forms.UpdateProfilePhotoForm()
+	form = user.UpdateProfilePhotoForm()
 	errors = {
 		'photo_too_big': [False, "Vous ne pouvez pas utiliser cette image car au moins un de ses dimensions est trop grande"]
 	}
 
 	if request.method == "POST" :
 
-		form = forms.UpdateProfilePhotoForm(request.POST, request.FILES)
+		form = user.UpdateProfilePhotoForm(request.POST, request.FILES)
 
 		if form.is_valid() :
 
@@ -152,7 +107,7 @@ def update_profile_photo(request) :
 				if request.user.has_profile_photo :
 
 					old_profile_photo = request.user.profile_photo
-					if not(delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}")) :
+					if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}")) :
 						send_mail(
 							subject="Fichier mal supprimé sur le serveur",
 							message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
@@ -175,7 +130,7 @@ def delete_profile_photo(request) :
 	if request.user.has_profile_photo :
 
 		old_profile_photo = request.user.profile_photo
-		if not(delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}")) :
+		if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}")) :
 			send_mail(
 				subject="Fichier mal supprimé sur le serveur",
 				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
@@ -190,14 +145,8 @@ def delete_profile_photo(request) :
 
 	return redirect('/account/')
 
-'''
 
 
-### ACCOUNT CREATION ###
-
-
-
-'''
 
 def create(request) :
 
@@ -232,7 +181,7 @@ def create(request) :
 
 			# aucune erreur : on crée l'utilisateur
 			user = models.User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'], form.cleaned_data['password1'])
-			user.verification_token = generate_token(64)
+			user.verification_token = helpers.generate_token(64)
 			user.save()
 
 			if settings.ENV == "PROD" :
@@ -291,7 +240,7 @@ def password_reset_email_form(request) :
 
 		if form.is_valid() :
 
-			user = find_user_by_email(form.cleaned_data['email'])
+			user = helpers.find_user_by_email(form.cleaned_data['email'])
 			if user is None :
 				errors['unknown_email'][0] = True
 
@@ -308,7 +257,7 @@ def password_reset_email_form(request) :
 
 	if (request.method == "POST" and form.is_valid()) or request.user.is_authenticated :
 
-		user.password_reset_token = generate_token(64)
+		user.password_reset_token = helpers.generate_token(64)
 		user.save()
 
 		if settings.ENV == "PROD" :
@@ -401,7 +350,7 @@ def discord_verification_send_email(request, discord_name, discord_id, user_name
 
 		if user is not None and not(user.discord_verified) :
 
-			token = generate_token(64)
+			token = helpers.generate_token(64)
 			user.discord_verification_token = token
 			user.discord_username = f"{discord_name}#{discord_id}"
 			user.save()
@@ -501,241 +450,3 @@ def address_form(request) :
 			return render(request, 'account/adresse/success.html', {})
 
 	return render(request, 'account/adresse/form.html', {'form':form})
-
-
-
-'''
-
-'''
-@login_required
-def create_lieu(request) :
-
-	form = forms.LieuCreationForm()
-
-	if request.method == "POST" :
-
-		form = forms.LieuCreationForm(request.POST, request.FILES)
-
-		if form.is_valid() :
-
-			lieu = models.Lieu(
-				name=form.cleaned_data['name'],
-				adresse=form.cleaned_data['adresse'],
-				complement=form.cleaned_data['complement'],
-				code_postal=form.cleaned_data['code_postal'],
-				ville=form.cleaned_data['ville'],
-				pays=form.cleaned_data['pays'],
-				image=form.cleaned_data['image']
-			)
-
-			lieu.save()
-
-			return render(request, 'account/lieu/creation_success.html', {})
-
-	return render(request, 'account/lieu/creation_form.html', {'form': form})
-
-'''
-
-
-
-
-
-
-
-
-"""
-@login_required
-def create_soiree_step_1(request) :
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
-
-		form = forms.SoireeCreationForm_step_1()
-
-		if request.method == "POST" :
-
-			form = forms.SoireeCreationForm_step_1(request.POST)
-
-			if form.is_valid() :
-
-				soiree = models.Soiree(
-					type_soiree=form.cleaned_data['type_soiree'],
-					nb_joueurs=models.Soiree()._meta.get_field('nb_joueurs').default,
-					lieu=request.user.adresse,
-					date=datetime.now(),
-					hote=request.user,
-					has_image=False,
-					image=None
-					)
-				soiree.save()
-
-				return redirect('account:create_soiree_step_2', soiree_id=soiree.id)
-
-		return render(request, 'account/soiree/creation_form_step_1.html', {'form': form})
-
-	else :
-
-		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de créer une nouvelle soirée."})
-
-@login_required
-def create_soiree_step_2(request, soiree_id) :
-
-	form = forms.SoireeCreationForm_step_2()
-
-	try :
-		soiree = models.Soiree.objects.get(pk=soiree_id)
-	except :
-		soiree = None
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-
-		if request.method == "POST" :
-
-			form = forms.SoireeCreationForm_step_2(request.POST)
-
-			if form.is_valid() :
-
-				soiree.nb_joueurs = form.cleaned_data['nb_joueurs']
-				soiree.save()
-
-				return redirect('account:create_soiree_step_3', soiree_id=soiree.id)
-
-		return render(request, 'account/soiree/creation_form_step_2.html', {'form': form})
-
-	else :
-
-		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
-
-@login_required
-def create_soiree_step_3(request, soiree_id) :
-
-	form = forms.SoireeCreationForm_step_3(initial={'lieu':request.user.adresse})
-
-	try :
-		soiree = models.Soiree.objects.get(pk=soiree_id)
-	except :
-		soiree = None
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-
-		if request.method == "POST" :
-
-			form = forms.SoireeCreationForm_step_3(request.POST)
-
-			if form.is_valid() :
-
-				soiree.lieu = form.cleaned_data['lieu']
-				soiree.save()
-
-				return redirect('account:create_soiree_step_4', soiree_id=soiree.id)
-
-		return render(request, 'account/soiree/creation_form_step_3.html', {'form': form})
-
-	else :
-
-		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
-
-@login_required
-def create_soiree_step_4(request, soiree_id) :
-
-	form = forms.SoireeCreationForm_step_4()
-
-	try :
-		soiree = models.Soiree.objects.get(pk=soiree_id)
-	except :
-		soiree = None
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-
-		if request.method == "POST" :
-
-			form = forms.SoireeCreationForm_step_4(request.POST)
-
-			if form.is_valid() :
-
-				soiree.date = form.cleaned_data['date']
-				soiree.save()
-
-				return render(request, 'account/soiree/creation_success.html', {})
-
-		return render(request, 'account/soiree/creation_form_step_4.html', {'form': form})
-
-	else :
-
-		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
-
-
-@login_required
-@permission_required('account.view_soiree')
-def my_events(request) :
-	all_soirees = models.Soiree.objects.all()
-	soirees = []
-	for soiree in all_soirees :
-		if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-			soirees.append(soiree)
-	return render(request, 'account/soiree/list.html', {'soirees': soirees})
-
-
-@login_required
-@permission_required('account.view_soiree')
-def event_detail(request, soiree_id) :
-
-	try :
-		soiree = models.Soiree.objects.get(pk=soiree_id)
-	except :
-		soiree = None
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-		return render(request, 'account/soiree/detail.html', {'soiree': soiree, 'types_soiree': models.Soiree.TypeDeSoiree.choices, 'types_soiree_desc': models.Soiree.TYPES_SOIREE_DESC})
-	else :
-		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée."})
-
-
-
-@login_required
-@permission_required('account.view_soiree')
-def change_invites(request, soiree_id) :
-
-	try :
-		soiree = models.Soiree.objects.get(pk=soiree_id)
-	except :
-		soiree = None
-
-	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-
-		form = forms.InvitesForm(request, soiree)
-		errors = {
-			'errors_count': 0,
-			'too_many_guests': [False, "Vous ne pouvez pas inviter autant de monde"],
-		}
-
-
-		if request.method == "POST" :
-
-			form = forms.InvitesForm(request, soiree, request.POST)
-
-			if form.is_valid() :
-
-				if soiree.type_soiree == models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM :
-					nb_joueurs = len(soiree.invites.all())+1 - len(form.cleaned_data['invites_to_del']) + len(form.cleaned_data['invites_to_add'])
-					if nb_joueurs > soiree.nb_joueurs :
-						errors['too_many_guests'][0] = True
-						errors['errors_count'] += 1
-
-				if errors['errors_count'] == 0 :
-
-					for invite in form.cleaned_data['invites_to_del'] :
-						soiree.invites.remove(invite)
-					for invite in form.cleaned_data['invites_to_add'] :
-						soiree.invites.add(invite)
-					soiree.save()
-
-					return redirect(f'/account/event/{soiree_id}')
-
-		return render(request, 'account/soiree/invites_form.html', {'form': form, 'errors': errors.pop('errors_count')})
-
-	else :
-
-		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée."})
-
-
-"""
