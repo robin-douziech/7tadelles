@@ -218,6 +218,7 @@ def verify_email(request, user_id, token):
 		user.verified = True
 		user.verification_token = ""
 		permission = Permission.objects.get(codename='view_soiree')
+		print(f"permission : {permission}")
 		user.user_permissions.add(permission)
 		user.save()
 		return render(request, 'account/creation/activation_success.html', {})
