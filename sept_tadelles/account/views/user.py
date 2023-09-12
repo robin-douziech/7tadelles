@@ -83,14 +83,14 @@ def detail(request) :
 @login_required
 def update_profile_photo(request) :
 
-	form = user.UpdateProfilePhotoForm()
+	form = forms.UpdateProfilePhotoForm()
 	errors = {
 		'photo_too_big': [False, "Vous ne pouvez pas utiliser cette image car au moins un de ses dimensions est trop grande"]
 	}
 
 	if request.method == "POST" :
 
-		form = user.UpdateProfilePhotoForm(request.POST, request.FILES)
+		form = forms.UpdateProfilePhotoForm(request.POST, request.FILES)
 
 		if form.is_valid() :
 
