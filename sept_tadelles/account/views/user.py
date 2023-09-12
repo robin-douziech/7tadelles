@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, logout, login
-#from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 from django.conf import settings
 
 from account import models, admin
@@ -186,6 +186,7 @@ def create(request) :
 				verification_link = f"https://7tadelles.com/account/verify_email/{user.id}/{user.verification_token}"
 			else :
 				verification_link = f"http://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
+				print(verification_link)
 
 			send_mail(
     			subject="Activation de votre compte",
@@ -216,6 +217,8 @@ def verify_email(request, user_id, token):
 	if user is not None and user.verification_token == token:
 		user.verified = True
 		user.verification_token = ""
+		permission = Permission.objects.get(codename='view_soiree')
+		user.user_permissions.add(permission)
 		user.save()
 		return render(request, 'account/creation/activation_success.html', {})
 	else:
@@ -443,7 +446,8 @@ def address_form(request) :
 			adresse.save()
 
 			request.user.adresse = adresse
-			request.user.user_permissions.add("add_soiree")
+			permission = Permission.objects.get(codename='add_soiree')
+			request.user.user_permissions.add(permission)
 			request.user.save()
 
 			return render(request, 'account/adresse/success.html', {})
@@ -454,5 +458,7 @@ def address_form(request) :
 def address_delete(request) :
 	request.user.adresse.delete()
 	request.user.adresse = None
-	request.user.user_permissions.remove("add_soiree")
+	permission = Permission.objects.get(codename='add_soiree')
+	request.user.user_permissions.remove(permission)
+	request.user.save()
 	return redirect('account:detail')

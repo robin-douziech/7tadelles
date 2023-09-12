@@ -19,7 +19,7 @@ urlpatterns = [
     path("discord_verification_send_email/<str:discord_name>/<str:discord_id>/<str:user_name>/<str:bot_token>", user.discord_verification_send_email, name="discord_verification_send_email"),
     path("discord_verification_link/<str:user_id>/<str:token>", user.discord_verification_link, name="discord_verification_link"),
     path("change-address/", user.address_form, name="change_address"),
-    path("delete-adsress/", user.address_delete, name="delete_address"),
+    path("delete-adress/", user.address_delete, name="delete_address"),
 
     # Lieu
     path("create-place/", lieu.create_lieu, name="create_lieu"),

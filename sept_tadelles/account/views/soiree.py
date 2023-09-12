@@ -131,6 +131,7 @@ def create_soiree_step_4(request, soiree_id) :
 
 
 @login_required
+@permission_required('account.view_soiree')
 def my_events(request) :
 	if request.user.soirees_hote.exists() :
 		all_soirees = models.Soiree.objects.all()
@@ -144,6 +145,7 @@ def my_events(request) :
 
 
 @login_required
+@permission_required('account.view_soiree')
 def event_detail(request, soiree_id) :
 
 	try :
