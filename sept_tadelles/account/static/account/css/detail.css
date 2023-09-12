@@ -63,23 +63,3 @@
 	font-family: 'Coolvetica-condensed-rg';
 	font-size: 2vw;
 }
-
-
-
-.left_sidebar {
-	display: flex;
-	flex-direction: column;
-	justify-content: start;
-	align-items: center;
-}
-
-.action {
-	text-align: center;
-}
-
-.action > a {
-	text-decoration: none;
-	color: white;
-	font-family: 'Coolvetica-condensed-rg';
-	font-size: 1.5vw;
-}

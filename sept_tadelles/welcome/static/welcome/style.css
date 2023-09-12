@@ -179,7 +179,7 @@ footer {
 
 
 
-.description p {
+.description p, .description ul {
     margin: 5vh 5vw;
 }
 

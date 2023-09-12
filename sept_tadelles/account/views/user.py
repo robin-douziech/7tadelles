@@ -14,6 +14,9 @@ from . import helpers
 
 def login_view(request) :
 
+	current_view = ['account:login', []]
+	real_view = False
+
 	form = forms.LoginForm()
 	auth_error = False
 	unverified_user = False
@@ -28,17 +31,22 @@ def login_view(request) :
 
 			if user is not None and user.verified :
 				login(request, user)
+				helpers.register_view(request, current_view, real_view)
 				return redirect('/')
 			elif user is not None :
 				unverified_user = True
 			else :
 				auth_error = True
 
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/registration/login.html', {'form': form, 'auth_error': auth_error, 'unverified_user': unverified_user})
 
 
 def logout_view(request) :
+	current_view = ['account:logout', []]
+	real_view = False
 	logout(request)
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/registration/logout.html')
 
 
@@ -47,7 +55,8 @@ def logout_view(request) :
 @login_required
 def detail(request) :
 
-	print(f"user_permissions : {request.user.user_permissions}")
+	current_view = ['account:detail', []]
+	real_view = True
 
 	profile_info = {
 		'username': request.user.username,
@@ -56,34 +65,42 @@ def detail(request) :
 	if request.user.discord_verified :
 		profile_info['pseudo discord'] = request.user.discord_username
 
-	actions = [('Modifier la photo de profil', 'account:update_profile_photo', ())]
+	left_actions = [('Modifier la photo de profil', 'account:update_profile_photo', ())]
 
 	if request.user.has_profile_photo :
-		actions += [('Supprimer la photo de profil', 'account:delete_profile_photo', ())]
+		left_actions += [('Supprimer la photo de profil', 'account:delete_profile_photo', ())]
 
-	actions += [
+	left_actions += [
 		('Modifier le mot de passe', 'account:password_reset_email', ()),
 		('Mon adresse', 'account:change_address', ())
 	]
 
 	if request.user.adresse is not None :
-		actions += [('Supprimer mon adresse', 'account:delete_address', ())]
+		left_actions += [('Supprimer mon adresse', 'account:delete_address', ())]
 	if not(request.user.discord_verified) :
-		actions += [('Lier le compte discord', 'account:discord_verification_info', ())]
+		left_actions += [('Lier le compte discord', 'account:discord_verification_info', ())]
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
-		actions += [('Créer une soirée', 'account:create_soiree_step_1', ())]
+		left_actions += [('Créer une soirée', 'account:create_soiree_step_1', ())]
 	if request.user.soirees_hote.exists() :
-		actions += [('Mes soirées', 'account:my_events', ())]
+		left_actions += [('Mes soirées', 'account:my_events', ())]
 	if request.user.soirees_invite.exists() :
-		actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
+		left_actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
 
+
+	right_actions = [('Retour', 'welcome:index', ())]
+
+	helpers.register_view(request, current_view, real_view)
 	return render(request, "account/detail/detail.html", {
-		'actions': actions,
+		'left_actions': left_actions,
+		'right_actions': right_actions,
 		'profile_info': profile_info
 	})
 
 @login_required
 def update_profile_photo(request) :
+
+	current_view = ['account:update_profile_photo', []]
+	real_view = False
 
 	form = forms.UpdateProfilePhotoForm()
 	errors = {
@@ -120,12 +137,17 @@ def update_profile_photo(request) :
 				request.user.has_profile_photo = True
 				request.user.save()
 
+				helpers.register_view(request, current_view, real_view)
 				return redirect('/account/')
 
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/detail/update_profile_photo.html', {'form': form, 'errors': errors})
 
 @login_required
 def delete_profile_photo(request) :
+
+	current_view = ['account:delete_profile_photo', []]
+	real_view = False
 
 	if request.user.has_profile_photo :
 
@@ -143,12 +165,16 @@ def delete_profile_photo(request) :
 		request.user.has_profile_photo = False
 		request.user.save()
 
+	helpers.register_view(request, current_view, real_view)
 	return redirect('/account/')
 
 
 
 
 def create(request) :
+
+	current_view = ['account:user_creation_form', []]
+	real_view = False
 
 	form = forms.UserCreationForm()
 	errors = {
@@ -177,6 +203,7 @@ def create(request) :
 
 			for error in errors :
 				if errors[error][0] :
+					helpers.register_view(request, current_view, real_view)
 					return render(request, 'account/creation/creation_form.html', {'form': form, 'errors': errors})
 
 			# aucune erreur : on crée l'utilisateur
@@ -203,13 +230,17 @@ Lien d'activation : {verification_link}""",
     			fail_silently=False
     		)
 
+			helpers.register_view(request, current_view, real_view)
 			return render(request, 'account/creation/activation_email_sent.html', {})
 
-
+	helpers.register_view(request, current_view, real_view)
 	return render(request, "account/creation/creation_form.html", {"form": form, 'errors': errors})
 
 
 def verify_email(request, user_id, token):
+
+	current_view = ['account:verify_email', [user_id, token]]
+	real_view = False
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -223,8 +254,10 @@ def verify_email(request, user_id, token):
 		print(f"permission : {permission}")
 		user.user_permissions.set([permission])
 		user.save()
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/creation/activation_success.html', {})
 	else:
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/creation/activation_error.html', {})
 
 
@@ -232,6 +265,9 @@ def verify_email(request, user_id, token):
 ### PASSWORD RESET ###
 
 def password_reset_email_form(request) :
+
+	current_view = ['account:password_reset_email', []]
+	real_view = False
 
 	form = forms.PasswordResetEmailForm()
 	errors = {
@@ -257,6 +293,7 @@ def password_reset_email_form(request) :
 
 	for error in errors :
 		if errors[error][0] :
+			helpers.register_view(request, current_view, real_view)
 			return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
 
 	if (request.method == "POST" and form.is_valid()) or request.user.is_authenticated :
@@ -284,8 +321,10 @@ Si ce n'est pas vous, ignorez ce message. Sinon, cliquez sur le lien ci-dessous 
 			fail_silently=False
 		)
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/password_reset/password_reset_email_sent.html', {})
 
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
 
 
@@ -293,6 +332,9 @@ Si ce n'est pas vous, ignorez ce message. Sinon, cliquez sur le lien ci-dessous 
 
 
 def password_reset_form(request, user_id, token) :
+
+	current_view = ['account:password_reset', [user_id, token]]
+	real_view = False
 
 	passwords_dont_match = False
 
@@ -317,16 +359,19 @@ def password_reset_form(request, user_id, token) :
 					user.password_reset_token = ""
 					user.save()
 
+					helpers.register_view(request, current_view, real_view)
 					return render(request, 'account/password_reset/password_reset_complete.html', {})
 
 				else :
 
 					passwords_dont_match = True
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/password_reset/password_reset_confirm.html', {'form': form, 'passwords_dont_match': passwords_dont_match})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/password_reset/password_reset_bad_link.html')
 
 
@@ -336,14 +381,23 @@ def password_reset_form(request, user_id, token) :
 @login_required
 def discord_verification_info(request) :
 
+	current_view = ['account:discord_verification_info', []]
+	real_view = False
+
 	if request.user.discord_verified :
+		helpers.register_view(request, current_view, real_view)
 		return redirect('/account/')
 	else :
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/discord_verification/info.html', {})
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
+	current_view = ['account:discord_verification_send_email', [discord_name, discord_id, user_name, bot_token]]
+	real_view = False
+
 	if bot_token != settings.BOT_TOKEN :
+		helpers.register_view(request, current_view, real_view)
 		return redirect('/')
 	else :
 
@@ -379,14 +433,19 @@ Si ce n'est pas vous, veuillez ignorer ce message. Sinon, veuillez cliquer sur l
 				fail_silently = False
 			)
 
+			helpers.register_view(request, current_view, real_view)
 			return JsonResponse({'result': 'success'})
 
 		else :
 
+			helpers.register_view(request, current_view, real_view)
 			return JsonResponse({'result': 'failure'})
 
 
 def discord_verification_link(request, user_id, token) :
+
+	current_view = ['account:discord_verification_link', [user_id, token]]
+	real_view = False
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -407,10 +466,12 @@ def discord_verification_link(request, user_id, token) :
 			fail_silently=False
 		)
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/discord_verification/success.html', {})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/discord_verification/bad_link.html', {})
 
 
@@ -421,6 +482,9 @@ def discord_verification_link(request, user_id, token) :
 
 @login_required
 def address_form(request) :
+
+	current_view = ['account:change_address', []]
+	real_view = False
 
 	form = forms.AddressForm()
 
@@ -450,13 +514,34 @@ def address_form(request) :
 			request.user.adresse = adresse
 			request.user.save()
 
+			helpers.register_view(request, current_view, real_view)
 			return render(request, 'account/adresse/success.html', {})
 
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/adresse/form.html', {'form':form})
 
 @login_required
 def address_delete(request) :
+	current_view = ['account:delete_address', []]
+	real_view = False
 	request.user.adresse.delete()
 	request.user.adresse = None
 	request.user.save()
+	helpers.register_view(request, current_view, real_view)
 	return redirect('account:detail')
+
+@login_required
+def clear_session(request) :
+	last_view = request.session.get("last_view", ["welcome:index", []])
+	request.session['last_view'] = ['account:clear_session', []]
+	request.session['last_real_view'] = []
+	return redirect(last_view[0], *last_view[1])
+
+def retour(request) :
+	request.session['last_real_view'] = request.session.get("last_real_view", [])
+	if len(request.session['last_real_view']) > 0 :
+		redirect_view = request.session['last_real_view'][-1]
+		request.session['last_real_view'] = request.session['last_real_view'][:-1]
+	else :
+		redirect_view = ['welcome:index', []]
+	return redirect(redirect_view[0], *redirect_view[1])

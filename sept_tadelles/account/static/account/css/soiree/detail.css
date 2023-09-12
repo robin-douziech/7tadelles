@@ -1,0 +1,158 @@
+.foreground > form {
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1.5vw;
+}
+
+.foreground > form > div {
+	width: 100%;
+}
+
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.colums-block {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: start;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	width: 50%;
+}
+
+
+.block {
+	border: 1px solid black;
+	border-radius: 1vw;
+	margin: 1vh 1vw;
+	padding: 1vh 1vw;
+
+}
+
+
+
+
+.invites__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.invite__detail, .hote__detail, .invites__add {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	height: 200px;
+	width: 400px;
+	margin: 1vh 1vw;
+
+	border-radius: 1vw;
+	box-shadow: 0 0 8px #9b9b9b;
+}
+
+.invites__add > img {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -60%);
+
+	max-width: 80%;
+	max-height: 80%;
+}
+
+.invite__detail > div, .hote__detail > div {
+	width: 50%;
+}
+
+.invite__profile_photo, .hote__profile_photo {
+	height: 100%;
+}
+
+.invite__profile_photo > img, .hote__profile_photo > img {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	max-width: 70%;
+	max-height: 70%;	
+	aspect-ratio: auto;
+
+	border: 1px solid black;
+}
+
+.invite__txt, .hote__txt {
+	word-wrap: break-word;
+}
+
+.lieu__content > img {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+
+	max-width: 90%;
+
+	aspect-ratio: auto;
+
+	border: 1px solid black;
+}
+
+
+
+input, select {
+	font-size: 1.2vw;
+}
+
+
+.enregistrer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.enregistrer > input {
+	margin: 2vh 1vw;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

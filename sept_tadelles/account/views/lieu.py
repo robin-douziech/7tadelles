@@ -8,6 +8,9 @@ from account.forms import lieu as forms
 @login_required
 def create_lieu(request) :
 
+	current_view = ['account:create_lieu', []]
+	real_view = False
+
 	form = forms.LieuCreationForm()
 
 	if request.method == "POST" :
@@ -28,6 +31,8 @@ def create_lieu(request) :
 
 			lieu.save()
 
+			helpers.register_view(request, current_view, real_view)
 			return render(request, 'account/lieu/creation_success.html', {})
 
+	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/lieu/creation_form.html', {'form': form})

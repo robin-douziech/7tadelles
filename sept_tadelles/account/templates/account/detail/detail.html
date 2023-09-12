@@ -3,19 +3,31 @@
 {% load static %}
 
 {% block extra_headers %}
-<link rel="stylesheet" type="text/css" href="{% static 'account/detail.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'account/css/detail.css' %}">
 {% endblock %}
 
 {% block left_sidebar %}
-{% for action in actions %}
-	{% if action.2 %}
-		{% with action_args=action.2 %}
-			<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
-		{% endwith %}
-	{% else %}
-		<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
-	{% endif %}
-{% endfor %}
+	{% for action in left_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block right_sidebar %}
+	{% for action in right_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
 {% endblock %}
 
 {% block foreground %}

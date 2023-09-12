@@ -6,8 +6,13 @@ from datetime import datetime
 from account import models, admin
 from account.forms import soiree as forms
 
+from . import helpers
+
 @login_required
 def create_soiree_step_1(request) :
+
+	current_view = ['account:create_soiree_step_1', []]
+	real_view = False
 
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
 
@@ -30,16 +35,22 @@ def create_soiree_step_1(request) :
 					)
 				soiree.save()
 
+				helpers.register_view(request, current_view, real_view)
 				return redirect('account:create_soiree_step_2', soiree_id=soiree.id)
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/soiree/creation_form_step_1.html', {'form': form})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de créer une nouvelle soirée."})
 
 @login_required
 def create_soiree_step_2(request, soiree_id) :
+
+	current_view = ['account:create_soiree_step_2', [soiree_id]]
+	real_view = False
 
 	form = forms.SoireeCreationForm_step_2()
 
@@ -59,16 +70,22 @@ def create_soiree_step_2(request, soiree_id) :
 				soiree.nb_joueurs = form.cleaned_data['nb_joueurs']
 				soiree.save()
 
+				helpers.register_view(request, current_view, real_view)
 				return redirect('account:create_soiree_step_3', soiree_id=soiree.id)
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/soiree/creation_form_step_2.html', {'form': form})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
 def create_soiree_step_3(request, soiree_id) :
+
+	current_view = ['account:create_soiree_step_3', [soiree_id]]
+	real_view = False
 
 	form = forms.SoireeCreationForm_step_3(initial={'lieu':request.user.adresse})
 
@@ -88,16 +105,22 @@ def create_soiree_step_3(request, soiree_id) :
 				soiree.lieu = form.cleaned_data['lieu']
 				soiree.save()
 
+				helpers.register_view(request, current_view, real_view)
 				return redirect('account:create_soiree_step_4', soiree_id=soiree.id)
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/soiree/creation_form_step_3.html', {'form': form})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
 def create_soiree_step_4(request, soiree_id) :
+
+	current_view = ['account:create_soiree_step_4', [soiree_id]]
+	real_view = False
 
 	form = forms.SoireeCreationForm_step_4()
 
@@ -117,30 +140,41 @@ def create_soiree_step_4(request, soiree_id) :
 				soiree.date = form.cleaned_data['date']
 				soiree.save()
 
+				helpers.register_view(request, current_view, real_view)
 				return render(request, 'account/soiree/creation_success.html', {})
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/soiree/creation_form_step_4.html', {'form': form})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 
 @login_required
 def my_events(request) :
+	current_view = ['account:my_events', []]
+	real_view = True
 	if request.user.soirees_hote.exists() :
+		right_actions = [('Retour', 'account:detail', ())]
 		all_soirees = models.Soiree.objects.all()
 		soirees = []
 		for soiree in all_soirees :
 			if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
 				soirees.append(soiree)
-		return render(request, 'account/soiree/list.html', {'soirees': soirees})
+		helpers.register_view(request, current_view, real_view)
+		return render(request, 'account/soiree/list.html', {'soirees': soirees, 'right_actions': right_actions})
 	else :
+		helpers.register_view(request, current_view, real_view)
 		return redirect('account:detail')
 
 
 @login_required
 def event_detail(request, soiree_id) :
+
+	current_view = ['account:event_detail', [soiree_id]]
+	real_view = True
 
 	try :
 		soiree = models.Soiree.objects.get(pk=soiree_id)
@@ -148,6 +182,8 @@ def event_detail(request, soiree_id) :
 		soiree = None
 
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
+
+		right_actions = [('Retour', 'account:my_events', ())]
 
 		form = forms.SoireeForm(request, soiree)
 		errors = {
@@ -172,17 +208,22 @@ def event_detail(request, soiree_id) :
 					soiree.lieu = form.cleaned_data['lieu']
 					soiree.date = form.cleaned_data['date']
 					soiree.save()
+
 		errors.pop('errors_count')
-		return render(request, 'account/soiree/detail.html', {'form': form, 'soiree': soiree, 'types_soiree': models.Soiree.TypeDeSoiree.choices, 'types_soiree_desc': models.Soiree.TYPES_SOIREE_DESC, 'errors': errors})
+		helpers.register_view(request, current_view, real_view)
+		return render(request, 'account/soiree/detail.html', {'form': form, 'soiree': soiree, 'types_soiree': models.Soiree.TypeDeSoiree.choices, 'types_soiree_desc': models.Soiree.TYPES_SOIREE_DESC, 'errors': errors, 'right_actions': right_actions})
 
 	else :
-
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée."})
 
 
 
 @login_required
 def change_invites(request, soiree_id) :
+
+	current_view = ['account:change_invites', [soiree_id]]
+	real_view = False
 
 	try :
 		soiree = models.Soiree.objects.get(pk=soiree_id)
@@ -218,12 +259,15 @@ def change_invites(request, soiree_id) :
 						soiree.invites.add(invite)
 					soiree.save()
 
+					helpers.register_view(request, current_view, real_view)
 					return redirect(f'/account/event/{soiree_id}')
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/soiree/invites_form.html', {'form': form, 'errors': errors.pop('errors_count')})
 
 	else :
 
+		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée."})
 
 
