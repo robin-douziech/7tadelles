@@ -217,7 +217,7 @@ def verify_email(request, user_id, token):
 	if user is not None and user.verification_token == token:
 		user.verified = True
 		user.verification_token = ""
-		permission = Permission.objects.get(codename='account.view_soiree')
+		permission = Permission.objects.get(codename='view_soiree')
 		user.user_permissions.add(permission)
 		user.save()
 		return render(request, 'account/creation/activation_success.html', {})
