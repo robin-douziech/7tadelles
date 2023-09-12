@@ -47,6 +47,8 @@ def logout_view(request) :
 @login_required
 def detail(request) :
 
+	print(f"user_permissions : {request.user.user_permissions}")
+
 	profile_info = {
 		'username': request.user.username,
 		'e-mail'   : request.user.email
@@ -219,7 +221,7 @@ def verify_email(request, user_id, token):
 		user.verification_token = ""
 		permission = Permission.objects.get(codename='view_soiree')
 		print(f"permission : {permission}")
-		user.user_permissions.add(permission)
+		user.user_permissions.set([permission])
 		user.save()
 		return render(request, 'account/creation/activation_success.html', {})
 	else:
@@ -445,10 +447,7 @@ def address_form(request) :
 				image=form.cleaned_data['image']
 			)
 			adresse.save()
-
 			request.user.adresse = adresse
-			permission = Permission.objects.get(codename='add_soiree')
-			request.user.user_permissions.add(permission)
 			request.user.save()
 
 			return render(request, 'account/adresse/success.html', {})
@@ -459,7 +458,5 @@ def address_form(request) :
 def address_delete(request) :
 	request.user.adresse.delete()
 	request.user.adresse = None
-	permission = Permission.objects.get(codename='add_soiree')
-	request.user.user_permissions.remove(permission)
 	request.user.save()
 	return redirect('account:detail')
