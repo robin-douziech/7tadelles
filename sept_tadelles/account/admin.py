@@ -13,23 +13,23 @@ class SoireeAdmin(admin.ModelAdmin) :
 	def has_view_permission(self, request, obj=None) :
 
 		if obj == None :
-			return request.user.is_superuser
+			return request.user.soirees_hote.exists() or request.user.soirees_invite.exists() or request.user.is_superuser
 		else :
-			return request.user in obj.invites.all() or obj in request.user.soirees_hote.all()
+			return request.user in obj.invites.all() or obj in request.user.soirees_hote.all() or request.user.is_superuser
 
 	def has_change_permission(self, request, obj=None) :
 
 		if obj == None :
 			return request.user.is_superuser
 		else :
-			return obj in request.user.soirees_hote.all()
+			return obj in request.user.soirees_hote.all() or request.user.is_superuser
 
 	def has_del_permission(self, request, obj=None) :
 
 		if obj == None :
 			return request.user.is_superuser
 		else :
-			return obj in request.user.soirees_hote.all()
+			return obj in request.user.soirees_hote.all() or request.user.is_superuser
 
 
 @admin.register(models.User)

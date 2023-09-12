@@ -7,6 +7,7 @@ from account import models, admin
 from account.forms import soiree as forms
 
 @login_required
+@permission_required('account.add_soiree')
 def create_soiree_step_1(request) :
 
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
@@ -39,6 +40,7 @@ def create_soiree_step_1(request) :
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de créer une nouvelle soirée."})
 
 @login_required
+@permission_required('account.add_soiree')
 def create_soiree_step_2(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_2()
@@ -68,6 +70,7 @@ def create_soiree_step_2(request, soiree_id) :
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
+@permission_required('account.add_soiree')
 def create_soiree_step_3(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_3(initial={'lieu':request.user.adresse})
@@ -97,6 +100,7 @@ def create_soiree_step_3(request, soiree_id) :
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
+@permission_required('account.add_soiree')
 def create_soiree_step_4(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_4()
@@ -127,18 +131,19 @@ def create_soiree_step_4(request, soiree_id) :
 
 
 @login_required
-@permission_required('account.view_soiree')
 def my_events(request) :
-	all_soirees = models.Soiree.objects.all()
-	soirees = []
-	for soiree in all_soirees :
-		if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
-			soirees.append(soiree)
-	return render(request, 'account/soiree/list.html', {'soirees': soirees})
+	if request.user.soirees_hote.exists() :
+		all_soirees = models.Soiree.objects.all()
+		soirees = []
+		for soiree in all_soirees :
+			if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
+				soirees.append(soiree)
+		return render(request, 'account/soiree/list.html', {'soirees': soirees})
+	else :
+		return redirect('account:detail')
 
 
 @login_required
-@permission_required('account.view_soiree')
 def event_detail(request, soiree_id) :
 
 	try :

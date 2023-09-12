@@ -54,28 +54,26 @@ def detail(request) :
 	if request.user.discord_verified :
 		profile_info['pseudo discord'] = request.user.discord_username
 
-	actions = [
-		('Modifier la photo de profil', 'account:update_profile_photo', ()),
-		('Supprimer la photo de profil', 'account:delete_profile_photo', ()),
+	actions = [('Modifier la photo de profil', 'account:update_profile_photo', ())]
+
+	if request.user.has_profile_photo :
+		actions += [('Supprimer la photo de profil', 'account:delete_profile_photo', ())]
+
+	actions += [
 		('Modifier le mot de passe', 'account:password_reset_email', ()),
 		('Mon adresse', 'account:change_address', ())
 	]
+
+	if request.user.adresse is not None :
+		actions += [('Supprimer mon adresse', 'account:delete_address', ())]
 	if not(request.user.discord_verified) :
-		actions += [
-			('Lier le compte discord', 'account:discord_verification_info', ())
-		]
+		actions += [('Lier le compte discord', 'account:discord_verification_info', ())]
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
-		actions += [
-			('Créer une soirée', 'account:create_soiree_step_1', ())
-		]
+		actions += [('Créer une soirée', 'account:create_soiree_step_1', ())]
 	if request.user.soirees_hote.exists() :
-		actions += [
-			('Mes soirées', 'account:my_events', ())
-		]
+		actions += [('Mes soirées', 'account:my_events', ())]
 	if request.user.soirees_invite.exists() :
-		actions += [
-			('Mes invitations', 'game_calendar:index', ())
-		]
+		actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
 
 	return render(request, "account/detail/detail.html", {
 		'actions': actions,
@@ -445,8 +443,16 @@ def address_form(request) :
 			adresse.save()
 
 			request.user.adresse = adresse
+			request.user.user_permissions.add("add_soiree")
 			request.user.save()
 
 			return render(request, 'account/adresse/success.html', {})
 
 	return render(request, 'account/adresse/form.html', {'form':form})
+
+@login_required
+def address_delete(request) :
+	request.user.adresse.delete()
+	request.user.adresse = None
+	request.user.user_permissions.remove("add_soiree")
+	return redirect('account:detail')

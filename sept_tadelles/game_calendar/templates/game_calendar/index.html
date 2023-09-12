@@ -1,22 +1,29 @@
 {% extends 'game_calendar/base.html' %}
 
-{% load static %}
+{% load static account_custom_filters %}
 
 {% block extra_headers %}
 	<link rel="stylesheet" type="text/css" href="{% static 'game_calendar/css/index.css' %}">
 {% endblock %}
 
 {% block background %}
-
 {% endblock %}
 
 {% block foreground %}
-	<div class="foreground__heading"><h1>Prochaines soirées</h1></div>
+	<div class="foreground__heading"><h1>Soirées où vous êtes invité</h1></div>
 	<div class="foreground__content">
 		{% for soiree in soirees %}
 			<div class="soiree">
-				<p class="date">{{ soiree.day_name }} {{ soiree.date.day }} {{ soiree.month_name }} {{ soiree.date.year }}</p>
-				<img src="{{ soiree.lieu.image.url }}">
+				<p class="date">{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</p>
+				{% if soiree.has_image %}
+					<img src="{{ soiree.image.url }}">
+				{% else %}
+					{% if soiree.lieu.has_image %}
+						<img src="{{ soiree.lieu.image.url }}">
+					{% else %}
+						<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+					{% endif %}
+				{% endif %}
 				<p class="lieu">{{ soiree.lieu.adresse }}</p>
 				<p class="lieu">{{ soiree.lieu.code_postal }}, {{ soiree.lieu.ville }}</p>
 			</div>
