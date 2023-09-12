@@ -1,12 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 
 from account import models
 from account.forms import lieu as forms
 
 
 @login_required
-@permission_required('account.add_lieu')
 def create_lieu(request) :
 
 	form = forms.LieuCreationForm()

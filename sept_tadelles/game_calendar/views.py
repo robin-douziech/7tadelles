@@ -1,7 +1,7 @@
 from django.contrib import admin as django_admin
 
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 
 from account import admin as account_admin
 from account import models as account_models

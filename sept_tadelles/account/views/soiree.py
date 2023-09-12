@@ -1,13 +1,12 @@
 from django.contrib import admin as django_admin
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 from account import models, admin
 from account.forms import soiree as forms
 
 @login_required
-@permission_required('account.add_soiree')
 def create_soiree_step_1(request) :
 
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_add_permission(request) :
@@ -40,7 +39,6 @@ def create_soiree_step_1(request) :
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de créer une nouvelle soirée."})
 
 @login_required
-@permission_required('account.add_soiree')
 def create_soiree_step_2(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_2()
@@ -70,7 +68,6 @@ def create_soiree_step_2(request, soiree_id) :
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
-@permission_required('account.add_soiree')
 def create_soiree_step_3(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_3(initial={'lieu':request.user.adresse})
@@ -100,7 +97,6 @@ def create_soiree_step_3(request, soiree_id) :
 		return render(request, 'account/error.html', {'error_txt': "Vous essayez de modifier une soirée qui n'existe pas ou dont vous n'êtes pas l'hôte"})
 
 @login_required
-@permission_required('account.add_soiree')
 def create_soiree_step_4(request, soiree_id) :
 
 	form = forms.SoireeCreationForm_step_4()
@@ -131,7 +127,6 @@ def create_soiree_step_4(request, soiree_id) :
 
 
 @login_required
-@permission_required('account.view_soiree')
 def my_events(request) :
 	if request.user.soirees_hote.exists() :
 		all_soirees = models.Soiree.objects.all()
@@ -145,7 +140,6 @@ def my_events(request) :
 
 
 @login_required
-@permission_required('account.view_soiree')
 def event_detail(request, soiree_id) :
 
 	try :
@@ -188,7 +182,6 @@ def event_detail(request, soiree_id) :
 
 
 @login_required
-@permission_required('account.view_soiree')
 def change_invites(request, soiree_id) :
 
 	try :
