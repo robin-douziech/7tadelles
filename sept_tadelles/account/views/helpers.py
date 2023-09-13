@@ -41,8 +41,8 @@ def register_view(request, current_view, real_view) :
 		else :
 			request.session['last_real_view'] = [current_view]
 
-	if len(request.session['last_real_view']) > 10 :
-		request.session['last_real_view'] = request.session['last_real_view'][-10:]
+		if len(request.session['last_real_view']) > 10 :
+			request.session['last_real_view'] = request.session['last_real_view'][-10:]
 
 	print(f"last_view      : {request.session['last_view']}")
 	print(f"last_real_view : {request.session['last_real_view']}")
