@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from account.views import helpers
 
-from . import models
+from . import models, admin
 
 def index(request):
 
