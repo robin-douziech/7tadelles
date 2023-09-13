@@ -55,3 +55,36 @@ h1 {
 
 
 
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	width: 15%;
+	background-color: #A0816C;
+}
+
+.action {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+.action > a {
+	text-decoration: none;
+	color: white;
+	font-family: 'Coolvetica-condensed-rg';
+	font-size: 1.5vw;
+	margin: 0;
+	padding: 0;
+}
+
+.action > a > p {
+	margin: 1.5vh 0;
+	padding: 0;
+}
+
+form {
+	width: 100%;
+}

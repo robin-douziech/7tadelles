@@ -11,6 +11,8 @@ def index(request):
     current_view = ['wiki:index', []]
     real_view = True
 
+    right_actions = [('Retour', 'welcome:index', ())]
+
     games = []
     prochainement = []
 
@@ -35,12 +37,15 @@ def index(request):
         "games": games,
         "prochainement": prochainement,
         "categories": models.Category.objects.all(),
+        "right_actions": right_actions,
     })
 
 def detail(request, game_id) :
 
     current_view = ['wiki:detail', []]
     real_view = True
+
+    right_actions = [('Retour', 'wiki:index', ())]
 
     try :
         game = models.Game.objects.get(pk=game_id)
@@ -49,7 +54,7 @@ def detail(request, game_id) :
 
     if admin.GameAdmin(models.Game, django_admin.site).has_view_permission(request, game) :
         helpers.register_view(request, current_view, real_view)
-        return render(request, 'wiki/detail.html', {'game': game})
+        return render(request, 'wiki/detail.html', {'game': game, 'right_actions': right_actions})
     else :
         helpers.register_view(request, current_view, real_view)
         return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir ce jeu (ou alors aucun jeu n'a cet identifiant)."})

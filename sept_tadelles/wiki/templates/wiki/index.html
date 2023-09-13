@@ -8,23 +8,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'wiki/index.css' %}">
 {% endblock %}
 
-
-
-{% block left_sidebar %}
-<form action="" method="post">
-	{% csrf_token %}
-	<fieldset name="category">
-		<legend><h2>Catégorie</h2></legend>	
-	    	{% for category in categories %}
-	    		<input type="checkbox" name="{{category.name}}" id="cat{{forloop.counter}}">
-	    		<label for="cat{{forloop.counter}}">{{category.name}}</label><br/>
-	    	{% endfor %}
-	</fieldset>
-	<br/><input type="submit" value="Submit">
-</form>
-{% endblock %}
-
-
 {% block middlebar %}
 <div class="games">
 	{% for game in games %}
@@ -53,4 +36,41 @@
 		{% endfor %}
 	</div>
 {% endif %}
+{% endblock %}
+
+
+
+{% block left_sidebar %}
+<form action="" method="post">
+	{% csrf_token %}
+	<fieldset name="category">
+		<legend><h2>Catégorie</h2></legend>	
+	    	{% for category in categories %}
+	    		<input type="checkbox" name="{{category.name}}" id="cat{{forloop.counter}}">
+	    		<label for="cat{{forloop.counter}}">{{category.name}}</label><br/>
+	    	{% endfor %}
+	</fieldset>
+	<br/><input type="submit" value="Submit">
+</form>
+	{% for action in left_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block right_sidebar %}
+	{% for action in right_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
 {% endblock %}
