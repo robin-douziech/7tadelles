@@ -47,7 +47,7 @@ def detail(request, game_id) :
     except :
         game = None
 
-    if admin.SoireeAdmin(models.Soiree, django_admin.site).has_view_permission(request, game) :
+    if admin.GameAdmin(models.Game, django_admin.site).has_view_permission(request, game) :
         helpers.register_view(request, current_view, real_view)
         return render(request, 'wiki/detail.html', {'game': game})
     else :
