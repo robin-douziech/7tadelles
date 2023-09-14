@@ -100,6 +100,9 @@ def detail(request) :
 	if not(notifications.exists()) :
 		no_notifications = True
 
+	if request.session.get("form", False) :
+		request.session.pop("form")
+
 	helpers.register_view(request, current_view, real_view)
 	return render(request, "account/detail/detail.html", {
 		'left_actions': left_actions,
