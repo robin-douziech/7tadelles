@@ -633,7 +633,7 @@ def demande_ami(request, user_id) :
 			#users=None,
 			title="Nouvelle demande d'amitié",
 			text=f"{request.user.username} veut être votre ami(e)",
-			link=None,
+			link="account:search_user_form",
 			args=None,
 			created_at=dt.datetime.now()
 		)
