@@ -45,7 +45,7 @@
 						<div class="hote__detail">
 							<div class="hote__profile_photo">
 								{% if soiree.hote.has_profile_photo %}
-									<img src="{{ invite.profile_photo.url }}">
+									<img src="{{ soiree.hote.profile_photo.url }}">
 								{% else %}
 									<img src="{% static 'account/default_profile_photo.jpg' %}">
 								{% endif %}
