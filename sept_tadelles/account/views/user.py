@@ -582,6 +582,7 @@ def search_user_form(request) :
 	elif request.session.get("form", False) :
 
 		results = models.User.objects.filter(username__contains=request.session['form']['search']).exclude(pk=request.user.id)
+		request.session.pop("form")
 
 	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/user/list.html', {'form': form, 'results': results, 'right_actions': right_actions})
