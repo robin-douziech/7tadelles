@@ -44,3 +44,7 @@ class AddressForm(forms.Form) :
 	ville = forms.CharField(label="Ville*", max_length=50)
 	pays = forms.CharField(label="Pays*", max_length=50)
 	image = forms.ImageField(label="Photo", required=False)
+
+class FriendSearchForm(forms.Form) :
+
+	search = forms.CharField(label="Texte de la recherche", max_length=50)

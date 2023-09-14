@@ -25,3 +25,11 @@ def month_str(date) :
 @register.filter
 def get_dict_value(dic, key) :
     return dic[key]
+
+@register.filter
+def merge_querysets(qs1, qs2) :
+    return qs1.union(qs2)
+
+@register.filter
+def merge_lists(list1, list2) :
+    return list1+list2

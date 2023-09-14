@@ -1,6 +1,6 @@
 {% extends 'account/base.html' %}
 
-{% load static %}
+{% load static account_custom_filters %}
 
 {% block extra_headers %}
 <link rel="stylesheet" type="text/css" href="{% static 'account/css/detail.css' %}">
@@ -10,7 +10,7 @@
 	{% for action in left_actions %}
 		{% if action.2 %}
 			{% with action_args=action.2 %}
-				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+				<div class="action"><a href="{% url action.1 action.2 %}"><p>{{ action.0 }}</p></a></div>
 			{% endwith %}
 		{% else %}
 			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
@@ -31,20 +31,88 @@
 {% endblock %}
 
 {% block foreground %}
-<div class="preview">
-	<div class="preview__fig">
-		<div class=preview__imgwrapper>
-			{% if user.has_profile_photo %}
-				<img src="{{ user.profile_photo.url }}">
-			{% else %}
-				<img src="{% static 'account/default_profile_photo.jpg' %}">
-			{% endif %}
+<div class="block preview">
+	<div class="block-heading preview__heading"><h2>Mon profil</h2></div>
+	<div class="block-content preview__content">
+		<div class="preview__fig">
+			<div class=preview__imgwrapper>
+				{% if user.has_profile_photo %}
+					<img src="{{ user.profile_photo.url }}">
+				{% else %}
+					<img src="{% static 'account/default_profile_photo.jpg' %}">
+				{% endif %}
+			</div>
+		</div>
+		<div class="preview__txt">
+			{% for key,value in profile_info.items %}
+				<p>{{ key }} : {{ value }}</p>
+			{% endfor %}
 		</div>
 	</div>
-	<div class="preview__txt">
-		{% for key,value in profile_info.items %}
-			<p>{{ key }} : {{ value }}</p>
+</div>
+<div class="block notifications">
+	<div class="block-heading notifications__heading"><h2>Notifications</h2></div>
+	<div class="block-content notifications__content">
+		{% if no_notifications %}
+			<p class="no_notifications">Aucune notification</p>
+		{% else %}
+			{% for notification in notifications %}
+				{% if notification.link %}
+					{% if notification.args %}
+						<a href="{% url notification.link notification.args %}">
+							<div class="notification">
+								<div class="notification__heading"><h3>{{notification.title}}</h3></div>
+								<div class="notification__content">{{notification.text}}</div>
+							</div>
+						</a>
+					{% else %}
+						<a href="{% url notification.link %}">
+							<div class="notification">
+								<div class="notification__heading"><h3>{{notification.title}}</h3></div>
+								<div class="notification__content">{{notification.text}}</div>
+							</div>
+						</a>
+					{% endif %}
+				{% else %}
+					<div class="notification">
+						<div class="notification__heading"><h3>{{notification.title}}</h3></div>
+						<div class="notification__content">{{notification.text}}</div>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	</div>
+</div>
+<div class="block amis">
+	<div class="block-heading amis__heading"><h2>Amis</h2></div>
+	<div class="block-content amis__content">
+		{% for person in user.amis.all|merge_querysets:user.demandes_envoyees.all %}
+			<div class="person">
+				<div class="person__profile_photo">
+					<div class="person__imgwrapper">
+						
+						{% if person.has_profile_photo %}
+							<img src="{{ person.profile_photo.url }}">
+						{% else %}
+							<img src="{% static 'account/default_profile_photo.jpg' %}">
+						{% endif %}
+					</div>
+				</div>
+				<div class="person__txt">
+					<p>{{ person.username }}</p>
+					{% if person in user.amis.all %}
+						<p class="result__info ami">ami(e)</p>
+					{% elif person in user.demandes_envoyees.all %}
+						<p class="result__info dmd_e">demande envoyée</p>
+					{% elif person in user.demandes_recues.all %}
+						<p class="result__info dmd_r">demande reçue</p>
+					{% else %}
+						<a class="result__info non_ami" href="{% url 'account:demande_ami' person.id %}">ajouter</a>
+					{% endif %}
+				</div>
+			</div>
 		{% endfor %}
+
 	</div>
 </div>
 {% endblock %}

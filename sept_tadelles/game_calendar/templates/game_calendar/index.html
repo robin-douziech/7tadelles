@@ -12,20 +12,54 @@
 {% block foreground %}
 	<div class="foreground__heading"><h1>Soirées où vous êtes invité</h1></div>
 	<div class="foreground__content">
-		{% for soiree in soirees %}
+		{% for soiree in inscriptions %}
 			<div class="soiree">
-				<p class="date">{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</p>
-				{% if soiree.has_image %}
-					<img src="{{ soiree.image.url }}">
-				{% else %}
-					{% if soiree.lieu.has_image %}
-						<img src="{{ soiree.lieu.image.url }}">
-					{% else %}
-						<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
-					{% endif %}
-				{% endif %}
-				<p class="lieu">{{ soiree.lieu.adresse }}</p>
-				<p class="lieu">{{ soiree.lieu.code_postal }}, {{ soiree.lieu.ville }}</p>
+				<div class="soiree__heading"><h2>{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</h2></div>
+				<div class="soiree__content">
+					<div class="soiree__fig">
+						<div class="soiree__imgwrapper">
+							{% if soiree.has_image %}
+								<img src="{{ soiree.image.url }}">
+							{% elif soiree.lieu.has_image %}
+								<img src="{{ soiree.lieu.image.url }}">
+							{% else %}
+								<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+							{% endif %}
+						</div>
+					</div>
+					<div class="soiree__txt">
+						<p>{{ soiree.lieu.adresse}}</p>
+						<p>{{ soiree.lieu.code_postal }}, {{ soiree.lieu.ville }}</p>
+						<div class="soiree__buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		{% for soiree in invitations %}
+			<div class="soiree">
+				<div class="soiree__heading"><h2>{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</h2></div>
+				<div class="soiree__content">
+					<div class="soiree__fig">
+						<div class="soiree__imgwrapper">
+							{% if soiree.has_image %}
+								<img src="{{ soiree.image.url }}">
+							{% elif soiree.lieu.has_image %}
+								<img src="{{ soiree.lieu.image.url }}">
+							{% else %}
+								<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+							{% endif %}
+						</div>
+					</div>
+					<div class="soiree__txt">
+						<p>{{ soiree.lieu.adresse}}</p>
+						<p>{{ soiree.lieu.code_postal }}, {{ soiree.lieu.ville }}</p>
+						<div class="soiree__buttons">
+							<a href="{% url 'account:accepter_invitation' soiree.id %}"><img src="{% static 'game_calendar/photos/soiree/green_check.png' %}"></a>
+							<a href="{% url 'account:refuser_invitation' soiree.id %}"><img src="{% static 'game_calendar/photos/soiree/red_cross.png' %}"></a>
+						</div>
+					</div>
+				</div>
 			</div>
 		{% endfor %}
 	</div>	

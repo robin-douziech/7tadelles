@@ -1,5 +1,8 @@
 import random, os
 from account import models
+from datetime import datetime
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 def generate_token(length) :
 
@@ -43,3 +46,30 @@ def register_view(request, current_view, real_view) :
 
 		if len(request.session['last_real_view']) > 10 :
 			request.session['last_real_view'] = request.session['last_real_view'][-10:]
+
+def send_notification(notification, users) :
+
+	for user in users :
+		notification.users.add(user)
+
+		html = render_to_string('account/user/notification_mail.html', {'notification': notification})
+		rcpt = [user.email for user in users]
+
+		send_mail(
+			subject="Nouvelle notification reçue",
+			message="",
+			from_email="info@7tadelles.com",
+			recipient_list=rcpt,
+			fail_silently=False,
+			html_message=html,
+		)
+
+
+
+def week_day(date) :
+	day_names = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+	return day_names[date.weekday()]
+
+def month_str(date) :
+	month_names = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+	return month_names[date.month-1]

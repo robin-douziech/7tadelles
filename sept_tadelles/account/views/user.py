@@ -1,12 +1,15 @@
 from django.contrib import admin as django_admin
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import Permission
 from django.conf import settings
+from django.urls import reverse
+
+import datetime as dt
 
 from account import models, admin
 from account.forms import user as forms
@@ -83,17 +86,27 @@ def detail(request) :
 		left_actions += [('Créer une soirée', 'account:create_soiree_step_1', ())]
 	if request.user.soirees_hote.exists() :
 		left_actions += [('Mes soirées', 'account:my_events', ())]
-	if request.user.soirees_invite.exists() :
+	if request.user.invitations.exists() :
 		left_actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
-
+	left_actions += [('Rechercher utilisateur', 'account:search_user_form', ())]
 
 	right_actions = [('Retour', 'welcome:index', ())]
+
+	notifications = request.user.user_notifications.filter(created_at__gt=dt.datetime.now()-dt.timedelta(days=7)).order_by("-created_at")
+	notification_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
+	for notification in notification_to_del:
+		notification.delete()
+	no_notifications = False
+	if not(notifications.exists()) :
+		no_notifications = True
 
 	helpers.register_view(request, current_view, real_view)
 	return render(request, "account/detail/detail.html", {
 		'left_actions': left_actions,
 		'right_actions': right_actions,
-		'profile_info': profile_info
+		'profile_info': profile_info,
+		'notifications': notifications,
+		'no_notifications' : no_notifications
 	})
 
 @login_required
@@ -535,6 +548,8 @@ def clear_session(request) :
 	last_view = request.session.get("last_view", ["welcome:index", []])
 	request.session['last_view'] = ['account:clear_session', []]
 	request.session['last_real_view'] = []
+	if request.session.get('form', False) :
+		request.session.pop('form')
 	return redirect(last_view[0], *last_view[1])
 
 def retour(request) :
@@ -545,3 +560,149 @@ def retour(request) :
 	else :
 		redirect_view = ['welcome:index', []]
 	return redirect(redirect_view[0], *redirect_view[1])
+
+
+
+@login_required
+def search_user_form(request) :
+
+	current_view = ['account:search_user_form', []]
+	real_view = False
+
+	results = []
+	form = forms.FriendSearchForm(request.GET)
+
+	right_actions = [('Retour', 'account:detail', ())]
+
+	if form.is_valid() :
+
+		request.session['form'] = {field: form.cleaned_data[field] for field in form.cleaned_data}
+		results = models.User.objects.filter(username__contains=form.cleaned_data['search']).exclude(pk=request.user.id)
+
+	elif request.session.get("form", False) :
+
+		results = models.User.objects.filter(username__contains=request.session['form']['search']).exclude(pk=request.user.id)
+
+	helpers.register_view(request, current_view, real_view)
+	return render(request, 'account/user/list.html', {'form': form, 'results': results, 'right_actions': right_actions})
+
+
+
+	
+
+
+@login_required
+def user_detail(request, username) :
+
+	current_view = ['account:user_detail', [username]]
+	real_view = False
+
+	try :
+		user = models.User.objects.get(username=username)
+	except :
+		user = None
+
+	if admin.UserAdmin(models.User, django_admin.site).has_view_permission(request, user) :
+
+		helpers.register_view(request, current_view, real_view)
+		return render(request, 'account/user/detail.html', {'user_detail': user})
+
+	else :
+		helpers.register_view(request, current_view, real_view)
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur."})
+
+
+
+@login_required
+def demande_ami(request, user_id) :
+
+	#current_view = ['account:demande_ami', [user_id]]
+	#real_view = False
+
+	try :
+		user = models.User.objects.get(pk=user_id)
+	except :
+		user=None
+
+	if admin.UserAdmin(models.User, django_admin.site).has_view_permission(request, user) :
+
+		request.user.demandes_envoyees.add(user)
+		request.user.save()
+
+		notification = models.Notification(
+			#users=None,
+			title="Nouvelle demande d'amitié",
+			text=f"{request.user.username} veut être votre ami(e)",
+			link=None,
+			args=None,
+			created_at=dt.datetime.now()
+		)
+		notification.save()
+		helpers.send_notification(notification, [user])
+
+		last_view = request.session['last_view']
+		return redirect(last_view[0], *last_view[1])
+
+	else :
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur."})
+
+@login_required
+def accepter_ami(request, user_id) :
+
+	#current_view = ['account:accepter_ami', [user_id]]
+	#real_view = False
+
+	try :
+		user = models.User.objects.get(pk=user_id)
+	except :
+		user = None
+
+	if admin.UserAdmin(models.User, django_admin.site).has_view_permission(request, user) and user in request.user.demandes_recues.all() :
+
+		request.user.amis.add(user)
+		request.user.save()
+
+		user.demandes_envoyees.remove(request.user)
+		user.save()
+
+		notification = models.Notification(
+			title="Demande d'amitié acceptée",
+			text=f"{request.user.username} a acceptée votre demande d'amitié",
+			link=None,
+			args=None,
+			created_at=dt.datetime.now()
+		)
+		notification.save()
+		helpers.send_notification(notification, [user])
+
+		last_view = request.session['last_view']
+		return redirect(last_view[0], *last_view[1])
+
+	else :
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur."})
+
+
+@login_required
+def refuser_ami(request, user_id) :
+
+	#current_view = ['account:refuser_ami', [user_id]]
+	#real_view = False
+
+	try :
+		user = models.User.objects.get(pk=user_id)
+	except :
+		user = None
+
+	if admin.UserAdmin(models.User, django_admin.site).has_view_permission(request, user) and user in request.user.demandes_recues.all() :
+
+		user.demandes_envoyees.remove(request.user)
+		user.save()
+
+		last_view = request.session['last_view']
+		return redirect(last_view[0], *last_view[1])
+
+	else :
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur."})
+
+
+

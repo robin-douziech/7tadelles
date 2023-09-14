@@ -38,23 +38,14 @@ class InvitesForm(forms.Form) :
 		queryset=None,
 		required=False
 	)
-	
-	invites_to_del = forms.ModelMultipleChoiceField(
-		label="Invité(s) à supprimer",
-		queryset=None,
-		required=False
-	)
 
 	def __init__(self, request, soiree, *args, **kwargs) :
-		super().__init__(*args, **kwargs)
-		invites_to_add_queryset = models.User.objects.all()
-		invites_to_add_queryset = invites_to_add_queryset.exclude(pk=request.user.id)
-		invites_to_del_queryset = soiree.invites.all()
+		super(InvitesForm, self).__init__(*args, **kwargs)
+		invites_to_add_queryset = request.user.amis.all()
 		for invite in soiree.invites.all() :
 			invites_to_add_queryset = invites_to_add_queryset.exclude(pk=invite.id)
 
 		self.fields['invites_to_add'].queryset = invites_to_add_queryset
-		self.fields['invites_to_del'].queryset = invites_to_del_queryset
 
 
 class SoireeForm(forms.Form) :

@@ -1,7 +1,7 @@
 from django.contrib import admin as django_admin
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
+import datetime as dt
 
 from account import models, admin
 from account.forms import soiree as forms
@@ -28,10 +28,11 @@ def create_soiree_step_1(request) :
 					type_soiree=form.cleaned_data['type_soiree'],
 					nb_joueurs=models.Soiree()._meta.get_field('nb_joueurs').default,
 					lieu=request.user.adresse,
-					date=datetime.now(),
+					date=dt.datetime.now(),
 					hote=request.user,
 					has_image=False,
-					image=None
+					image=None,
+					created_at=dt.datetime.now()
 					)
 				soiree.save()
 
@@ -245,19 +246,33 @@ def change_invites(request, soiree_id) :
 
 			if form.is_valid() :
 
+				# si soirée privée avec liste d'invités
 				if soiree.type_soiree == models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM :
-					nb_joueurs = len(soiree.invites.all())+1 - len(form.cleaned_data['invites_to_del']) + len(form.cleaned_data['invites_to_add'])
+					nb_joueurs = len(soiree.invites.all())+1 + len(form.cleaned_data['invites_to_add'])
 					if nb_joueurs > soiree.nb_joueurs :
 						errors['too_many_guests'][0] = True
 						errors['errors_count'] += 1
 
 				if errors['errors_count'] == 0 :
 
-					for invite in form.cleaned_data['invites_to_del'] :
-						soiree.invites.remove(invite)
+					notification = models.Notification(
+						#users = None,
+						title="Nouvelle invitation à une soirée jeux",
+						text=f"{request.user.username} vous invite à une soirée jeux le {helpers.week_day(soiree.date)} {soiree.date.day} {helpers.month_str(soiree.date)} {soiree.date.year}",
+						link="game_calendar:game_calendar_index",
+						args=None,
+						created_at=dt.datetime.now()
+					)
+					notification.save()
+
+					invite_to_notice = []
 					for invite in form.cleaned_data['invites_to_add'] :
 						soiree.invites.add(invite)
+						if soiree not in invite.invitations_received.all() :
+							invite_to_notice.append(invite)
 					soiree.save()
+
+					helpers.send_notification(notification, invite_to_notice)
 
 					helpers.register_view(request, current_view, real_view)
 					return redirect(f'/account/event/{soiree_id}')
@@ -270,4 +285,48 @@ def change_invites(request, soiree_id) :
 		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée."})
 
+@login_required
+def accepter_invitation(request, soiree_id) :
+	
+	#current_view = ['account:accepter_invitation', [soiree_id]]
+	#real_view = False
+
+	try :
+		soiree = models.Soiree.objects.get(pk=soiree_id)
+	except :
+		soiree = None
+
+	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_view_permission(request, soiree) :
+
+		soiree.inscriptions.add(request.user)
+		soiree.save()
+
+		last_view = request.session.get("last_view", ['welcome:index', []])
+		return redirect(last_view[0], *last_view[1])
+
+	else :
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cette soirée."})
+
+@login_required
+def refuser_invitation(request, soiree_id) :
+
+	#current_view = ['account:refuser_invitation', [soiree_id]]
+	#real_view = False
+
+	try :
+		soiree = models.Soiree.objects.get(pk=soiree_id)
+	except :
+		soiree = None
+
+	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_view_permission(request, soiree) :
+
+		soiree.notification_send_to.remove(request.user)
+		soiree.invites.remove(request.user)
+		soiree.save()
+
+		last_view = request.session.get("last_view", ['welcome:index', []])
+		return redirect(last_view[0], *last_view[1])
+
+	else :
+		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cette soirée."})
 

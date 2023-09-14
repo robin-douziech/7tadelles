@@ -22,6 +22,11 @@ urlpatterns = [
     path("delete-adress/", user.address_delete, name="delete_address"),
     path("clear-session/", user.clear_session, name="clear_session"),
     path("retour/", user.retour, name="retour"),
+    path("search-user/", user.search_user_form, name="search_user_form"),
+    path("user-detail/<str:username>/", user.user_detail, name="user_detail"),
+    path("demande-ami/<int:user_id>/", user.demande_ami, name="demande_ami"),
+    path("accepter-ami/<int:user_id>/", user.accepter_ami, name="accepter_ami"),
+    path("refuser-ami/<int:user_id>/", user.refuser_ami, name="refuser_ami"),
 
     # Lieu
     path("create-place/", lieu.create_lieu, name="create_lieu"),
@@ -34,4 +39,6 @@ urlpatterns = [
     path("my-events/", soiree.my_events, name="my_events"),
     path("event/<int:soiree_id>/", soiree.event_detail, name="event_detail"),
     path("change-guests/<int:soiree_id>/", soiree.change_invites, name="change_invites"),
+    path("accepter-invitation/<int:soiree_id>/", soiree.accepter_invitation, name="accepter_invitation"),
+    path("refuser-invitation/<int:soiree_id>/", soiree.refuser_invitation, name="refuser_invitation"),
 ]

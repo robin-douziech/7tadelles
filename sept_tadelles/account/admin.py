@@ -4,7 +4,7 @@ from . import models
 
 @admin.register(models.Soiree)
 class SoireeAdmin(admin.ModelAdmin) :
-	filter_horizontal = ('invites',)
+	filter_horizontal = ('invites', 'notification_send_to', 'inscriptions')
 
 	def has_add_permission(self, request, obj=None) :
 
@@ -13,7 +13,7 @@ class SoireeAdmin(admin.ModelAdmin) :
 	def has_view_permission(self, request, obj=None) :
 
 		if obj == None :
-			return request.user.soirees_hote.exists() or request.user.soirees_invite.exists() or request.user.is_superuser
+			return request.user.soirees_hote.exists() or request.user.invitations.exists() or request.user.is_superuser
 		else :
 			return request.user in obj.invites.all() or obj in request.user.soirees_hote.all() or request.user.is_superuser
 
@@ -34,7 +34,28 @@ class SoireeAdmin(admin.ModelAdmin) :
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin) :
-	filter_horizontal = ('user_permissions',)
+	filter_horizontal = ('user_permissions', 'amis', 'demandes_envoyees')
 
+	def has_add_permission(self, request, obj=None) :
+		return True
+
+	def has_view_permission(self, request, obj=None) :
+		return True
+
+	def has_change_permission(self, request, obj=None) :
+		if obj == None :
+			return request.user.is_superuser
+		else :
+			return request.user.is_superuser or request.user == self
+
+	def has_del_permission(self, request, obj=None) :
+		if obj == None :
+			return request.user.is_superuser
+		else :
+			return request.user.is_superuser or request.user == self
+
+@admin.register(models.Notification)
+class NotificationAdmin(admin.ModelAdmin) :
+	filter_horizontal = ('users',)
 
 admin.site.register(models.Lieu)

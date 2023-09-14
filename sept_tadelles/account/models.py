@@ -16,7 +16,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 
-
 class Lieu(models.Model) :
 
     name = models.CharField(verbose_name="Nom du lieu", max_length=50, null=True, blank=True)
@@ -48,6 +47,9 @@ class User(AbstractUser):
 
     adresse = models.ForeignKey(Lieu, on_delete=models.CASCADE, null=True, blank=True)
 
+    amis = models.ManyToManyField('self', blank=True)
+    demandes_envoyees = models.ManyToManyField('self', symmetrical=False, blank=True, related_name="demandes_recues")
+
     def __str__(self) :
         return self.username
 
@@ -73,6 +75,7 @@ class Soiree(models.Model) :
         Les soirées publiques sont des soirées sans liste d'invité et sans nombre maximum de participants.\
         Tout le monde peut s'y inscrire sans limite de place."""
     }
+
     type_soiree = models.CharField(
         verbose_name = "Type de soirée",
         max_length = 8,
@@ -86,14 +89,57 @@ class Soiree(models.Model) :
         default = 2
     )
 
-    lieu = models.ForeignKey(Lieu, verbose_name="Lieu", on_delete=models.CASCADE)
-    date = models.DateTimeField(verbose_name="Date", null=True, blank=True)
+    lieu = models.ForeignKey(
+        Lieu,
+        verbose_name="Lieu",
+        on_delete=models.CASCADE
+    )
 
-    hote = models.ForeignKey(User, on_delete=models.CASCADE, related_name='soirees_hote')
-    invites = models.ManyToManyField(User, blank=True, related_name='soirees_invite')
+    date = models.DateTimeField(
+        verbose_name="Date",
+        null=True,
+        blank=True
+    )
+
+    hote = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='soirees_hote'
+    )
+
+    invites = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='invitations'
+    )
 
     has_image = models.BooleanField(default=False)
-    image = models.ImageField(verbose_name="Image", upload_to="photos/soiree/", null=True, blank=True)
+    image = models.ImageField(
+        verbose_name="Image",
+        upload_to="photos/soiree/",
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        verbose_name="Created at",
+        null=True,
+        blank=True
+    )
+
+    notification_send_to = models.ManyToManyField(
+        User,
+        verbose_name="Notification send to",
+        blank=True,
+        related_name="invitations_received"
+    )
+
+    inscriptions = models.ManyToManyField(
+        User,
+        verbose_name="Inscriptions",
+        blank=True,
+        related_name="user_inscriptions"
+    )
 
     def __str__(self) :
         return f"Soirée de {self.hote} du {self.date.day}/{self.date.month}/{self.date.year}"
@@ -104,3 +150,45 @@ class Soiree(models.Model) :
 
 
 
+class Notification(models.Model) :
+
+    users = models.ManyToManyField(
+        User,
+        verbose_name="Utilisateur ayant reçu la notification",
+        blank=True,
+        related_name='user_notifications'
+    )
+
+    title = models.CharField(
+        verbose_name="Titre de la notification",
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    text = models.TextField(
+        verbose_name="Texte de la notification",
+        max_length=500,
+        null=True,
+        blank=True
+    )
+
+    link = models.CharField(
+        verbose_name="vue pointée par la notification",
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    args = models.CharField(
+        verbose_name="arguments de la vue pointée par la notification",
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        verbose_name="Created at",
+        null=True,
+        blank=True
+    )

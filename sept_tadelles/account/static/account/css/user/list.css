@@ -1,0 +1,158 @@
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1.5vw;
+}
+
+.foreground > div {
+	width: 100%;
+}
+
+.block {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.block > div {
+	width: 100%;
+}
+
+.block-heading {
+	text-align: center;
+	font-size: 1vw;
+}
+
+.demandes-recues__content, .recherche-utilisateur__results {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.recherche-utilisateur__searchbar {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.recherche-utilisateur__searchbar > form {
+	margin: 0 0 3vh 0;
+}
+
+
+
+
+
+
+
+.person {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	height: 200px;
+	width: 400px;
+	margin: 1vh 1vw;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.person > div {
+	width: 50%;
+}
+
+.person__profile_photo {
+	height: 100%;
+}
+
+.person__profile_photo > img {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	max-width: 70%;
+	max-height: 70%;	
+	aspect-ratio: auto;
+
+	border: 1px solid black;
+}
+
+.person__txt {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	word-wrap: break-word;
+	height: 100%;
+}
+
+.person__demande-recue__txt > div, .person__demande-recue__txt > p {
+	margin: 2vh 0;
+}
+
+.person__demande-recue__txt > div {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.person__demande-recue__txt > div > a {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	margin: 0 1vw;
+	width: 30%;
+}
+
+.person__demande-recue__txt > div > a > img {
+	max-height: 80%;
+	max-width: 80%;
+	aspect-ratio: auto;
+}
+
+.person__demande-recue__txt > div > p {
+	margin: 0 1vw;
+}
+
+
+.person__result__txt > p, .person__result__txt > a {
+	text-align: center;
+	margin: 1vh 0;
+	width: 80%;
+}
+
+.non_ami {
+	border-radius: 1vw;
+	background-color: #0080ff;
+	color: white;
+	padding: 0 0 0.5vh 0;
+}
+
+.dmd_r, .dmd_e {
+	border-radius: 1vw;
+	background-color: #9b9b9b;
+	color: white;
+	padding: 0 0 0.5vh 0;
+}
+
+.ami {
+	border-radius: 1vw;
+	background-color: #5dd300;
+	color: white;
+	padding: 0 0 0.5vh 0;
+}

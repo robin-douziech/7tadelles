@@ -1,0 +1,96 @@
+{% extends 'account/base.html' %}
+
+{% load static %}
+
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/list.css' %}">
+{% endblock %}
+
+{% block foreground %}
+
+	<div class="block demandes-recues">
+		<div class="block-heading demandes-recues__heading"><h1>Demandes reçues</h1></div>
+		<div class="block-content demandes-recues__content">
+			{% for person in user.demandes_recues.all %}
+				<div class="person person__demande-recue">
+					<div class="person__profile_photo">
+						{% if person.has_profile_photo %}
+							<img src="{{ person.profile_photo.url }}">
+						{% else %}
+							<img src="{% static 'account/default_profile_photo.jpg' %}">
+						{% endif %}
+					</div>
+					<div class="person__txt person__demande-recue__txt">
+						<p>{{ person.username }}</p>
+						<div>
+							<a href="{% url 'account:accepter_ami' person.id %}"><img src="{% static 'account/photos/user/green_check.png' %}"></a>
+							<a href="{% url 'account:refuser_ami' person.id %}"><img src="{% static 'account/photos/user/red_cross.png' %}"></a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="block recherche-utilisateur">
+		<div class="block-heading recherche-utilisateur__heading"><h1>Recherche d'utilisateur</h1></div>
+		<div class="block-content recherche-utilisateur__content">
+			<div class="recherche-utilisateur__searchbar">
+				<form action="" method="get">
+					{% csrf_token %}
+					{{ form.search }}
+					<input type="submit" class="btn btn-default btn-lg" value="chercher">
+				</form>
+			</div>
+			<div class="recherche-utilisateur__results">
+				{% for person in results %}
+					<div class="person person__result">
+						<div class="person__profile_photo">
+							{% if person.has_profile_photo %}
+								<img src="{{ person.profile_photo.url }}">
+							{% else %}
+								<img src="{% static 'account/default_profile_photo.jpg' %}">
+							{% endif %}
+						</div>
+						<div class="person__txt person__result__txt">
+							<p>{{ person.username }}</p>
+							{% if person in user.amis.all %}
+								<p class="result__info ami">ami(e)</p>
+							{% elif person in user.demandes_envoyees.all %}
+								<p class="result__info dmd_e">demande envoyée</p>
+							{% elif person in user.demandes_recues.all %}
+								<p class="result__info dmd_r">demande reçue</p>
+							{% else %}
+								<a class="result__info non_ami" href="{% url 'account:demande_ami' person.id %}">ajouter</a>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block left_sidebar %}
+	{% for action in left_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block right_sidebar %}
+	{% for action in right_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}

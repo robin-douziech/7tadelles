@@ -1,0 +1,36 @@
+{% extends 'account/base.html' %}
+
+{% load static %}
+
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/recherche_amis.css' %}">
+{% endblock %}
+
+{% block foreground %}
+	<div class="foreground__heading"><h1>Recherche d'amis</h1></div>
+	<div class="foreground__content">
+		<div class="foreground__searchbar">
+			<form action="" method="post">
+				{% csrf_token %}
+				{{ form.text }}
+				<input type="submit" class="btn btn-default btn-lg" value="chercher">
+			</form>
+		</div>
+		<div class="foreground__results">
+			{% for result in results %}
+				<div class="result">
+					<div class="result__profile_photo">
+						{% if invite.has_profile_photo %}
+							<img src="{{ invite.profile_photo.url }}">
+						{% else %}
+							<img src="{% static 'account/default_profile_photo.jpg' %}">
+						{% endif %}
+					</div>
+					<div class="result__txt">
+						<p>{{ result.username }}</p>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

@@ -14,16 +14,20 @@ def index(request) :
 	current_view = ['game_calendar:game_calendar_index', []]
 	real_view = True
 
-	if request.user.soirees_invite.exists() :
+	if request.user.invitations.exists() :
 
-		all_soirees = account_models.Soiree.objects.all()
-		soirees = []
+		all_soirees = request.user.invitations.all()
+		inscriptions = []
+		invitations = []
+
 		for soiree in all_soirees :
-			if request.user in soirees.invites.all() :
-				soirees.append(soiree)
+			if soiree in request.user.user_inscriptions.all() :
+				inscriptions.append(soiree)
+			else :
+				invitations.append(soiree)
 
 		helpers.register_view(request, current_view, real_view)
-		return render(request, 'game_calendar/index.html', {'soirees': soirees})
+		return render(request, 'game_calendar/index.html', {'inscriptions': inscriptions, 'invitations': invitations})
 
 	else :
 

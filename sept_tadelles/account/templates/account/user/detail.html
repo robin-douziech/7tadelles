@@ -1,0 +1,51 @@
+{% extends 'account/base.html' %}
+
+{% load static %}
+
+{% block extra_headers %}
+<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/detail.css' %}">
+{% endblock %}
+
+{% block left_sidebar %}
+	{% for action in left_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action.2 %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block right_sidebar %}
+	{% for action in right_actions %}
+		{% if action.2 %}
+			{% with action_args=action.2 %}
+				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+			{% endwith %}
+		{% else %}
+			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block foreground %}
+<div class="block preview">
+	<div class="block-heading preview__heading"><h2>{{ user_detail.username }}</h2></div>
+	<div class="block-content preview__content">
+		<div class="preview__fig">
+				{% if user.has_profile_photo %}
+					<img src="{{ user.profile_photo.url }}">
+				{% else %}
+					<img src="{% static 'account/default_profile_photo.jpg' %}">
+				{% endif %}
+		</div>
+		<div class="preview__txt">
+			{% for key,value in profile_info.items %}
+				<p>{{ key }} : {{ value }}</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}
