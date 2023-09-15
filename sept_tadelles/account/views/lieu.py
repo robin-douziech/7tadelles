@@ -1,16 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from account import models
 from account.forms import lieu as forms
 import re
 
-
 @login_required
 def create_lieu(request) :
 
-	current_view = ['account:create_lieu', []]
-	real_view = False
+	#current_view = ['account:create_lieu', []]
+	#real_view = False
 
 	form = forms.LieuCreationForm()
 	errors = {
@@ -45,9 +44,8 @@ def create_lieu(request) :
 				request.user.lieus.add(lieu)
 				request.user.save()
 
-				helpers.register_view(request, current_view, real_view)
-				return render(request, 'account/lieu/creation_success.html', {})
+				last_view = request.session.get('last_view', ['welcome:index', []])
+				return redirect(last_view[0], *last_view[1])
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/lieu/creation_form.html', {'form': form, 'errors': errors})

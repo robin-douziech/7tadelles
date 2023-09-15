@@ -1,6 +1,6 @@
 import random, os
 from account import models
-from datetime import datetime
+import datetime as dt
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 

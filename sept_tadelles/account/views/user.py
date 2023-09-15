@@ -10,6 +10,7 @@ from django.conf import settings
 from django.urls import reverse
 
 import datetime as dt
+import re
 
 from account import models, admin
 from account.forms import user as forms
@@ -509,6 +510,10 @@ def address_form(request) :
 	real_view = False
 
 	form = forms.AddressForm()
+	errors = {
+		'errors_count': 0,
+		'code_postal_error': [False, "Le code postal doit être composé de 5 chiffres"]
+	}
 
 	if request.method == "POST" :
 
@@ -516,33 +521,40 @@ def address_form(request) :
 
 		if form.is_valid() :
 
-			# on supprime l'ancienne adresse si elle existe
-			if request.user.adresse is not None :
-				request.user.adresse.delete()
-				request.user.adresse = None
+			if not(re.match(r"[0-9]{5}", form.cleaned_data['code_postal'])) :
+				errors['code_postal_error'][0] = True
+				errors['errors_count'] += 1
+
+			if errors['errors_count'] == 0 :
+
+				# on supprime l'ancienne adresse si elle existe
+				if request.user.adresse is not None :
+					request.user.adresse.delete()
+					request.user.adresse = None
+					request.user.save()
+
+				# on crée la nouvelle adresse
+				adresse = models.Lieu(
+					name=f"Chez {request.user.username}",
+					adresse=form.cleaned_data['adresse'],
+					complement=form.cleaned_data['complement'],
+					code_postal=form.cleaned_data['code_postal'],
+					ville=form.cleaned_data['ville'],
+					pays=form.cleaned_data['pays'],
+					image=form.cleaned_data['image']
+				)
+				adresse.save()
+
+				request.user.adresse = adresse
+				request.user.lieus.add(adresse)
 				request.user.save()
 
-			# on crée la nouvelle adresse
-			adresse = models.Lieu(
-				name=f"Chez {request.user.username}",
-				adresse=form.cleaned_data['adresse'],
-				complement=form.cleaned_data['complement'],
-				code_postal=form.cleaned_data['code_postal'],
-				ville=form.cleaned_data['ville'],
-				pays=form.cleaned_data['pays'],
-				image=form.cleaned_data['image']
-			)
-			adresse.save()
+				helpers.register_view(request, current_view, real_view)
+				return render(request, 'account/adresse/success.html', {})
 
-			request.user.adresse = adresse
-			request.user.lieus.add(adresse)
-			request.user.save()
-
-			helpers.register_view(request, current_view, real_view)
-			return render(request, 'account/adresse/success.html', {})
-
+	errors.pop('errors_count')
 	helpers.register_view(request, current_view, real_view)
-	return render(request, 'account/adresse/form.html', {'form':form})
+	return render(request, 'account/adresse/form.html', {'form':form, 'errors': errors})
 
 @login_required
 def address_delete(request) :
