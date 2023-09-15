@@ -96,7 +96,7 @@ def detail(request) :
 
 	right_actions = [('Retour', 'welcome:index', ())]
 
-	notifications = request.user.user_notifications.all()
+	notifications = request.user.user_notifications.order_by("-created_at")
 	no_notifications = False
 	if not(notifications.exists()) :
 		no_notifications = True
