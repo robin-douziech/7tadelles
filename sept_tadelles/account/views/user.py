@@ -38,6 +38,7 @@ def login_view(request) :
 
 			if user is not None and user.verified :
 				login(request, user)
+				helpers.clean_user(request, user=user)
 				helpers.register_view(request, current_view, real_view)
 				return redirect('/')
 			elif user is not None :
@@ -46,7 +47,6 @@ def login_view(request) :
 				errors['auth_error'][0] = True
 
 	errors.pop('errors_count')
-	helpers.clean_user(request, user=user)
 	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/registration/login.html', {'form': form, 'errors': errors})
 
