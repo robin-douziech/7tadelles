@@ -31,6 +31,9 @@ def create_lieu(request) :
 
 			lieu.save()
 
+			request.user.lieus.add(lieu)
+			request.user.save()
+
 			helpers.register_view(request, current_view, real_view)
 			return render(request, 'account/lieu/creation_success.html', {})
 

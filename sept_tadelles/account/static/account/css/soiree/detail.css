@@ -53,6 +53,11 @@
 
 
 
+.errors {
+	text-align: center;
+	color: red;
+}
+
 
 .invites__content {
 	display: flex;

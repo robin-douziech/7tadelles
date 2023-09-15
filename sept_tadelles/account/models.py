@@ -47,6 +47,13 @@ class User(AbstractUser):
 
     adresse = models.ForeignKey(Lieu, on_delete=models.CASCADE, null=True, blank=True)
 
+    lieus = models.ManyToManyField(
+        Lieu,
+        verbose_name="Lieux",
+        blank=True,
+        related_name="owners"
+    )
+
     amis = models.ManyToManyField('self', blank=True)
     demandes_envoyees = models.ManyToManyField('self', symmetrical=False, blank=True, related_name="demandes_recues")
 

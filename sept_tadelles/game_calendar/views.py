@@ -14,6 +14,8 @@ def index(request) :
 	current_view = ['game_calendar:game_calendar_index', []]
 	real_view = True
 
+	helpers.clean_user(request)
+
 	if request.user.invitations.exists() :
 
 		all_soirees = request.user.invitations.all()

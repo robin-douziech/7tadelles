@@ -1,6 +1,8 @@
 from django.contrib import admin as django_admin
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+
 import datetime as dt
 
 from account import models, admin
@@ -88,7 +90,7 @@ def create_soiree_step_3(request, soiree_id) :
 	current_view = ['account:create_soiree_step_3', [soiree_id]]
 	real_view = False
 
-	form = forms.SoireeCreationForm_step_3(initial={'lieu':request.user.adresse})
+	form = forms.SoireeCreationForm_step_3(request, initial={'lieu':request.user.adresse})
 
 	try :
 		soiree = models.Soiree.objects.get(pk=soiree_id)
@@ -99,7 +101,7 @@ def create_soiree_step_3(request, soiree_id) :
 
 		if request.method == "POST" :
 
-			form = forms.SoireeCreationForm_step_3(request.POST)
+			form = forms.SoireeCreationForm_step_3(request, request.POST)
 
 			if form.is_valid() :
 
@@ -123,8 +125,6 @@ def create_soiree_step_4(request, soiree_id) :
 	current_view = ['account:create_soiree_step_4', [soiree_id]]
 	real_view = False
 
-	form = forms.SoireeCreationForm_step_4()
-
 	try :
 		soiree = models.Soiree.objects.get(pk=soiree_id)
 	except :
@@ -132,20 +132,33 @@ def create_soiree_step_4(request, soiree_id) :
 
 	if admin.SoireeAdmin(models.Soiree, django_admin.site).has_change_permission(request, soiree) :
 
+		form = forms.SoireeCreationForm_step_4()
+		errors = {
+			'errors_count': 0,
+			'passed_date': [False, "Vous ne pouvez pas renseigner une date passée"]
+		}
+
 		if request.method == "POST" :
 
 			form = forms.SoireeCreationForm_step_4(request.POST)
 
 			if form.is_valid() :
 
-				soiree.date = form.cleaned_data['date']
-				soiree.save()
+				if form.cleaned_data['date'] < timezone.now() :
+					errors['passed_date'][0] = True
+					errors['errors_count'] += 1
 
-				helpers.register_view(request, current_view, real_view)
-				return render(request, 'account/soiree/creation_success.html', {})
+				if errors['errors_count'] == 0 :
 
+					soiree.date = form.cleaned_data['date']
+					soiree.save()
+
+					helpers.register_view(request, current_view, real_view)
+					return render(request, 'account/soiree/creation_success.html', {})
+
+		errors.pop('errors_count')
 		helpers.register_view(request, current_view, real_view)
-		return render(request, 'account/soiree/creation_form_step_4.html', {'form': form})
+		return render(request, 'account/soiree/creation_form_step_4.html', {'form': form, 'errors': errors})
 
 	else :
 
@@ -157,6 +170,7 @@ def create_soiree_step_4(request, soiree_id) :
 def my_events(request) :
 	current_view = ['account:my_events', []]
 	real_view = True
+	helpers.clean_user(request)
 	if request.user.soirees_hote.exists() :
 		right_actions = [('Retour', 'account:detail', ())]
 		all_soirees = models.Soiree.objects.all()
@@ -190,6 +204,7 @@ def event_detail(request, soiree_id) :
 		errors = {
 			'errors_count': 0,
 			'not_enough_places': [False, "Il ne peut pas y avoir moins de places que d'invités pour une soirée privée avec liste d'invités. Retirez des invités avant de réduire le nombre de places."],
+			'passed_date': [False, "Vous ne pouvez pas renseigner une date passée"],
 		}
 
 		if request.method == "POST" :
@@ -200,6 +215,10 @@ def event_detail(request, soiree_id) :
 
 				if soiree.type_soiree == models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM and form.cleaned_data['nb_joueurs'] < len(soiree.invites.all())+1 :
 					errors['not_enough_places'][0] = True
+					errors['errors_count'] += 1
+
+				if form.cleaned_data['date'] < timezone.now() :
+					errors['passed_date'][0] = True
 					errors['errors_count'] += 1
 
 				if errors['errors_count'] == 0 :

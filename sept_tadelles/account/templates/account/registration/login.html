@@ -9,15 +9,11 @@
 {% endblock %}
 
 {% block errors %}
-
-  {% if unverified_user %}
-    <p>Veuillez activer votre compte avant de vous connecter.</p>
-  {% else %}
-    {% if auth_error %}
-      <p>Ce nom d'utilisateur et ce mot de passe ne correspondent pas, veuillez réessayer.</p>
+  {% for error_name, value in errors.items %}
+    {% if value.0 %}
+      <p>{{ value.1 }}</p>
     {% endif %}
-  {% endif %}
-
+  {% endfor %}
 {% endblock %}
 
 {% block form %}

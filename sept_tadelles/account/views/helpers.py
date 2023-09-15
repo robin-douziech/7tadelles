@@ -73,3 +73,13 @@ def week_day(date) :
 def month_str(date) :
 	month_names = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 	return month_names[date.month-1]
+
+def clean_user(request) :
+
+	notifications_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
+	soirees_to_del = request.user.soirees_hote.filter(date__lte=dt.datetime.now()).union(request.user.invitations.filter(date__lte=dt.datetime.now()))
+
+	for notification in notifications_to_del :
+		notification.delete()
+	for soiree in soirees_to_del :
+		soiree.delete()

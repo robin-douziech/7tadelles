@@ -21,8 +21,11 @@ def login_view(request) :
 	real_view = False
 
 	form = forms.LoginForm()
-	auth_error = False
-	unverified_user = False
+	errors = {
+		'errors_count': 0,
+		'auth_error': [False, "Ce nom d'utilisateur et ce mot de passe ne correspondent pas, veuillez réessayer."],
+		'unverified_user': [False, "Veuillez activer votre compte avant de vous connecter."],
+	}
 
 	if request.method == "POST" :
 
@@ -37,13 +40,14 @@ def login_view(request) :
 				helpers.register_view(request, current_view, real_view)
 				return redirect('/')
 			elif user is not None :
-				unverified_user = True
+				errors['unverified_user'][0] = True
 			else :
-				auth_error = True
+				errors['auth_error'][0] = True
 
+	errors.pop('errors_count')
+	helpers.clean_user(request)
 	helpers.register_view(request, current_view, real_view)
-	return render(request, 'account/registration/login.html', {'form': form, 'auth_error': auth_error, 'unverified_user': unverified_user})
-
+	return render(request, 'account/registration/login.html', {'form': form, 'errors': errors})
 
 def logout_view(request) :
 	current_view = ['account:logout', []]
@@ -52,14 +56,13 @@ def logout_view(request) :
 	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/registration/logout.html')
 
-
-
-
 @login_required
 def detail(request) :
 
 	current_view = ['account:detail', []]
 	real_view = True
+
+	helpers.clean_user(request)
 
 	profile_info = {
 		'username': request.user.username,
@@ -92,10 +95,7 @@ def detail(request) :
 
 	right_actions = [('Retour', 'welcome:index', ())]
 
-	notifications = request.user.user_notifications.filter(created_at__gt=dt.datetime.now()-dt.timedelta(days=7)).order_by("-created_at")
-	notification_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
-	for notification in notification_to_del:
-		notification.delete()
+	notifications = request.user.user_notifications.all()
 	no_notifications = False
 	if not(notifications.exists()) :
 		no_notifications = True
@@ -112,11 +112,17 @@ def detail(request) :
 		'no_notifications' : no_notifications
 	})
 
+
+def clean_database(request) :
+	pass
+
 @login_required
 def update_profile_photo(request) :
 
 	current_view = ['account:update_profile_photo', []]
 	real_view = False
+
+	helpers.clean_user(request)
 
 	form = forms.UpdateProfilePhotoForm()
 	errors = {
@@ -527,7 +533,9 @@ def address_form(request) :
 				image=form.cleaned_data['image']
 			)
 			adresse.save()
+
 			request.user.adresse = adresse
+			request.user.lieus.add(adresse)
 			request.user.save()
 
 			helpers.register_view(request, current_view, real_view)
@@ -540,6 +548,7 @@ def address_form(request) :
 def address_delete(request) :
 	current_view = ['account:delete_address', []]
 	real_view = False
+	request.user.lieus.remove(request.user.adresse)
 	request.user.adresse.delete()
 	request.user.adresse = None
 	request.user.save()

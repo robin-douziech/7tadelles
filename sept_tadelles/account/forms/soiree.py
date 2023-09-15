@@ -26,6 +26,10 @@ class SoireeCreationForm_step_3(forms.Form) :
 
 	lieu = forms.ModelChoiceField(label="Lieu", queryset=models.Lieu.objects.all())
 
+	def __init__(self, request, *args, **kwargs) :
+		super(SoireeCreationForm_step_3, self).__init__(*args, **kwargs)
+		self.fields['lieu'].queryset = request.user.lieus.all()
+
 class SoireeCreationForm_step_4(forms.Form) :
 
 	date = forms.DateTimeField(label="Date", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -78,3 +82,5 @@ class SoireeForm(forms.Form) :
 		self.fields['nb_joueurs'].initial = soiree.nb_joueurs
 		self.fields['lieu'].initial = soiree.lieu
 		self.fields['date'].initial = soiree.date
+
+		self.fields['lieu'].queryset = request.user.lieus.all()
