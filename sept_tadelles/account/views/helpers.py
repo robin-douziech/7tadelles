@@ -74,10 +74,14 @@ def month_str(date) :
 	month_names = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 	return month_names[date.month-1]
 
-def clean_user(request) :
+def clean_user(request, user=None) :
 
-	notifications_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
-	soirees_to_del = request.user.soirees_hote.filter(date__lte=dt.datetime.now()).union(request.user.invitations.filter(date__lte=dt.datetime.now()))
+	if user is not None :
+		notifications_to_del = user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
+		soirees_to_del = user.soirees_hote.filter(date__lte=dt.datetime.now()).union(user.invitations.filter(date__lte=dt.datetime.now()))
+	else :
+		notifications_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
+		soirees_to_del = request.user.soirees_hote.filter(date__lte=dt.datetime.now()).union(request.user.invitations.filter(date__lte=dt.datetime.now()))
 
 	for notification in notifications_to_del :
 		notification.delete()
