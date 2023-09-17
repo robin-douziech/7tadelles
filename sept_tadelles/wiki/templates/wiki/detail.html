@@ -19,6 +19,9 @@
 {% block foreground %}
 <style type="text/css">
 	{% if game.has_bg_image %}
+		body {
+			background: #333 ;
+		}
 		.background::before {
 			content: "";
 
@@ -32,11 +35,14 @@
 
 			transform: translateZ(-1px) scale(2);
 
-			box-shadow: 0 -400px 500px -100px #2E3B41 inset;
+			box-shadow: 0 -400px 500px -100px #333 inset;
 
 			z-index: 2;
 		}
 	{% else %}
+		body {
+			background: #fff ;
+		}
 		.background::before {
 			content: "";
 			width: 100vw;
