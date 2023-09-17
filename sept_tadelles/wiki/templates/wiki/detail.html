@@ -127,7 +127,7 @@
 			<div class="block-heading regles__heading"><h2>Télécharger les règles</h2></div>
 			<div class="block-content regles__content">
 				{% if game.has_rules_pdf %}
-					<a class="btn btn--round btn--big" href="{% static 'wiki/games' %}/{{ game.short_name }}/{{ txt|split:';'|index:1 }}" target="_blank" download="{{ game.short_name }}-rules.pdf"><div>Règles</div></a>
+					<a class="btn btn--round btn--big" href="{{ game.rules_pdf.url }}" target="_blank" download="{{ game.short_name }}-rules.pdf"><div>Règles</div></a>
 				{% endif %}
 			</div>
 		</div>
