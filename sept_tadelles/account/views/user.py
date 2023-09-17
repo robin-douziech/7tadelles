@@ -12,6 +12,9 @@ from django.urls import reverse
 import datetime as dt
 import re
 
+from wiki import forms as wiki_forms
+from wiki import models as wiki_models
+
 from account import models, admin
 from account.forms import user as forms
 from . import helpers
@@ -93,6 +96,9 @@ def detail(request) :
 	if request.user.invitations.exists() :
 		left_actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
 	left_actions += [('Rechercher utilisateur', 'account:search_user_form', ())]
+
+	if request.user.is_staff :
+		left_actions += [('ajouter jeu', 'account:add_game', ())]
 
 	right_actions = [('Retour', 'welcome:index', ())]
 
@@ -729,4 +735,106 @@ def refuser_ami(request, user_id) :
 		return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur."})
 
 
+
+@login_required
+def add_game(request) :
+	
+	current_view = ['account:add_game', []]
+	real_view = False
+
+	form = wiki_forms.GameForm()
+	errors = {
+		'errors_count': 0,
+		'name_already_exists': [False, "Un jeu possédant le même nom est déjà présent dans la base de données."],
+		'invalid_bg_color': [False, "La couleur de fond, si elle est renseignée, doit l'être au format hexadécimal (#XXXXXX)"],
+		'invalid_player_min_max': [False, "Le nombre minimal de joueurs ne peut pas être supérieur au nombre maximal de joueurs"],
+		'invalid_duration': [False, "La durée du jeu doit respecter le bon format."]
+	}
+
+	if request.method == "POST" :
+
+		form = wiki_forms.GameForm(request.POST, request.FILES)
+
+		if form.is_valid() :
+
+			# name
+			for game in wiki_models.Game.objects.all() :
+				if game.name == form.cleaned_data['name'] :
+					errors['name_already_exists'][0] = True
+					errors['errors_count'] += 1
+
+			if form.cleaned_data['image'] is not None :
+				has_image = True
+			else :
+				has_image = False
+
+			if form.cleaned_data['bg_image'] is not None :
+				has_bg_image = True
+			else :
+				has_bg_image = False
+
+			# bg_color
+			if form.cleaned_data['bg_color'] != "" :
+				bg_color = form.cleaned_data['bg_color']
+				if not(re.match(r"#[0-9a-fA-F]{6}", bg_color)) :
+					errors['invalid_bg_color'][0] = True
+					errors['errors_count'] += 1
+			else :
+				bg_color = "#000000"
+
+			# player_min_max
+			if form.cleaned_data['players_min'] > form.cleaned_data['players_max'] :
+				errors['invalid_player_min_max'][0] = True
+				errors['errors_count'] += 1
+
+			# duration
+			regs = [
+				r"< [1-9]\d{0,1}min",
+				r"< [1-9]\d{0,1}h\d{2}|[1-9]\d{0,1}h",
+				r"[1-9]\d{0,1}min",
+				r"[1-9]\d{0,1}h\d{2}|[1-9]\d{0,1}h",
+				r"[1-9]\d{0,1}min - [1-9]\d{0,1}min",
+				r"[1-9]\d{0,1}h\d{2}|[1-9]\d{0,1}h - [1-9]\d{0,1}h\d{2}|[1-9]\d{0,1}h",
+			]
+			ok = False
+			index = 0
+			while not(ok) and index < len(regs) :
+				if re.match(regs[index], form.cleaned_data['duration']) :
+					ok = True
+				index += 1
+			if ok == False :
+				errors['invalid_duration'][0] = True
+				errors['errors_count'] += 1
+
+			if form.cleaned_data['rules_pdf'] is not None :
+				has_rules_pdf = True
+			else :
+				has_rules_pdf = False
+
+			if errors['errors_count'] == 0 :
+
+				game = wiki_models.Game(
+					name = form.cleaned_data['name'],
+					has_image = has_image,
+					image = form.cleaned_data['image'],
+					has_bg_image = has_bg_image,
+					bg_image = form.cleaned_data['bg_image'],
+					bg_color = bg_color,
+					players_min = form.cleaned_data['players_min'],
+					players_max = form.cleaned_data['players_max'],
+					duration = form.cleaned_data['duration'],
+					age_min = form.cleaned_data['age_min'],
+					description = form.cleaned_data['description'],
+					video_url = form.cleaned_data['video_url'],
+					has_rules_pdf = has_rules_pdf,
+					rules_pdf = form.cleaned_data['rules_pdf'],
+					category = form.cleaned_data['category']
+				)
+				game.save()
+
+				helpers.register_view(request, current_view, real_view)
+				return redirect('account:detail')
+
+	helpers.register_view(request, current_view, real_view)
+	return render(request, 'account/game/form.html', {'form': form, 'errors': errors})
 

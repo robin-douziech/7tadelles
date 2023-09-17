@@ -29,8 +29,7 @@ def index(request):
 
     else :
 
-        games = models.Game.objects.filter(prochainement=False)
-        prochainement = models.Game.objects.filter(prochainement=True)
+        games = models.Game.objects.all()
 
     helpers.register_view(request, current_view, real_view)
     return render(request, "wiki/index.html", {

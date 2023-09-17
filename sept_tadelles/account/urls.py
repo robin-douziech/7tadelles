@@ -27,6 +27,7 @@ urlpatterns = [
     path("demande-ami/<int:user_id>/", user.demande_ami, name="demande_ami"),
     path("accepter-ami/<int:user_id>/", user.accepter_ami, name="accepter_ami"),
     path("refuser-ami/<int:user_id>/", user.refuser_ami, name="refuser_ami"),
+    path("add-game/", user.add_game, name="add_game"),
 
     # Lieu
     path("create-place/", lieu.create_lieu, name="create_lieu"),

@@ -5,72 +5,44 @@
 
 
 {% block extra_headers %}
-<link rel="stylesheet" type="text/css" href="{% static 'wiki/index.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'wiki/css/index.css' %}">
 {% endblock %}
 
-{% block middlebar %}
-<div class="games">
-	{% for game in games %}
-		<div class="game-prev">
-			<a href="{% url 'wiki:detail' game.id %}">
-				<div class="game-prev__fig">
-					<img class="game-prev__img" src="{% static 'wiki/games/' %}/{{game.short_name}}/{{game.short_name}}.png">
-				</div>
-			</a>
-			<div class="game-prev__heading">{{ game.name }}</div>
-		</div>
-	{% endfor %}
-</div>
-{% if prochainement|length > 0 %}
-	<div class="prochainement__title"><h1>Idées de jeux à tester...</h1></div>
-	<div class="prochainement">
-		{% for game in prochainement %}
-			<div class="game-prev">
-				<a href="{% url 'wiki:detail' game.id %}">
-					<div class="game-prev__fig">
-						<img class="game-prev__img" src="{% static 'wiki/games/' %}/{{game.short_name}}/{{game.short_name}}.png">
+{% block btn_retour %}
+	<a href="{% url 'welcome:index' %}" class="btn btn-retour">
+		<img src="{% static 'wiki/photos/nuage.png' %}">
+		<p>retour</p>
+	</a>
+{% endblock %}
+
+
+
+
+
+
+{% block background %}
+	<div class="background__txt">WIKI</div>
+{% endblock %}
+
+
+{% block foreground %}
+	<div class="foreground__heading"><h1>Jeux de société</h1></div>
+	<div class="foreground__content">
+		{% for game in games %}
+			<a class="game" href="{% url 'wiki:detail' game.id %}">
+				<div class="game__fig">
+					<div class="game__imgwrapper">
+						{% if game.has_image %}
+							<img src="{{ game.image.url }}">
+						{% else %}
+							<img src="{% static 'wiki/photos/default_game_image.png' %}">
+						{% endif %}
 					</div>
-				</a>
-				<div class="game-prev__heading">{{ game.name }}</div>
-			</div>
+				</div>
+				<div class="game__txt"><p>{{game.name}}</p></div>
+			</a>
 		{% endfor %}
 	</div>
-{% endif %}
+	
 {% endblock %}
 
-
-
-{% block left_sidebar %}
-<form action="" method="post">
-	{% csrf_token %}
-	<fieldset name="category">
-		<legend><h2>Catégorie</h2></legend>	
-	    	{% for category in categories %}
-	    		<input type="checkbox" name="{{category.name}}" id="cat{{forloop.counter}}">
-	    		<label for="cat{{forloop.counter}}">{{category.name}}</label><br/>
-	    	{% endfor %}
-	</fieldset>
-	<br/><input type="submit" value="Submit">
-</form>
-	{% for action in left_actions %}
-		{% if action.2 %}
-			{% with action_args=action.2 %}
-				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
-			{% endwith %}
-		{% else %}
-			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
-		{% endif %}
-	{% endfor %}
-{% endblock %}
-
-{% block right_sidebar %}
-	{% for action in right_actions %}
-		{% if action.2 %}
-			{% with action_args=action.2 %}
-				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
-			{% endwith %}
-		{% else %}
-			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
-		{% endif %}
-	{% endfor %}
-{% endblock %}

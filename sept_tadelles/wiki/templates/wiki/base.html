@@ -7,29 +7,40 @@
 		<title>7tadelles</title>
 		<link rel="icon" href="{% static 'welcome/7tadelles_icon.png' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-		<link rel="stylesheet" type="text/css" href="{% static 'wiki/header.css' %}">
-		<link rel="stylesheet" type="text/css" href="{% static 'wiki/style.css' %}">
+		<!--link rel="stylesheet" type="text/css" href="{% static 'wiki/header.css' %}"-->
+		<link rel="stylesheet" type="text/css" href="{% static 'wiki/css/base.css' %}">
 		{% block extra_headers %}{% endblock %}
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
 	</head>
 	<body>
 
-		<header>
+		<!--header>
 			<div class="header__logo">
 				<img src="{% static 'wiki/7tadelles_logo.png' %}">				
 			</div>
-		</header>
+		</header-->
 
-		<div class="corps">
+		<div class="background">
+			{% block background %}{% endblock %}
+		</div>
+
+		{% block btn_retour %}{% endblock %}
+
+		<div class="foreground">
+			{% block foreground %}{% endblock %}
+		</div>
+
+
+		<!--div class="corps">
 
 			<div class="sidebar left-sidebar"> {% block left_sidebar %}{% endblock %} </div>
 			<div class="middlebar">            {% block middlebar %}{% endblock %}    </div>
 			<div class="sidebar right-sidebar">{% block right_sidebar %}{% endblock %}</div>
 
-		</div>
+		</div-->
 
-		<footer></footer>
+		<!--footer></footer-->
 
 	</body>
 </html>

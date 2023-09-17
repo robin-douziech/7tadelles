@@ -1,0 +1,43 @@
+html {
+	height: 100vh;
+	overflow: hidden;
+}
+
+body {
+	height: 100vh;
+	width: 100vw;
+	margin: 0;
+	background: #2E3B41;
+
+	perspective: 1px;
+	transform-style: preserve-3d;
+
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.background, .foreground {
+	width: 100%;
+	min-height: 100vh;
+	position: relative;
+
+	transform-style: preserve-3d;
+}
+
+
+
+.foreground {
+	position: absolute;
+	left: 50%;
+	top: 50vh;
+	transform: translate(-50%);
+
+	border-radius: 3vw;
+	box-shadow: 0 0 8px #9b9b9b;
+
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1.5vw;
+
+	width: 80%;
+	background: #fff;
+}

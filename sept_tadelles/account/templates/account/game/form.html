@@ -1,0 +1,66 @@
+{% extends 'account/base_form.html' %}
+
+{% block title %}
+<h1>Ajout d'un jeu au wiki</h1>
+{% endblock %}
+
+{% block pre-text %}
+<p>Veuillez renseigner les informations suivantes :</p>
+<p>(seuls les champs avec un astérisque sont obligatoires)</p>
+{% endblock %}
+
+{% block errors %}
+	{% for error_name, value in errors.items %}
+		{% if value.0 %}
+			<p>{{ value.1 }}</p>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
+
+{% block form %}
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<p>*Nom du jeu : {{ form.name }}</p>
+	<p>
+		Image de la boîte du jeu au format png de préférence (cette image sera celle affichée au dessus du nom du jeu dans la liste des jeux et en haut à gauche de la fiche du jeu) :
+	</p>
+	<p>{{ form.image }}</p>
+	<p>
+		Image de fond pour la fiche du jeu (par exemple, face de la boîte du jeu). Attention : cette image sera redimensionnée pour avoir un format carré.
+	</p>
+	<p>{{ form.bg_image }}</p>
+	<p>
+		Couleur de fond pour la fiche du jeu (par exemple, couleur dominante du bas de l'image de fond). Renseigner cette couleur au format hexadécimal (#XXXXXX). Si aucune couleur n'est renseignée, le fond de la fiche de jeu sera noir :
+	</p>
+	<p>{{ form.bg_color }}</p>
+	<p>*Nombre minimal de joueurs : {{ form.players_min }}</p>
+	<p>*Nombre maximal de joueurs : {{ form.players_max }}</p>
+	<p>
+		*Durée moyenne d'une partie. Elle doit respecter l'un des formats suivants :
+		<ul>
+			<li>< [X]min</li>
+			<li>< [X]h[Y]</li>
+			<li>[X]min</li>
+			<li>[X]h[Y]</li>
+			<li>[X]min - [Y]min</li>
+			<li>[W]h[X] - [Y]h[Z]</li>
+		</ul>
+	</p>
+	<p>{{ form.duration }}</p>
+	<p>*Age minimal recommandé : {{ form.age_min }}</p>
+	<p>
+		*Description du jeu (copier/coller d'Internet recommandé) : 
+	</p>
+	<p>{{ form.description }}</p>
+	<p>
+		ID d'une vidéo youtube de présentation des règles (par exemple ludo chrono). Laissez "none" pour ne pas renseigner de vidéo.
+	</p>
+	<p>{{ form.video_url }}</p>
+	<p>
+		Règles complètes au format PDF :
+	</p>
+	<p>{{ form.rules_pdf }}</p>
+	<p>*Catégorie du jeu : {{ form.category }}</p>
+	<input type="submit" class="btn btn-default btn-lg" value="Ajouter le jeu">
+</form>
+{% endblock %}

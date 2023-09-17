@@ -1,0 +1,156 @@
+.background::before {
+	content: "";
+
+	position: absolute;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	top: 49vh;
+
+	background: url("../7tadelles_sans_texte.png") top center;
+	background-size: cover;
+
+	transform: translateZ(-1px) scale(2);
+
+	box-shadow: 0 -400px 500px -100px #2E3B41 inset;
+}
+
+.background__txt {
+	top: 30%;
+	left: 50%;
+	position: absolute;
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 10vw;
+	color: white;
+	text-shadow: 0 0 10px #9b9b9b;
+	transform: scale(1,1.1) translate(-50%, 10%);
+}
+
+
+
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.foreground > div {
+	width: 100%;
+}
+
+.foreground__heading {
+	text-align: center;
+	font-size: 1vw;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.game {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	text-decoration: none;
+	color: black;
+
+	width: 300px;
+	height: 350px;
+
+	margin: 20px 20px;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.game > div {
+	width: 100%;
+}
+
+.game__fig {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.game__imgwrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	max-width: 90%;	
+	max-height: 90%;
+	aspect-ratio: 1 / 1;
+}
+
+.game__imgwrapper > img {
+	max-height: 100%;
+	max-width: 100%;
+	aspect-ratio: auto;
+}
+
+.game__txt {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin: 0;
+	flex: 1;
+}
+
+.game__txt > p {
+	font-size: 30px;
+	margin: 0;
+}
+
+
+
+
+
+
+.btn-retour {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	position: sticky;
+	top: 88vh;
+	left: 91vw;
+
+	text-decoration: none;
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1vw;
+	color: black;
+
+	width: 10vw;
+	height: 10vh;
+
+	z-index: 2;
+}
+
+.btn-retour > img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	max-width: 100%;
+	max-height: 100%;
+	aspect-ratio: auto;
+}
+
+.btn-retour > p {
+	position: relative;
+	left: 3px;
+	z-index: 2;
+}
