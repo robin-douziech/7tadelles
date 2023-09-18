@@ -97,8 +97,7 @@ def detail(request) :
 		left_actions += [('Mes invitations', 'game_calendar:game_calendar_index', ())]
 	left_actions += [('Rechercher utilisateur', 'account:search_user_form', ())]
 
-	if request.user.is_staff :
-		left_actions += [('ajouter jeu', 'account:add_game', ())]
+	left_actions += [('ajouter jeu', 'account:add_game', ())]
 
 	right_actions = [('Retour', 'welcome:index', ())]
 
