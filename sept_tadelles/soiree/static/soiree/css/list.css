@@ -1,0 +1,176 @@
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1.5vw;
+}
+
+.foreground > div {
+	margin: 0 0.5vw;
+}
+
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+}
+
+.soirees__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.soiree {
+	text-decoration: none;
+	color: black;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	height: 250px;
+	width: 500px;
+
+	margin: 20px 20px;
+	padding: 20px 20px;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.soiree__heading {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.soiree__heading > h2 {
+	font-size: 30px;
+	margin: 0;
+}
+
+.soiree__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	flex: 1;
+}
+
+.soiree__content > div {
+	width: 50%;
+}
+
+.soiree__fig {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	height: 100%;
+}
+
+.soiree__imgwrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.soiree__imgwrapper > img {
+	max-height: 100%;
+	max-width: 100%;
+	aspect-ratio: auto;
+}
+
+.soiree__txt {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	height: 100%;
+}
+
+.soiree__txt > p, .soiree__txt > div {
+	text-align: center;
+	margin: 1vh 0;
+	width: 80%;
+}
+
+.soiree__txt > div {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.soiree__txt > div > a {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 0 1vw;
+	width: 50%;
+}
+
+.soiree__txt > div > a > img {
+	max-height: 100%;
+	max-width: 100%;
+	aspect-ratio: auto;
+}
+
+
+
+.btn-retour {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	position: sticky;
+	top: 88vh;
+	left: 91vw;
+
+	text-decoration: none;
+	font-family: 'NationalPark-ExtraBold';
+	font-size: 1vw;
+	color: black;
+
+	width: 10vw;
+	height: 10vh;
+
+	z-index: 1;
+}
+
+.btn-retour > img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	max-width: 100%;
+	max-height: 100%;
+	aspect-ratio: auto;
+}
+
+.btn-retour > p {
+	position: relative;
+	left: 3px;
+	z-index: 2;
+}

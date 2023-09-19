@@ -1,0 +1,108 @@
+{% extends 'soiree/base.html' %}
+
+
+{% load static account_custom_filters %}
+
+
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'soiree/css/list.css' %}">
+{% endblock %}
+
+{% block btn_retour %}
+	<a href="{% url 'welcome:index' %}{{request.session.get_args.0}}" class="btn btn-retour">
+		<img src="{% static 'wiki/photos/nuage.png' %}">
+		<p>retour</p>
+	</a>
+{% endblock %}
+
+{% block foreground %}
+	<div class="foreground__heading"><h1>Les soirées ...</h1></div>
+	<div class="foreground__content">
+
+		{% if mes_soirees %}
+			<div class="soirees__heading"><h2>... dont je suis l'hôte</h2></div>
+			<div class="soirees__content">
+				{% for soiree in mes_soirees %}
+					<a class="soiree" href="{% url 'soiree:detail' %}?id={{soiree.id}}">
+						<div class="soiree__heading">
+							<h2>{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</h2>
+						</div>
+						<div class="soiree__content">
+							<div class="soiree__fig">
+								<div class="soiree__imgwrapper">
+									{% if soiree.has_image %}
+										<img src="{{ soiree.image.url }}">
+									{% else %}
+										<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="soiree__txt">
+								<p class="lieu">{{ soiree.lieu.name }}</p>
+							</div>						
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if inscriptions %}
+			<div class="soirees__heading"><h2>... auxquelles je suis inscrit(e)</h2></div>
+			<div class="soirees__content">
+				{% for soiree in inscriptions %}
+					<a class="soiree" href="{% url 'soiree:detail' %}?id={{soiree.id}}">
+						<div class="soiree__heading">
+							<h2>{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</h2>
+						</div>
+						<div class="soiree__content">
+							<div class="soiree__fig">
+								<div class="soiree__imgwrapper">
+									{% if soiree.has_image %}
+										<img src="{{ soiree.image.url }}">
+									{% else %}
+										<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="soiree__txt">
+								<p class="lieu">{{ soiree.lieu.name }}</p>
+							</div>						
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if invitations %}
+			<div class="soirees__heading"><h2>... auxquelles je suis invité(e)</h2></div>
+			<div class="soirees__content">
+				{% for soiree in invitations %}
+					<div class="soiree">
+						<div class="soiree__heading">
+							<h2>{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}</h2>
+						</div>
+						<div class="soiree__content">
+							<div class="soiree__fig">
+								<div class="soiree__imgwrapper">
+									{% if soiree.has_image %}
+										<img src="{{ soiree.image.url }}">
+									{% else %}
+										<img src="{% static 'account/photos/soiree/default_image.jpg' %}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="soiree__txt">
+								<p class="lieu">{{ soiree.lieu.name }}</p>
+								<div class="soiree__buttons">
+									<a href="{% url 'soiree:inscription' %}?id={{soiree.id}}"><img src="{% static 'soiree/images/green_check.png' %}"></a>
+									<a href="{% url 'soiree:desinscription' %}?id={{soiree.id}}"><img src="{% static 'soiree/images/red_cross.png' %}"></a>
+								</div>
+							</div>						
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+	</div>
+{% endblock %}

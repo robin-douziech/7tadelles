@@ -23,8 +23,8 @@
 					<div class="person__txt person__demande-recue__txt">
 						<p>{{ person.username }}</p>
 						<div>
-							<a href="{% url 'account:accepter_ami' person.id %}"><img src="{% static 'account/photos/user/green_check.png' %}"></a>
-							<a href="{% url 'account:refuser_ami' person.id %}"><img src="{% static 'account/photos/user/red_cross.png' %}"></a>
+							<a href="{% url 'account:accepter_ami' %}?id={{person.id}}"><img src="{% static 'account/photos/user/green_check.png' %}"></a>
+							<a href="{% url 'account:refuser_ami' %}?id={{person.id}}"><img src="{% static 'account/photos/user/red_cross.png' %}"></a>
 						</div>
 					</div>
 				</div>
@@ -60,7 +60,7 @@
 							{% elif person in user.demandes_recues.all %}
 								<p class="result__info dmd_r">demande reçue</p>
 							{% else %}
-								<a class="result__info non_ami" href="{% url 'account:demande_ami' person.id %}">ajouter</a>
+								<a class="result__info non_ami" href="{% url 'account:demande_ami' %}?id={{person.id}}">ajouter</a>
 							{% endif %}
 						</div>
 					</div>
@@ -73,24 +73,24 @@
 
 {% block left_sidebar %}
 	{% for action in left_actions %}
-		{% if action.2 %}
-			{% with action_args=action.2 %}
-				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+		{% if action.3 %}
+			{% with action_args=action.3 %}
+				<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
 			{% endwith %}
 		{% else %}
-			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+			<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
 		{% endif %}
 	{% endfor %}
 {% endblock %}
 
 {% block right_sidebar %}
 	{% for action in right_actions %}
-		{% if action.2 %}
-			{% with action_args=action.2 %}
-				<div class="action"><a href="{% url action.1 action_args %}"><p>{{ action.0 }}</p></a></div>
+		{% if action.3 %}
+			{% with action_args=action.3 %}
+				<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
 			{% endwith %}
 		{% else %}
-			<div class="action"><a href="{% url action.1 %}"><p>{{ action.0 }}</p></a></div>
+			<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
 		{% endif %}
 	{% endfor %}
 {% endblock %}

@@ -45,6 +45,10 @@ class AddressForm(forms.Form) :
 	pays = forms.CharField(label="Pays*", max_length=50)
 	image = forms.ImageField(label="Photo", required=False)
 
-class FriendSearchForm(forms.Form) :
+class UserSearchForm(forms.Form) :
 
-	search = forms.CharField(label="Texte de la recherche", max_length=50)
+	search = forms.CharField(label="Texte de la recherche", max_length=50, required=False)
+
+	def __init__(self, request, *args, **kwargs) :
+		super(UserSearchForm, self).__init__(*args, **kwargs)
+		self.fields['search'].initial = request.GET.get('search', '')

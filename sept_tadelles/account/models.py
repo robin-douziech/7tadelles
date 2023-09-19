@@ -60,6 +60,7 @@ class User(AbstractUser):
     def __str__(self) :
         return self.username
 
+'''
 class Soiree(models.Model) :
 
     class TypeDeSoiree(models.TextChoices) :
@@ -150,7 +151,7 @@ class Soiree(models.Model) :
 
     def __str__(self) :
         return f"Soirée de {self.hote} du {self.date.day}/{self.date.month}/{self.date.year}"
-
+'''
 
 
 

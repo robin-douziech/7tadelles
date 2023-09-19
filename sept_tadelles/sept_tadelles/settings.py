@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'welcome',
     'wiki',
     'game_calendar',
+    'soiree',
 ]
 
 MIDDLEWARE = [

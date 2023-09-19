@@ -14,14 +14,10 @@
 	</head>
 	<body>
 
-		<!--header></header-->
-
 		<div class="background">
 			<div class="text">C'quand qu'on joue ?</div>
 			{% block background %}{% endblock %}
 		</div>
-
-		<!--div class="btn btn-retour"><a href="{% url 'account:detail' %}"><img src="{% static 'game_calendar/images/nuage.png' %}"><p>retour</p></a></div-->
 
 		<a href="{% url 'account:detail' %}" class="btn btn-retour">
 			<img src="{% static 'game_calendar/images/nuage.png' %}">
@@ -31,8 +27,6 @@
 		<div class="foreground">
 			{% block foreground %}{% endblock %}
 		</div>
-
-		<!--footer></footer-->
 
 	</body>
 </html>

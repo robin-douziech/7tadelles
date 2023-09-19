@@ -1,0 +1,135 @@
+{% extends 'soiree/base.html' %}
+
+
+{% load static account_custom_filters %}
+
+
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'soiree/css/detail.css' %}">
+{% endblock %}
+
+{% block btn_retour %}
+	<a href="{% url 'soiree:list' %}{{request.session.get_args.0}}" class="btn btn-retour">
+		<img src="{% static 'wiki/photos/nuage.png' %}">
+		<p>retour</p>
+	</a>
+{% endblock %}
+
+{% block foreground %}
+	<div class="heading foreground__heading">
+		<h1>Soirée du {{ soiree.date.day }}/{{ soiree.date.month }}/{{ soiree.date.year }}</h1>
+	</div>
+	<div class="errors">
+		{% for error_name, value in errors.items %}
+			{% if value.0 %}
+				<p>{{ value.1 }}</p>
+			{% endif %}
+		{% endfor %}
+	</div>
+	<form class="content foreground__content" action="" method="post">
+		{% csrf_token %}
+		<div class="colums-block">
+			<div class="column column-left">
+				<div class="block type_soiree">
+					<div class="heading block-heading col-block-heading type_soiree__heading"><h2>Type de Soirée :</h2></div>
+					<div class="content block-content col-block-content type_soiree__content">
+						<p>
+							{{ form.type_soiree }}
+						</p>
+						<p>
+							{% for type_soiree in types_soiree %}
+								{% if soiree.type_soiree == type_soiree.0 %}
+									{{ types_soiree_desc|get_dict_value:type_soiree.0 }}
+								{% endif %}
+							{% endfor %}
+						</p>
+					</div>
+				</div>
+				<div class="block nb_joueurs">
+					<div class="heading block-heading col-block-heading nb_joueurs__heading"><h2>Nombre de places :</h2></div>
+					<div class="content block-content col-block-content nb_joueurs__content">
+						<p>Il y aura au maximum {{ form.nb_joueurs }} joueurs à cette soirée.</p>
+					</div>
+				</div>
+				<div class="block hote">
+					<div class="heading block-heading col-block-heading hote__heading"><h2>Hôte de la soirée :</h2></div>
+					<div class="content block-content col-block-content hote__content">
+						<div class="hote__detail">
+							<div class="hote__fig">
+								<div class="hote__imgwrapper">
+									{% if soiree.hote.has_profile_photo %}
+										<img src="{{ soiree.hote.profile_photo.url }}">
+									{% else %}
+										<img src="{% static 'account/default_profile_photo.jpg' %}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="hote__txt">
+								<p>{{ soiree.hote.username }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column colum-right">
+				<div class="block lieu">
+					<div class="heading block-heading col-block-heading lieu__heading"><h2>Lieu de la soirée :</h2></div>
+					<div class="content block-content col-block-content lieu__content">
+						<p>{{ soiree.lieu.name }} :</p>
+						<div class="lieu__imgwrapper">
+							{% if soiree.lieu.has_image %}
+								<img src="{{ soiree.lieu.image.url }}">
+							{% else %}
+								<img src="{% static 'account/photos/lieu/default_image.jpg' %}">
+							{% endif %}
+						</div>
+						<p>{{ soiree.lieu.adresse }}</p>
+						<p>{{ soiree.lieu.code_postal}}, {{ soiree.lieu.ville }}</p>
+						<p>Modifier le lieu : {{ form.lieu }}</p>
+					</div>
+				</div>
+				<div class="block date">
+					<div class="heading block-heading col-block-heading date__heading"><h2>Date de la soirée :</h2></div>
+					<div class="content block-content col-block-content date__content">
+						<p>
+							{{ soiree.date|week_day }} {{ soiree.date.day }} {{ soiree.date|month_str }} {{ soiree.date.year }}, à {{ soiree.date.hour }}h{{ soiree.date.minute }}
+						</p>
+						<p>Modifier : {{ form.date }}</p>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<div class="block invites">
+			<div class="heading block-heading nocol-block-heading invites__heading"><h2>Joueurs invités à la soirée :</h2></div>
+			<div class="content block-content nocol-block-content invites__content">
+				{% for invite in soiree.invites.all %}
+					<div class="invite__detail">
+						<div class="invite__fig">
+							<div class="invite__imgwrapper">
+								{% if invite.has_profile_photo %}
+									<img src="{{ invite.profile_photo.url }}">
+								{% else %}
+									<img src="{% static 'account/default_profile_photo.jpg' %}">
+								{% endif %}
+							</div>
+						</div>
+						<div class="invite__txt">
+							<p>{{ invite.username }}</p>
+						</div>					
+					</div>
+				{% endfor %}
+				<a class="invites__add" href="{% url 'soiree:change_invites' %}?id={{soiree.id}}"><img src="{% static 'account/photos/soiree/add_invites.png' %}"></a>	
+			</div>
+		</div>
+		<div class="buttons">
+			<input type="submit" class="enregistrer" value="Enregistrer">
+			<a href="{% url 'soiree:delete_soiree' %}?id={{soiree.id}}" class="supprimer">Supprimer</a>
+		</div>
+		<div class="block discussion">
+			<div class="heading block-heading nocol-block-heading discussion__heading"><h2>Discussion :</h2></div>
+			<div class="content block-content nocol-block-content discussion__content">
+				<p>(prochainement)</p>
+			</div>
+		</div>
+	</form>
+{% endblock %}

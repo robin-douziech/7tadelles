@@ -42,6 +42,11 @@ footer {
 /* HEADER */
 
 .centre {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
     position: absolute;
     top: 4vh;
     left: 50%;
@@ -50,32 +55,18 @@ footer {
 }
 
 .btn {
-    display: block;
-    position: relative;
-    color: #bbb;
-    font-size: 2vw;
+    font-family: 'NationalPark-ExtraBold';
+    font-size: 3vw;
+    color: white;
     text-decoration: none;
-    border: 2px solid #bbb;
-    padding: 0px 1vw;
-    overflow: hidden;
+    margin: 0 1vw;
+
+    transition: all 0.5s ease;
 }
 
-.btn::before {
-    content: "";
-    background: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-    transition: all 0.6s ease;
-    width: 120%;
-    height: 0%;
-    transform: translate(-50%, -50%) rotate(25deg);
-}
-
-.btn:hover::before {
-    height: 250%;
+.btn:hover {
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff, 0 0 20px #fff, 0 0 20px #fff;
+    color: #2E3B41;
 }
 
 /* BACKGROUND */
@@ -253,3 +244,4 @@ footer {
     }
 
 }
+

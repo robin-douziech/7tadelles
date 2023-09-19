@@ -1,0 +1,105 @@
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+
+	background-color: #BC9E82;
+}
+
+.container {
+	width: 100%;
+	min-height: 100%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.container > div {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+
+	min-width: 50vw;
+	min-height: 50vh;
+
+	margin: 25vh 25vw;
+
+	border: 2px solid black;
+	border-radius: 10px;
+
+	background-color: white;
+}
+
+.container > div > div {
+	width: 100%;	
+}
+
+.title {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	text-align: center;
+	font-size: 1vw;
+}
+
+.pre-text {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	text-align: center;
+	font-size: 1.5vw;
+}
+
+.pre-text > div {
+	width: 80%;
+}
+
+.pre-text > div > p {
+	margin: 0.5vh 0;
+	padding: 0;
+}
+
+.pre-text__errors {
+	color: red;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	padding: 2vh 0;
+
+	text-align: center;
+	font-size: 1.5vw;
+}
+
+.form input {
+	margin: 1vh 0;
+	font-size: 1.5vw;
+}
+
+.post-text {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap;
+
+	text-align: center;
+	font-size: 1vw;
+}
+
+
+
+
+

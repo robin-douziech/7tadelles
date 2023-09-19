@@ -1,28 +1,25 @@
-{% extends 'account/base_form.html' %}
+{% extends 'soiree/base_form.html' %}
 
 {% block extra_headers %}
 <style type="text/css">
 	.pre-text {
 		font-size: 1.8vw;
 	}
-	form > input {
+	input {
 		font-size: 1.5vw;
-	}
-	p > input {
-		font-size: 1.2vw;
-		width: 4vw;
 	}
 </style>
 {% endblock %}
 
 {% block title %}
-	<h1>Combien de joueurs voulez vous acueillir chez vous au maximum ?</h1>
+	<h1>Où se déroulera cette soirée ?</h1>
 {% endblock %}
 
 {% block pre-text %}
 	<form action="" method="post">
 		{% csrf_token %}
-		<p>A cette soirée, vous souhaitez qu'il y ait au maximum {{ form.nb_joueurs}} joueurs (vous compris).</p>
+		<p>Veuillez indiquer l'endroit où se déroulera la soirée jeux : {{ form.lieu }}</p>
+		<p><a href="{% url 'account:create_lieu' %}">créer un nouveau lieu</a></p>
 		<input type="submit" class="btn btn-default btn-lg" value="Suivant">
 	</form>
 {% endblock %}
@@ -36,4 +33,5 @@
 {% endblock %}
 
 {% block form %}
+
 {% endblock %}

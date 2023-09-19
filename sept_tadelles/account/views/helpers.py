@@ -33,7 +33,15 @@ def delete_media_file(path) :
 		print(f"Erreur lors de la suppression d'un fichier media : {str(e)}")
 		return False
 
-def register_view(request, current_view, real_view) :
+def register_view(request, current_view, real_view, get_args="") :
+
+	request.session['get_args'] = request.session.get('get_args', ["", ""])
+	request.session['last_views'] = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
+	if current_view != request.session['last_views'][1] :
+		request.session['last_views'][0] = request.session['last_views'][1]
+		request.session['get_args'][0] = request.session['get_args'][1]
+		request.session['last_views'][1] = current_view
+		request.session['get_args'][1] = get_args
 
 	request.session['last_view'] = current_view
 	if real_view :

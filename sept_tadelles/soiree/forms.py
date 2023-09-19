@@ -1,38 +1,59 @@
 from django import forms
 from django.core.validators import MinValueValidator
 
-from account import models
+import datetime as dt
+
+from account import models as account_models
+
+from . import models
 
 
-
-
-class SoireeCreationForm_step_1(forms.Form) :
+class CreationForm_step_1(forms.Form) :
 
 	type_soiree = forms.ChoiceField(
 		label = "Type de soirée",
 		choices = models.Soiree.TypeDeSoiree.choices,
+		initial = models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM,
 		widget = forms.RadioSelect()
 	)
 
-class SoireeCreationForm_step_2(forms.Form) :
+	def __init__(self, request, *args, **kwargs) :
+		super(CreationForm_step_1, self).__init__(*args, **kwargs)
+
+class CreationForm_step_2(forms.Form) :
 
 	nb_joueurs = forms.IntegerField(
 		label = "Nombre maximal de joueurs (hôte compris)",
 		validators = [MinValueValidator(2)],
+		initial = models.Soiree()._meta.get_field('nb_joueurs').default,
 		min_value = 2
 	)
 
-class SoireeCreationForm_step_3(forms.Form) :
+	def __init__(self, request, *args, **kwargs) :
+		super(CreationForm_step_2, self).__init__(*args, **kwargs)
 
-	lieu = forms.ModelChoiceField(label="Lieu", queryset=models.Lieu.objects.all())
+class CreationForm_step_3(forms.Form) :
+
+	lieu = forms.ModelChoiceField(
+		label="Lieu",
+		queryset=account_models.Lieu.objects.all()
+	)
 
 	def __init__(self, request, *args, **kwargs) :
-		super(SoireeCreationForm_step_3, self).__init__(*args, **kwargs)
+		super(CreationForm_step_3, self).__init__(*args, **kwargs)
 		self.fields['lieu'].queryset = request.user.lieus.all()
+		self.fields['lieu'].initial = request.user.adresse
 
-class SoireeCreationForm_step_4(forms.Form) :
+class CreationForm_step_4(forms.Form) :
 
-	date = forms.DateTimeField(label="Date", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+	date = forms.DateTimeField(
+		label="Date",
+		initial = dt.datetime.now() + dt.timedelta(days=1),
+		widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
+	)
+
+	def __init__(self, request, *args, **kwargs) :
+		super(CreationForm_step_4, self).__init__(*args, **kwargs)
 
 class InvitesForm(forms.Form) :
 	filter_horizontal = ('invites_to_add',)
@@ -68,7 +89,7 @@ class SoireeForm(forms.Form) :
 
 	lieu = forms.ModelChoiceField(
 		label="Lieu",
-		queryset=models.Lieu.objects.all()
+		queryset=account_models.Lieu.objects.all()
 	)
 
 	date = forms.DateTimeField(
