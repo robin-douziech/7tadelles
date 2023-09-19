@@ -153,7 +153,7 @@ def creation_step_1(request) :
 				)
 				soiree.save()
 				if form.cleaned_data['type_soiree'] in [models.Soiree.TypeDeSoiree.PUB_INSC, models.Soiree.TypeDeSoiree.PUB] :
-					for user in account_models.User.objects.all() :
+					for user in account_models.User.objects.exclude(pk=request.user.id) :
 						soiree.invites.add(user)
 				soiree.save()
 				return redirect(f"{reverse('soiree:creation_step_2')}?id={soiree.id}")
