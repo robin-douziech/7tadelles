@@ -291,7 +291,7 @@ def change_invites(request) :
 
 	if soiree_id :
 
-		get_args = f"?id={get_args}"
+		get_args = f"?id={soiree_id}"
 
 		try :
 			soiree = models.Soiree.objects.get(pk=soiree_id)
