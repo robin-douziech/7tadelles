@@ -30,12 +30,12 @@ class AddressForm(forms.Form) :
 
 class UpdateProfilePhotoForm(forms.ModelForm) :
 
-	class Meta :
-		model = models.User
-		fields = ['profile_photo']
+	profile_photo = forms.ImageField(
+		label = "Photo de profil",
+	)
 
 class UpdateCoverPhotoForm(forms.ModelForm) :
 
-	class Meta :
-		model = models.User
-		fields = ['cover_photo']
+	cover_photo = forms.ImageField(
+		label = "Photo de couverture",
+	)
