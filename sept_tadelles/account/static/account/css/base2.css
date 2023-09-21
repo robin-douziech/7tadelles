@@ -93,17 +93,28 @@ header {
 }
 
 .navbar__content {
-	margin: 100px 0 0 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	margin: 0;
+	padding: 0;
 
 	font-size: 25px;
 
 	width: 100%;
-	height: 50%;
+	height: 100vh;
+}
+
+.navbar__wrapper {
+	margin-top: 100px;
+	overflow: scroll;
 }
 
 .action {
 	text-align: center;
-	margin: 50px 0;
+	margin: 70px 0;
 }
 
 .action > a {

@@ -30,15 +30,17 @@
 				<div class="navbar__closebtnl2"></div>
 			</div>
 			<div class="navbar__content">
-				{% for action in actions %}
-					{% if action.3 %}
-						{% with action_args=action.3 %}
-							<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-						{% endwith %}
-					{% else %}
-						<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-					{% endif %}
-				{% endfor %}
+				<div class="navbar__wrapper">
+					{% for action in actions %}
+						{% if action.3 %}
+							{% with action_args=action.3 %}
+								<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
+							{% endwith %}
+						{% else %}
+							<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
+						{% endif %}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 
