@@ -46,7 +46,7 @@
 			<div class="amis__content">
 				{% for person in user.amis.all|merge_querysets:user.demandes_envoyees.all %}
 					<div class="person">
-						<div class="person__profile_photo">
+						<div class="person__fig">
 							<div class="person__imgwrapper">
 								{% if person.has_profile_photo %}
 									<img src="{{ person.profile_photo.url }}">

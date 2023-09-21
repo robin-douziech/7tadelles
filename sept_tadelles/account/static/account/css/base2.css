@@ -4,7 +4,7 @@ body {
 	margin: 0;
 
 	font-family: 'Nexa-Heavy';
-	font-size: 1.5vw;
+	font-size: 20px;
 
 	background-color: #f0f2f5;
 }
@@ -19,6 +19,15 @@ header {
 	background-color: black;
 
 	z-index: 1;
+}
+
+.logo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 60px;
+	color: white;
 }
 
 .navbar__openbtn {
@@ -136,3 +145,5 @@ header {
 	width: 1000px;
 	min-height: 100vh;
 }
+
+
