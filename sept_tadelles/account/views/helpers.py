@@ -4,6 +4,10 @@ import datetime as dt
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+from django.contrib import admin as django_admin
+from soiree import admin as soiree_admin
+from soiree import models as soiree_models
+
 def generate_token(length) :
 
 	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -82,16 +86,35 @@ def month_str(date) :
 	month_names = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 	return month_names[date.month-1]
 
-def clean_user(request, user=None) :
+def clean_user(user) :
 
-	if user is not None :
-		notifications_to_del = user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
-		soirees_to_del = user.soirees_hote.filter(date__lte=dt.datetime.now()).union(user.invitations.filter(date__lte=dt.datetime.now()))
-	else :
-		notifications_to_del = request.user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
-		soirees_to_del = request.user.soirees_hote.filter(date__lte=dt.datetime.now()).union(request.user.invitations.filter(date__lte=dt.datetime.now()))
-
+	notifications_to_del = user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
+	soirees_to_del = user.soirees_hote.filter(date__lte=dt.datetime.now()).union(user.invitations.filter(date__lte=dt.datetime.now()))
+	
 	for notification in notifications_to_del :
 		notification.delete()
 	for soiree in soirees_to_del :
 		soiree.delete()
+
+def get_actions(request) :
+	actions = [('Modifier ma photo de profil', 'account:update_profile_photo', '', ())]
+	if request.user.has_profile_photo :
+		actions += [('Supprimer ma photo de profil', 'account:delete_profile_photo', '', ())]
+	actions += [('Modifier ma photo de couverture', 'account:update_cover_photo', '', ())]
+	if request.user.has_cover_photo :
+		actions += [('Supprimer ma photo de couverture', 'account:delete_cover_photo', '', ())]
+	actions += [('Modifier mon mot de passe', 'account:password_reset_email', '', ())]
+	if request.user.adresse is not None :
+		actions += [
+			('Modifier mon adresse', 'account:change_address', '', ()),
+			('Supprimer mon adresse', 'account:delete_address', '', ())
+		]
+	else :
+		actions += [('Renseigner mon adresse', 'account:change_address', '', ())]
+	if not(request.user.discord_verified) :
+		actions += [('Lier mon compte discord', 'account:discord_verification_info', '', ())]
+	if soiree_admin.SoireeAdmin(soiree_models.Soiree, django_admin.site).has_add_permission(request) :
+		actions += [('Créer une soirée', 'soiree:creation_step_1', '', ())]
+	actions += [('Rechercher utilisateur', 'account:list', '', ())]
+	actions += [('Ajouter jeu', 'account:add_game', '', ())]
+	return actions

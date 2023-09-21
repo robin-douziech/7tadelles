@@ -17,3 +17,8 @@
     font-family: 'NationalPark-ExtraBold';
     src: url('fonts/NationalPark/NationalPark-ExtraBold.otf')
 }
+
+@font-face {
+    font-family: 'Nexa-Heavy';
+    src: url('fonts/Nexa/Nexa-Heavy.ttf')
+}

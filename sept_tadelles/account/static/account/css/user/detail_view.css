@@ -1,0 +1,40 @@
+.profile-headers__buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	bottom: 0;
+	right: 0;
+
+	margin: 20px 0;
+}
+
+.profile-headers__buttons > p, .profile-headers__buttons > a {
+	margin: 0 5px;
+	padding: 0 10px;
+	border-radius: 5px;
+	color: white;
+	font-size: 30px;
+}
+
+.profile-headers__buttons > a {
+	text-decoration: none;
+}
+
+p[class~="dmd_e"], p[class~="msg_btn"] {
+	background-color: #9b9b9b; /* gris */
+}
+
+p[class="ami_btn ami"], .acc_dmd {
+	background-color: #5dd300; /* vert */
+}
+
+a[class~="msg_btn"], a[class="ami_btn non_ami"] {
+	background-color: #0080ff; /* bleu */
+}
+
+.ref_dmd {
+	background-color: red;
+}

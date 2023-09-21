@@ -1,36 +1,12 @@
-{% extends 'account/base.html' %}
+{% extends 'account/base2.html' %}
 
 {% load static %}
 
-{% block extra_headers %}
+{% block base_headers %}
 	<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/list.css' %}">
 {% endblock %}
 
-{% block foreground %}
-
-	<div class="block demandes-recues">
-		<div class="block-heading demandes-recues__heading"><h1>Demandes reçues</h1></div>
-		<div class="block-content demandes-recues__content">
-			{% for person in user.demandes_recues.all %}
-				<div class="person person__demande-recue">
-					<div class="person__profile_photo">
-						{% if person.has_profile_photo %}
-							<img src="{{ person.profile_photo.url }}">
-						{% else %}
-							<img src="{% static 'account/default_profile_photo.jpg' %}">
-						{% endif %}
-					</div>
-					<div class="person__txt person__demande-recue__txt">
-						<p>{{ person.username }}</p>
-						<div>
-							<a href="{% url 'account:accepter_ami' %}?id={{person.id}}"><img src="{% static 'account/photos/user/green_check.png' %}"></a>
-							<a href="{% url 'account:refuser_ami' %}?id={{person.id}}"><img src="{% static 'account/photos/user/red_cross.png' %}"></a>
-						</div>
-					</div>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
+{% block base_foreground %}
 	<div class="block recherche-utilisateur">
 		<div class="block-heading recherche-utilisateur__heading"><h1>Recherche d'utilisateur</h1></div>
 		<div class="block-content recherche-utilisateur__content">
@@ -43,54 +19,23 @@
 			</div>
 			<div class="recherche-utilisateur__results">
 				{% for person in results %}
-					<div class="person person__result">
-						<div class="person__profile_photo">
-							{% if person.has_profile_photo %}
-								<img src="{{ person.profile_photo.url }}">
-							{% else %}
-								<img src="{% static 'account/default_profile_photo.jpg' %}">
-							{% endif %}
+					<a class="person" href="{% url 'account:detail' %}?id={{person.id}}">
+						<div class="person__fig">
+							<div class="person__imgwrapper">
+								{% if person.has_profile_photo %}
+									<img src="{{ person.profile_photo.url }}">
+								{% else %}
+									<img src="{% static 'account/photos/user/default_profile_photo.jpg' %}">
+								{% endif %}
+							</div>
 						</div>
-						<div class="person__txt person__result__txt">
+						<div class="person__txt">
 							<p>{{ person.username }}</p>
-							{% if person in user.amis.all %}
-								<p class="result__info ami">ami(e)</p>
-							{% elif person in user.demandes_envoyees.all %}
-								<p class="result__info dmd_e">demande envoyée</p>
-							{% elif person in user.demandes_recues.all %}
-								<p class="result__info dmd_r">demande reçue</p>
-							{% else %}
-								<a class="result__info non_ami" href="{% url 'account:demande_ami' %}?id={{person.id}}">ajouter</a>
-							{% endif %}
 						</div>
-					</div>
+					</a>
 				{% endfor %}
 			</div>
 		</div>
 	</div>
 
-{% endblock %}
-
-{% block left_sidebar %}
-	{% for action in left_actions %}
-		{% if action.3 %}
-			{% with action_args=action.3 %}
-				<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-			{% endwith %}
-		{% else %}
-			<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-		{% endif %}
-	{% endfor %}
-{% endblock %}
-
-{% block right_sidebar %}
-	{% for action in right_actions %}
-		{% if action.3 %}
-			{% with action_args=action.3 %}
-				<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-			{% endwith %}
-		{% else %}
-			<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
-		{% endif %}
-	{% endfor %}
 {% endblock %}

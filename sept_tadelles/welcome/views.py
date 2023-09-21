@@ -14,11 +14,11 @@ def index(request) :
     btn_list = []
     if request.user.is_authenticated :
         btn_list = [
-            ("déconnexion"    ,"account:logout"         , ()),
-            ("mon compte", "account:detail", ())
-            ]
+            ("déconnexion", "account:logout", "", ()),
+            ("mon compte", "account:detail", f"?id={request.user.id}", ())
+        ]
     else :
-        btn_list = [("connexion", "account:login", ())]
+        btn_list = [("connexion", "account:login", "", ())]
 
     helpers.register_view(request, current_view, real_view)
     return render(request, 'welcome/index.html', {"buttons": btn_list})

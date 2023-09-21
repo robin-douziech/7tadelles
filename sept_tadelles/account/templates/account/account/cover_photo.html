@@ -1,0 +1,27 @@
+{% extends 'account/base_form.html' %}
+
+{% block title %}
+<h1>Modification de la photo de couverture</h1>
+{% endblock %}
+
+{% block pre-text %}
+{% endblock %}
+
+{% block errors %}
+    {% for error_name, value in errors.items %}
+        {% if value.0 %}
+            <p>{{ value.1 }}</p>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block form %}
+<form method="post" enctype="multipart/form-data" action="">
+    {% if form.errors %}
+        <p>toto</p>
+    {% endif %}
+	{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit"/>
+</form>
+{% endblock %}

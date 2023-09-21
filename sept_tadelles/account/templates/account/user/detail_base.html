@@ -1,0 +1,38 @@
+{% extends 'account/base2.html' %}
+
+{% load static %}
+
+{% block base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/detail_base.css' %}">
+	{% block detail_base_headers %}{% endblock %}
+{% endblock %}
+
+{% block base_foreground %}
+	<div class="profile-header">
+		<div class="profile-header__couverture">
+			<div class="profile-header__couverture__imgwrapper">
+				{% if user_view.has_cover_photo %}
+					<img class="couverture_img" src="{{ user_view.cover_photo.url }}">
+				{% else %}
+					<img class="couverture_img" src="{% static 'account/photos/user/default_couverture.jpg' %}">
+				{% endif %}
+			</div>
+		</div>
+		<div class="profile-header__photo">
+			<div class="profile-header__photo__imgwrapper">
+				{% if user_view.has_profile_photo %}
+					<img class="profile_photo" src="{{ user_view.profile_photo.url }}">
+				{% else %}
+					<img class="profile_photo" src="{% static 'account/photos/user/default_profile_photo.jpg' %}">
+				{% endif %}
+			</div>
+		</div>
+		<div class="profile-header__name"><p>{{ user_view.username }}</p></div>
+		{% block detail_base_profile_header %}{% endblock %}
+	</div>
+	{% block detail_base_foreground %}{% endblock %}
+{% endblock %}
+
+{% block base_background %}
+	<div class="sub-header"></div>
+{% endblock %}

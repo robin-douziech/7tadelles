@@ -10,5 +10,5 @@
 		<li>Envoyez "!link username" en message privé à 7tadellesBot où username est votre nom d'utilisateur ({{user.username}}).</li>
 		<li>Nous vous enverrons ensuite un e-mail à l'adresse mail associée à ce compte ({{user.email}}) avec un lien sur lequel vous devrez cliquer pour lier votre compte à votre compte discord.</li>
 	</ul>
-	<a href="{% url 'account:detail' %}">retour</a>
+	<a href="{% url 'account:detail' %}?id={{user.id}}">retour</a>
 {% endblock %}

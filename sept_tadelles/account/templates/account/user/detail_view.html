@@ -1,0 +1,26 @@
+{% extends 'account/user/detail_base.html' %}
+
+{% load static %}
+
+{% block detail_base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/user/detail_view.css' %}">
+{% endblock %}
+
+{% block detail_base_profile_header %}
+	<div class="profile-headers__buttons">
+		{% if user_view in user.amis.all %}
+			<p class="ami_btn ami">ami(e)</p>
+			<a class="msg_btn ami" href="{% url 'account:message_friend' %}?id={{user_view.id}}">message</a>
+		{% elif user_view in user.demandes_envoyees.all %}
+			<p class="ami_btn dmd_e">demande envoyée</p>
+			<p class="msg_btn dmd_e">message</p>
+		{% elif user_view in user.demandes_recues.all %}
+			<a class="ami_btn acc_dmd" href="{% url 'account:accept_friend' %}?id={{user_view.id}}">accepter</a>
+			<a class="ami_btn ref_dmd" href="{% url 'account:refuse_friend' %}?id={{user_view.id}}">refuser</a>
+			<p class="msg_btn dmd_r">message</p>
+		{% else %}
+			<a class="ami_btn non_ami" href="{% url 'account:add_friend' %}?id={{user_view.id}}">ajouter</a>
+			<p class="msg_btn non_ami">message</p>	
+		{% endif %}
+	</div>
+{% endblock %}

@@ -30,12 +30,12 @@
 
 		<div class="foreground__btnbar">
 			{% for button in buttons %}
-				{% if button.2 %}
-			        {% with bouton_args=button.2 %}
-			            <div class="foreground__btn"><a href="{% url button.1 bouton_args %}"><p>{{ button.0 }}</p></a></div>
+				{% if button.3 %}
+			        {% with bouton_args=button.3 %}
+			            <div class="foreground__btn"><a href="{% url button.1 bouton_args %}{{button.2}}"><p>{{ button.0 }}</p></a></div>
 			        {% endwith %}
 			    {% else %}
-			        <div class="foreground__btn"><a href="{% url button.1 %}"><p>{{ button.0 }}</p></a></div>
+			        <div class="foreground__btn"><a href="{% url button.1 %}{{button.2}}"><p>{{ button.0 }}</p></a></div>
 			    {% endif %}
 			{% endfor %}
 		</div>
@@ -85,7 +85,7 @@
 	</div>
 
 	<footer>
-		<div class="bottom-right"><p>v3.2.0</p></div>
+		<div class="bottom-right"><p>v4.0.0</p></div>
 	</footer>
 
 </body>

@@ -1,0 +1,139 @@
+.notifications {
+	margin: 10px 0;
+	padding: 0 10px 20px 10px;
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 10px;
+	background-color: white;
+}
+
+.notifications__heading > h2 {
+	margin: 0;
+}
+
+.notifications__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.notification {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: justify;
+
+	width: 90%;
+
+	text-decoration: none;
+	color: black;
+
+	margin: 5px 0;
+	padding: 0 10px 5px 10px;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.notification__heading > h3 {
+	margin: 0;
+
+}
+
+
+.amis {
+	margin: 10px 0;
+	padding: 0 10px 20px 10px;
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 10px;
+	background-color: white;
+}
+
+.amis__heading > h2 {
+	margin: 0;
+}
+
+.amis__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.person {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	height: 200px;
+	width: 400px;
+
+	margin: 1vh 1.5vw 1vh 1.5vw;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 1vw;
+}
+
+.person > div {
+	width: 50%;
+	height: 100%;
+}
+
+.person__profile_photo {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.person__imgwrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 50%;
+	width: 50%;
+	border: 1px solid black;
+}
+
+.person__imgwrapper > img {
+	max-height: 100%;
+	max-width: 100%;
+	aspect-ratio: auto;
+}
+
+.person__txt {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.person__txt > p {
+	text-align: center;
+	max-width: 80%;
+	margin: 1vh 0;
+	padding: 0 0.5vw 0.5vh 0.5vw;
+}
+
+
+
+.dmd_r, .dmd_e {
+	border-radius: 1vw;
+	background-color: #9b9b9b;
+	color: white;
+	padding: 0 0 0.5vh 0;
+}
+
+.ami {
+	border-radius: 1vw;
+	background-color: #5dd300;
+	color: white;
+	padding: 0 0 0.5vh 0;
+}
+
+
+
+

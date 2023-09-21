@@ -16,11 +16,7 @@
 {% endblock %}
 
 {% block form %}
-<form method="post" enctype="multipart/form-data">
-
-    {% if forms.errors %}
-        <p>Vous ne pouvez pas utiliser cette image car au moins une de ses dimensions est trop grande.</p>
-    {% endif %}
+<form method="post" enctype="multipart/form-data" action="">
 	{% csrf_token %}
     {{ form.as_p }}
     <input type="submit"/>

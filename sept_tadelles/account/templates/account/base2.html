@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+	<head>
+		<title>7tadelles</title>
+		<link rel="icon" href="{% static 'welcome/7tadelles_icon.png' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'account/css/base2.css' %}">
+		{% block base_headers %}{% endblock %}
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+
+		<script type="text/javascript" src="{% static 'account/js/base2.js' %}"></script>
+	</head>
+	<body>
+
+		<header>
+			<div class="navbar__openbtn">
+				<div class="navbar__openbtnl1"></div>
+				<div class="navbar__openbtnl2"></div>
+				<div class="navbar__openbtnl3"></div>
+			</div>
+		</header>
+
+		<div class="navbar">
+			<div class="navbar__closebtn">
+				<div class="navbar__closebtnl1"></div>
+				<div class="navbar__closebtnl2"></div>
+			</div>
+			<div class="navbar__content">
+				{% for action in actions %}
+					{% if action.3 %}
+						{% with action_args=action.3 %}
+							<div class="action"><a href="{% url action.1 action.3 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
+						{% endwith %}
+					{% else %}
+						<div class="action"><a href="{% url action.1 %}{{ action.2 }}"><p>{{ action.0 }}</p></a></div>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		{% block base_background %}{% endblock %}
+
+		<div class="foreground">
+			{% block base_foreground %}{% endblock %}
+		</div>
+
+	</body>
+</html>
