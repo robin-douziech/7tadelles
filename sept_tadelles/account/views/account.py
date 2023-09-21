@@ -72,7 +72,7 @@ def update_profile_photo(request) :
 				if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}")) :
 					send_mail(
 						subject="Fichier mal supprimé sur le serveur",
-						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
+						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}",
 						from_email="info@7tadelles.com",
 						recipient_list=["robin.douziech27@gmail.com"],
 						fail_silently=False
@@ -96,7 +96,7 @@ def delete_profile_photo(request) :
 		if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}")) :
 			send_mail(
 				subject="Fichier mal supprimé sur le serveur",
-				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
+				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}",
 				from_email="info@7tadelles.com",
 				recipient_list=["robin.douziech27@gmail.com"],
 				fail_silently=False
@@ -122,7 +122,7 @@ def update_cover_photo(request) :
 				if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}")) :
 					send_mail(
 						subject="Fichier mal supprimé sur le serveur",
-						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
+						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}",
 						from_email="info@7tadelles.com",
 						recipient_list=["robin.douziech27@gmail.com"],
 						fail_silently=False
@@ -146,7 +146,7 @@ def delete_cover_photo(request) :
 		if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}")) :
 			send_mail(
 				subject="Fichier mal supprimé sur le serveur",
-				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{old_profile_photo.url[1:].split('/',1)[1]}",
+				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}",
 				from_email="info@7tadelles.com",
 				recipient_list=["robin.douziech27@gmail.com"],
 				fail_silently=False
