@@ -28,13 +28,13 @@ class AddressForm(forms.Form) :
 	pays = forms.CharField(label="Pays*", max_length=50)
 	image = forms.ImageField(label="Photo", required=False)
 
-class UpdateProfilePhotoForm(forms.ModelForm) :
+class UpdateProfilePhotoForm(forms.Form) :
 
 	profile_photo = forms.ImageField(
 		label = "Photo de profil",
 	)
 
-class UpdateCoverPhotoForm(forms.ModelForm) :
+class UpdateCoverPhotoForm(forms.Form) :
 
 	cover_photo = forms.ImageField(
 		label = "Photo de couverture",
