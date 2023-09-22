@@ -1,0 +1,14 @@
+{% extends 'account/base2.html' %}
+
+
+{% load static %}
+
+
+{% block base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters.css' %}">
+{% endblock %}
+
+{% block base_foreground %}
+	<div class="menu"></div>
+	<div class="current-page"></div>
+{% endblock %}

@@ -190,9 +190,9 @@ def create(request) :
 				user.save()
 
 				if settings.ENV == "PROD" :
-					verification_link = f"https://7tadelles.com/account/verify_email/{user.id}/{user.verification_token}"
+					verification_link = f"https://7tadelles.com/account/verify-email/{user.id}/{user.verification_token}"
 				else :
-					verification_link = f"http://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
+					verification_link = f"http://localhost:8000/account/verify-email/{user.id}/{user.verification_token}"
 					print(verification_link)
 
 				send_mail(
@@ -267,9 +267,9 @@ def password_reset_email_form(request) :
 			user.save()
 
 			if settings.ENV == "PROD" :
-				verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
+				verification_link = f"https://7tadelles.com/account/password-reset/{user.id}/{user.password_reset_token}/"
 			else :
-				verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
+				verification_link = f"http://localhost:8000/account/password-reset/{user.id}/{user.password_reset_token}/"
 
 			send_mail(
 				subject="Réinitialisation de votre mot de passe",
@@ -367,9 +367,9 @@ def discord_verification_send_email(request, discord_name, discord_id, user_name
 			user.save()
 
 			if settings.ENV == "PROD" :
-				verification_link = f"https://7tadelles.com/account/discord_verification_link/{user.id}/{token}"
+				verification_link = f"https://7tadelles.com/account/discord-verification-link/{user.id}/{token}"
 			else :
-				verification_link = f"http://localhost:8000/account/discord_verification_link/{user.id}/{token}"
+				verification_link = f"http://localhost:8000/account/discord-verification-link/{user.id}/{token}"
 
 			send_mail(
 				subject="Lien avec votre compte discord",
@@ -595,3 +595,11 @@ def retour(request) :
 	if len(last_views) > 2 :
 		request.session['last_views'] = request.session['last_views'][:-2]
 	return redirect(view[0], *view[1])
+
+@login_required
+def parameters(request) :
+
+	current_view = ['account:parameters', []]
+
+	helpers.register_view(request, current_view)
+	return render(request, 'account/parameters/base.html', {})
