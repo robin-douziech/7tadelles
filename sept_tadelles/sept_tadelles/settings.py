@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'account',
     'welcome',
     'wiki',
-    'game_calendar',
     'soiree',
 ]
 

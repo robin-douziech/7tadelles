@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block btn_retour %}
-	<a href="{% url 'soiree:list' %}{{request.session.get_args.0}}" class="btn btn-retour">
+	<a href="{% url 'soiree:list' %}" class="btn btn-retour">
 		<img src="{% static 'wiki/photos/nuage.png' %}">
 		<p>retour</p>
 	</a>

@@ -21,6 +21,48 @@ header {
 	z-index: 1;
 }
 
+.back_btn {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	height: 100%;
+	aspect-ratio: 1 / 1;
+}
+
+.back_btnl1 {
+	position: absolute;
+	top: 41%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(-45deg);
+
+	height: 5px;
+	width: 30%;
+	background-color: white;
+
+	transition: all 0.5s ease;
+}
+
+.back_btnl2 {
+	position: absolute;
+	top: 59%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(45deg);
+
+	height: 5px;
+	width: 30%;
+	background-color: white;
+
+	transition: all 0.5s ease;
+}
+
+.back_btn:hover .back_btnl1 {
+	left: -100%;
+}
+.back_btn:hover .back_btnl2 {
+	left: -100%;
+}
+
 .logo {
 	position: absolute;
 	top: 50%;
@@ -36,7 +78,8 @@ header {
 	justify-content: center;
 	align-items: center;
 
-	position: relative;
+	position: absolute;
+	right: 0;
 	width: 100px;
 	height: 100px;
 
@@ -53,7 +96,7 @@ header {
 .navbar__closebtn {
 	position: absolute;
 	top: 0;
-	left: 0;
+	right: 0;
 
 	width: 100px;
 	height: 100px;
@@ -89,7 +132,7 @@ header {
 
 	position: fixed;
 	top: 0;
-	left: -400px;
+	right: -400px;
 
 	width: 400px;
 	height: 200vh;

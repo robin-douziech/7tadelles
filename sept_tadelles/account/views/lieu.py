@@ -8,8 +8,7 @@ import re
 @login_required
 def create_lieu(request) :
 
-	#current_view = ['account:create_lieu', []]
-	#real_view = False
+	current_view = ['account:create_lieu', []]
 
 	form = forms.LieuCreationForm()
 	errors = {
@@ -44,8 +43,9 @@ def create_lieu(request) :
 				request.user.lieus.add(lieu)
 				request.user.save()
 
-				last_view = request.session.get('last_view', ['welcome:index', []])
+				last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-2]
 				return redirect(last_view[0], *last_view[1])
 
 	errors.pop('errors_count')
+	helpers.register_view(request, current_view)
 	return render(request, 'account/lieu/creation_form.html', {'form': form, 'errors': errors})

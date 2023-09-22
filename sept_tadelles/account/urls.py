@@ -33,8 +33,8 @@ urlpatterns = [
     path("discord_verification_send_email/<str:discord_name>/<str:discord_id>/<str:user_name>/<str:bot_token>", account.discord_verification_send_email, name="discord_verification_send_email"),
     path("discord_verification_link/<str:user_id>/<str:token>", account.discord_verification_link, name="discord_verification_link"),
     
-    path("address/update", account.address_form, name="change_address"),
-    path("adress/delete", account.address_delete, name="delete_address"),
+    path("address/update", account.change_address, name="change_address"),
+    path("adress/delete", account.delete_address, name="delete_address"),
 
 
 
@@ -43,4 +43,7 @@ urlpatterns = [
 
     # Lieu
     path("place/add", lieu.create_lieu, name="create_lieu"),
+
+    path("clean-session", account.clean_session, name="clean_session"),
+    path("retour", account.retour, name="retour"),
 ]

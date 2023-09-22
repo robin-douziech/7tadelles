@@ -37,27 +37,11 @@ def delete_media_file(path) :
 		print(f"Erreur lors de la suppression d'un fichier media : {str(e)}")
 		return False
 
-def register_view(request, current_view, real_view, get_args="") :
+def register_view(request, current_view) :
 
-	request.session['get_args'] = request.session.get('get_args', ["", ""])
 	request.session['last_views'] = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
-	if current_view != request.session['last_views'][1] :
-		request.session['last_views'][0] = request.session['last_views'][1]
-		request.session['get_args'][0] = request.session['get_args'][1]
-		request.session['last_views'][1] = current_view
-		request.session['get_args'][1] = get_args
-
-	request.session['last_view'] = current_view
-	if real_view :
-		request.session['last_real_view'] = request.session.get('last_real_view', [])
-		if len(request.session['last_real_view']) > 0 :
-			if request.session['last_real_view'][-1] != current_view :
-				request.session['last_real_view'].append(current_view)
-		else :
-			request.session['last_real_view'] = [current_view]
-
-		if len(request.session['last_real_view']) > 10 :
-			request.session['last_real_view'] = request.session['last_real_view'][-10:]
+	if current_view != request.session['last_views'][-1] :
+		request.session['last_views'].append(current_view)
 
 def send_notification(notification, users) :
 

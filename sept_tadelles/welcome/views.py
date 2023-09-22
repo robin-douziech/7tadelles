@@ -20,5 +20,5 @@ def index(request) :
     else :
         btn_list = [("connexion", "account:login", "", ())]
 
-    helpers.register_view(request, current_view, real_view)
+    helpers.register_view(request, current_view)
     return render(request, 'welcome/index.html', {"buttons": btn_list})

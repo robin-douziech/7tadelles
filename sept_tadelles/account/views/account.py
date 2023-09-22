@@ -20,7 +20,6 @@ from . import helpers
 def login_view(request) :
 
 	current_view = ['account:login', []]
-	real_view = False
 
 	form = forms.LoginForm()
 	errors = {
@@ -40,7 +39,6 @@ def login_view(request) :
 			if user is not None and user.verified :
 				login(request, user)
 				helpers.clean_user(user)
-				helpers.register_view(request, current_view, real_view)
 				return redirect('welcome:index')
 			elif user is not None :
 				errors['unverified_user'][0] = True
@@ -48,21 +46,18 @@ def login_view(request) :
 				errors['auth_error'][0] = True
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view, real_view)
+	helpers.register_view(request, current_view)
 	return render(request, 'account/registration/login.html', {'form': form, 'errors': errors})
 
+@login_required
 def logout_view(request) :
-	current_view = ['account:logout', []]
-	real_view = False
 	logout(request)
-	helpers.register_view(request, current_view, real_view)
 	return render(request, 'account/registration/logout.html')
 
 @login_required
 def update_profile_photo(request) :
 
 	current_view = ['account:update_profile_photo', []]
-	real_view = False
 
 	form = forms.UpdateProfilePhotoForm()
 	if request.method == "POST" :
@@ -82,14 +77,13 @@ def update_profile_photo(request) :
 			request.user.save()
 			return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
-	helpers.register_view(request, current_view, real_view)
+	helpers.register_view(request, current_view)
 	return render(request, 'account/account/profile_photo.html', {'form': form})
 
 @login_required
 def delete_profile_photo(request) :
 
 	current_view = ['account:delete_profile_photo', []]
-	real_view = False
 
 	if request.user.has_profile_photo :
 
@@ -112,7 +106,6 @@ def delete_profile_photo(request) :
 def update_cover_photo(request) :
 
 	current_view = ['account:update_cover_photo', []]
-	real_view = False
 
 	form = forms.UpdateCoverPhotoForm()
 	if request.method == "POST" :
@@ -132,14 +125,13 @@ def update_cover_photo(request) :
 			request.user.save()
 			return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
-	helpers.register_view(request, current_view, real_view)
+	helpers.register_view(request, current_view)
 	return render(request, 'account/account/cover_photo.html', {'form': form})
 
 @login_required
 def delete_cover_photo(request) :
 
 	current_view = ['account:delete_cover_photo', []]
-	real_view = False
 
 	if request.user.has_cover_photo :
 
@@ -161,10 +153,10 @@ def delete_cover_photo(request) :
 def create(request) :
 
 	current_view = ['account:user_creation_form', []]
-	real_view = False
 
 	form = forms.UserCreationForm()
 	errors = {
+		'errors_count': 0,
 		'email_already_used': [False, "Un compte est déjà associé à cette adresse e-mail"],
 		'username_already_used': [False, "Ce nom d'utilisateur est déjà utilisé"],
 		'passwords_dont_match': [False, "Les mots de passe ne sont pas identiques"]
@@ -180,53 +172,51 @@ def create(request) :
 			for user in models.User.objects.all() :
 				if user.email == form.cleaned_data['email'] :
 					errors['email_already_used'][0] = True
+					errors['errors_count'] += 1
 				if user.username == form.cleaned_data['username'] :
 					errors['username_already_used'][0] = True
+					errors['errors_count'] += 1
 
 			# on vérifie que les mots de passe sont identiques
-			errors['passwords_dont_match'][0] = (form.cleaned_data['password1'] != form.cleaned_data['password2'])
+			if form.cleaned_data['password1'] != form.cleaned_data['password2'] :
+				errors['passwords_dont_match'][0] = True
+				errors['errors_count'] += 1
 
-			print(f"errors : {errors}")
+			if errors['errors_count'] == 0 :
 
-			for error in errors :
-				if errors[error][0] :
-					helpers.register_view(request, current_view, real_view)
-					return render(request, 'account/creation/creation_form.html', {'form': form, 'errors': errors})
+				# aucune erreur : on crée l'utilisateur
+				user = models.User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'], form.cleaned_data['password1'])
+				user.verification_token = helpers.generate_token(64)
+				user.save()
 
-			# aucune erreur : on crée l'utilisateur
-			user = models.User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'], form.cleaned_data['password1'])
-			user.verification_token = helpers.generate_token(64)
-			user.save()
+				if settings.ENV == "PROD" :
+					verification_link = f"https://7tadelles.com/account/verify_email/{user.id}/{user.verification_token}"
+				else :
+					verification_link = f"http://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
+					print(verification_link)
 
-			if settings.ENV == "PROD" :
-				verification_link = f"https://7tadelles.com/account/verify_email/{user.id}/{user.verification_token}"
-			else :
-				verification_link = f"http://localhost:8000/account/verify_email/{user.id}/{user.verification_token}"
-				print(verification_link)
+				send_mail(
+	    			subject="Activation de votre compte",
+	    			message=f"""Bonjour !
 
-			send_mail(
-    			subject="Activation de votre compte",
-    			message=f"""Bonjour !
+	Quelqu'un tente de créer un compte sur le site 7tadelles.com avec votre adresse e-mail.
+	S'il s'agit bien de vous, veuillez cliquer sur le lien ci-dessous, sinon, ignorez ce mail.
 
-Quelqu'un tente de créer un compte sur le site 7tadelles.com avec votre adresse e-mail.
-S'il s'agit bien de vous, veuillez cliquer sur le lien ci-dessous, sinon, ignorez ce mail.
+	Lien d'activation : {verification_link}""",
+	    			from_email="info@7tadelles.com",
+	    			recipient_list=[form.cleaned_data['email']],
+	    			fail_silently=False
+	    		)
 
-Lien d'activation : {verification_link}""",
-    			from_email="info@7tadelles.com",
-    			recipient_list=[form.cleaned_data['email']],
-    			fail_silently=False
-    		)
+				return render(request, 'account/creation/activation_email_sent.html', {})
 
-			helpers.register_view(request, current_view, real_view)
-			return render(request, 'account/creation/activation_email_sent.html', {})
-
-	helpers.register_view(request, current_view, real_view)
+	errors.pop('errors_count')
+	helpers.register_view(request, current_view)
 	return render(request, "account/creation/creation_form.html", {"form": form, 'errors': errors})
 
 def verify_email(request, user_id, token):
 
 	current_view = ['account:verify_email', [user_id, token]]
-	real_view = False
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -237,19 +227,17 @@ def verify_email(request, user_id, token):
 		user.verified = True
 		user.verification_token = ""
 		user.save()
-		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/creation/activation_success.html', {})
 	else:
-		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/creation/activation_error.html', {})
 
 def password_reset_email_form(request) :
 
 	current_view = ['account:password_reset_email', []]
-	real_view = False
 
 	form = forms.PasswordResetEmailForm()
 	errors = {
+		'errors_count': 0,
 		'unknown_email': [False, "Aucun compte n'a été trouvé avec cette adresse e-mail."]
 	}
 
@@ -262,6 +250,7 @@ def password_reset_email_form(request) :
 			user = helpers.find_user_by_email(form.cleaned_data['email'])
 			if user is None :
 				errors['unknown_email'][0] = True
+				errors['errors_count'] += 1
 
 			email = user.email
 
@@ -270,48 +259,42 @@ def password_reset_email_form(request) :
 		user = request.user
 		email = user.email
 
-	for error in errors :
-		if errors[error][0] :
-			helpers.register_view(request, current_view, real_view)
-			return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
-
 	if (request.method == "POST" and form.is_valid()) or request.user.is_authenticated :
 
-		user.password_reset_token = helpers.generate_token(64)
-		user.save()
+		if errors['errors_count'] == 0 :
 
-		if settings.ENV == "PROD" :
-			verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
-		else :
-			verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
+			user.password_reset_token = helpers.generate_token(64)
+			user.save()
 
-		send_mail(
-			subject="Réinitialisation de votre mot de passe",
-			message=f"""
-Bonjour !
+			if settings.ENV == "PROD" :
+				verification_link = f"https://7tadelles.com/account/password_reset/{user.id}/{user.password_reset_token}/"
+			else :
+				verification_link = f"http://localhost:8000/account/password_reset/{user.id}/{user.password_reset_token}/"
 
-Quelqu'un a demandé la réinitialisation du mot de passe du compte lié à votre adresse e-mail sur 7tadelles.com.
-Si ce n'est pas vous, ignorez ce message. Sinon, cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.
+			send_mail(
+				subject="Réinitialisation de votre mot de passe",
+				message=f"""
+	Bonjour !
 
-{verification_link}
-				""",
-			from_email="info@7tadelles.com",
-			recipient_list=[email],
-			fail_silently=False
-		)
+	Quelqu'un a demandé la réinitialisation du mot de passe du compte lié à votre adresse e-mail sur 7tadelles.com.
+	Si ce n'est pas vous, ignorez ce message. Sinon, cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.
 
-		helpers.register_view(request, current_view, real_view)
-		return render(request, 'account/password_reset/password_reset_email_sent.html', {})
+	{verification_link}
+					""",
+				from_email="info@7tadelles.com",
+				recipient_list=[email],
+				fail_silently=False
+			)
 
-	helpers.register_view(request, current_view, real_view)
+			return render(request, 'account/password_reset/password_reset_email_sent.html', {})
+
+	errors.pop('errors_count')
+	helpers.register_view(request, current_view)
 	return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
 
 def password_reset_form(request, user_id, token) :
 
 	current_view = ['account:password_reset', [user_id, token]]
-	real_view = False
-
-	passwords_dont_match = False
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -321,6 +304,10 @@ def password_reset_form(request, user_id, token) :
 	if user is not None and user.password_reset_token == token :
 
 		form = forms.PasswordResetForm()
+		errors = {
+			'errors_count': 0,
+			'passwords_dont_match': [False, "Les mots de passe renseignés ne sont pas identiques"]
+		}
 
 		if request.method == "POST" :
 
@@ -328,47 +315,42 @@ def password_reset_form(request, user_id, token) :
 
 			if form.is_valid() :
 
-				if form.cleaned_data['password1'] == form.cleaned_data['password2'] :
+				if form.cleaned_data['password1'] != form.cleaned_data['password2'] :
+					errors['passwords_dont_match'][0] = True
+					errors['errors_count'] += 1
+
+				if errors['errors_count'] == 0 :
 
 					user.set_password(form.cleaned_data['password1'])
 					user.password_reset_token = ""
 					user.save()
 
-					helpers.register_view(request, current_view, real_view)
 					return render(request, 'account/password_reset/password_reset_complete.html', {})
 
-				else :
-
-					passwords_dont_match = True
-
-		helpers.register_view(request, current_view, real_view)
-		return render(request, 'account/password_reset/password_reset_confirm.html', {'form': form, 'passwords_dont_match': passwords_dont_match})
+		errors.pop('errors_count')
+		helpers.register_view(request, current_view)
+		return render(request, 'account/password_reset/password_reset_confirm.html', {'form': form, 'errors': errors})
 
 	else :
 
-		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/password_reset/password_reset_bad_link.html')
 
 @login_required
 def discord_verification_info(request) :
 
 	current_view = ['account:discord_verification_info', []]
-	real_view = False
 
 	if request.user.discord_verified :
-		helpers.register_view(request, current_view, real_view)
 		return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 	else :
-		helpers.register_view(request, current_view, real_view)
+		helpers.register_view(request, current_view)
 		return render(request, 'account/discord_verification/info.html', {})
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
 	current_view = ['account:discord_verification_send_email', [discord_name, discord_id, user_name, bot_token]]
-	real_view = False
 
 	if bot_token != settings.BOT_TOKEN :
-		helpers.register_view(request, current_view, real_view)
 		return redirect('welcome:index')
 	else :
 
@@ -404,19 +386,16 @@ Si ce n'est pas vous, veuillez ignorer ce message. Sinon, veuillez cliquer sur l
 				fail_silently = False
 			)
 
-			helpers.register_view(request, current_view, real_view)
 			return JsonResponse({'result': 'success'})
 
 		else :
 
-			helpers.register_view(request, current_view, real_view)
 			return JsonResponse({'result': 'failure'})
 
 
 def discord_verification_link(request, user_id, token) :
 
 	current_view = ['account:discord_verification_link', [user_id, token]]
-	real_view = False
 
 	try :
 		user = models.User.objects.get(pk=user_id)
@@ -437,19 +416,16 @@ def discord_verification_link(request, user_id, token) :
 			fail_silently=False
 		)
 
-		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/discord_verification/success.html', {})
 
 	else :
 
-		helpers.register_view(request, current_view, real_view)
 		return render(request, 'account/discord_verification/bad_link.html', {})
 
 @login_required
-def address_form(request) :
+def change_address(request) :
 
 	current_view = ['account:change_address', []]
-	real_view = False
 
 	form = forms.AddressForm()
 	errors = {
@@ -491,29 +467,25 @@ def address_form(request) :
 				request.user.lieus.add(adresse)
 				request.user.save()
 
-				helpers.register_view(request, current_view, real_view)
 				return render(request, 'account/adresse/success.html', {})
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view, real_view)
+	helpers.register_view(request, current_view)
 	return render(request, 'account/adresse/form.html', {'form':form, 'errors': errors})
 
 @login_required
-def address_delete(request) :
+def delete_address(request) :
 	current_view = ['account:delete_address', []]
-	real_view = False
 	request.user.lieus.remove(request.user.adresse)
 	request.user.adresse.delete()
 	request.user.adresse = None
 	request.user.save()
-	helpers.register_view(request, current_view, real_view)
 	return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
 @login_required
 def add_game(request) :
 	
 	current_view = ['account:add_game', []]
-	real_view = False
 
 	form = wiki_forms.GameForm()
 	errors = {
@@ -605,9 +577,21 @@ def add_game(request) :
 				)
 				game.save()
 
-				helpers.register_view(request, current_view, real_view)
 				return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
-	helpers.register_view(request, current_view, real_view)
+	helpers.register_view(request, current_view)
 	return render(request, 'account/game/form.html', {'form': form, 'errors': errors})
 
+@login_required
+def clean_session(request) :
+	request.session.pop('last_views')
+	return redirect("welcome:index")
+
+@login_required
+def retour(request) :
+
+	last_views = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
+	view = last_views[-2]
+	if len(last_views) > 2 :
+		request.session['last_views'] = request.session['last_views'][:-2]
+	return redirect(view[0], *view[1])
