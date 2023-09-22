@@ -80,8 +80,9 @@
 }
 
 .profile-header__name {
-	position: relative;
-	left: -220px;
+	position: absolute;
+	left: 220px;
+	top: 415px;
 
 	font-size: 40px;
 }
