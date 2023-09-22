@@ -19,7 +19,10 @@
 			{% block background %}{% endblock %}
 		</div>
 
-		{% block btn_retour %}{% endblock %}
+		<a href="{% url 'account:retour' %}" class="btn btn-retour">
+			<img src="{% static 'wiki/photos/nuage.png' %}">
+			<p>retour</p>
+		</a>
 
 		<div class="foreground">
 			{% block foreground %}{% endblock %}

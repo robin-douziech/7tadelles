@@ -72,53 +72,69 @@ header {
 	color: white;
 }
 
+
 .navbar__openbtn {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-
-	position: absolute;
-	right: 0;
-	width: 100px;
-	height: 100px;
-
-	transition: all 0.5s ease;
-}
-
-.navbar__openbtn > div {
-	margin: 5px 0;
-	height: 5px;
-	width: 60%;
-	background-color: white;
-}
-
-.navbar__closebtn {
 	position: absolute;
 	top: 0;
 	right: 0;
 
-	width: 100px;
 	height: 100px;
+	aspect-ratio: 1 / 1;
+
+	transition: all 0.5s ease;
+
+	z-index: 3;
 }
 
-.navbar__closebtn > div {
+.navbar__openbtnl1 {
 	position: absolute;
-	top: 45%;
-	left: 20%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
 	height: 5px;
 	width: 60%;
 	background-color: white;
-	transition:	all 0.5s ease;
+	transition: all 0.5s ease;
 }
 
-.navbar__closebtnl1 {
-	transform: rotate(45deg);
+.navbar__openbtnl2 {
+	position: absolute;
+	top: 50%;
+	left: 40%;
+	transform: translate(-50%, -50%) translate(0, -15px);
+
+	height: 5px;
+	width: 60%;
+	background-color: white;
+	transition: all 0.5s ease;
 }
 
-.navbar__closebtnl2 {
-	transform: rotate(-45deg);
+.navbar__openbtnl3 {
+	position: absolute;
+	top: 50%;
+	left: 60%;
+	transform: translate(-50%, -50%) translate(0, 15px);
+
+	height: 5px;
+	width: 60%;
+	background-color: white;
+	transition: all 0.5s ease;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,7 +157,7 @@ header {
 
 	transition: all 0.5s ease;
 
-	z-index: 1;
+	z-index: 2;
 }
 
 .navbar__content {
