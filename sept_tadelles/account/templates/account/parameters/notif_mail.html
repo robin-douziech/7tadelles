@@ -1,0 +1,27 @@
+{% extends 'account/parameters/base.html' %}
+
+
+{% load static %}
+
+
+{% block parameters_base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters/notif_mail.css' %}">
+{% endblock %}
+
+{% block parameters_base_page %}
+	<div class="page__heading"><h2>Mails reçus</h2></div>
+	<div class="page__content">
+		<form action="" method="post">
+			{% csrf_token %}
+			<div class="form__block">
+				<p>
+					Vous pouvez décider ici si vous voulez recevoir des mails vous informant quand vous recevez une nouvelle notification.
+				</p>
+				<p>
+					{{ form.notif_mail }} Je souhaite être informé(e) par mail quand je reçois une nouvelle notification
+				</p>
+			</div>
+			<input type="submit" class="btn btn-default btn-lg" value="Valider">			
+		</form>
+	</div>
+{% endblock %}

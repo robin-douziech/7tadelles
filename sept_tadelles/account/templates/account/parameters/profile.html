@@ -1,0 +1,37 @@
+{% extends 'account/parameters/base.html' %}
+
+
+{% load static %}
+
+
+{% block parameters_base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters/profile.css' %}">
+{% endblock %}
+
+{% block parameters_base_page %}
+	<div class="page__heading"><h2>Profil</h2></div>
+	<div class="page__content">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div class="form__block">
+				<h3>Photo de profil</h3>
+				<p>Modifier : {{ form.profile_photo }}</p>
+				<p>Supprimer : <a href="{% url 'account:delete_profile_photo' %}">Supprimer</a></p>
+			</div>
+			<div class="form__block">
+				<h3>Photo de couverture</h3>
+				<p>Modifier : {{ form.cover_photo }}</p>
+				<p>Supprimer : <a href="{% url 'account:delete_cover_photo' %}">Supprimer</a></p>
+			</div>
+			<input type="submit" class="btn btn-default btn-lg" value="Valider">
+			<div class="form__block password">
+				<h3>Mot de passe</h3>
+				<p>
+					Si vous voulez modifier votre mot de passe, cliquez sur le bouton ci-dessous.
+					Vous recevrez un mail avec un lien à usage unique vers un formulaire vous permettant de modifier votre mot de passe.
+				</p>
+				<a href="{% url 'account:password_reset_email' %}">Modifier mon mot de passe</a>
+			</div>
+		</form>
+	</div>
+{% endblock %}

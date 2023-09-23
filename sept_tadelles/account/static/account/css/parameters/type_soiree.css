@@ -1,0 +1,40 @@
+.page__heading {
+	text-align: center;
+}
+
+.page__heading > h2 {
+	margin: 0;
+}
+
+.page__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.page__content > form {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.form__block {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	margin: 20px 0 20px 0;
+}
+
+.form__block > p {
+	text-align: justify;
+	margin: 0 40px 20px 40px;
+}
+
+input {
+	margin: 20px 0;
+	font-size: 30px;
+}

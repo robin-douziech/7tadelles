@@ -343,7 +343,6 @@ def discord_verification_info(request) :
 	if request.user.discord_verified :
 		return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 	else :
-		helpers.register_view(request, current_view)
 		return render(request, 'account/discord_verification/info.html', {})
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
@@ -588,18 +587,19 @@ def clean_session(request) :
 	return redirect("welcome:index")
 
 @login_required
-def retour(request) :
+def retour1(request) :
+
+	last_views = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
+	view = last_views[-1]
+	if len(last_views) > 1 :
+		request.session['last_views'] = request.session['last_views'][:-1]
+	return redirect(view[0], *view[1])
+
+@login_required
+def retour2(request) :
 
 	last_views = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
 	view = last_views[-2]
 	if len(last_views) > 2 :
 		request.session['last_views'] = request.session['last_views'][:-2]
 	return redirect(view[0], *view[1])
-
-@login_required
-def parameters(request) :
-
-	current_view = ['account:parameters', []]
-
-	helpers.register_view(request, current_view)
-	return render(request, 'account/parameters/base.html', {})

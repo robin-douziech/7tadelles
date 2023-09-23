@@ -1,0 +1,73 @@
+.page__heading {
+	text-align: center;
+}
+
+.page__heading > h2 {
+	margin: 0;
+}
+
+.page__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.page__content > form {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.form__block {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+
+	margin: 15px 0 15px 0;
+
+	width: 100%;
+}
+
+.form__block > h3 {
+	margin: 0 0 10px 10px;
+}
+.form__block > p, .form__block > a {
+	margin: 0 10px 10px 20px;
+	font-size: 25px;
+}
+
+.password {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.password > h3 {
+	width: 100%;
+}
+
+input {
+	font-size: 20px;
+}
+
+
+.page a {
+	text-decoration: none;
+	color: black;
+
+	border: 1px solid #8f8f9d;
+	border-radius: 4px;
+	font-family: sans-serif;
+	background-color: #e9e9ed;
+	font-size: 20px;
+	padding: 3px;
+}
+
+.page a:hover {
+	background-color: #d0d0d7;
+}
+

@@ -5,10 +5,22 @@
 
 
 {% block base_headers %}
-	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters/base.css' %}">
+	{% block parameters_base_headers %}{% endblock %}
 {% endblock %}
 
 {% block base_foreground %}
-	<div class="menu"></div>
-	<div class="current-page"></div>
+	<div class="foreground__heading"></div>
+	<div class="foreground__content">
+		<div class="menu">
+			<div class="trait"></div>
+			{% for button in menu_buttons %}
+				<a class="button" href="{% url button.1 %}"><p>{{ button.0 }}</p></a>
+				<div class="trait"></div>
+			{% endfor %}
+		</div>
+		<div class="page">
+			{% block parameters_base_page %}{% endblock %}
+		</div>
+	</div>
 {% endblock %}

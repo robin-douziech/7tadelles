@@ -1,0 +1,73 @@
+{% extends 'account/parameters/base.html' %}
+
+
+{% load static %}
+
+
+{% block parameters_base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters/address.css' %}">
+{% endblock %}
+
+{% block parameters_base_page %}
+	<div class="page__heading"><h2>Mon adresse</h2></div>
+	<div class="page__content">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div class="form__block">
+				<p>
+					Vous pouvez renseigner votre adresse afin de pouvoir vous aussi proposer des soirées jeux chez vous (si vous le souhaitez). Les champs avec des astérix sont obligatiores.
+				</p>
+				{% if user.adresse %}
+					<div class="address">
+						<div class="address__heading"><h3>Mon adresse actuelle :</h3></div>
+						<div class="address__content">
+							<div class="address__fig">
+								<div class="address__imgwrapper">
+									{% if user.adresse.has_image %}
+										<img src="{{ user.adresse.image.url }}">
+									{% else %}
+										<img src="{% static 'account/photos/lieu/default_image.jpg' %}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="address__txt">
+								<p>{{ user.adresse.adresse}}</p>
+								<p>{{ user.adresse.code_postal}}, {{ user.adresse.ville }}</p>
+								<p>{{ user.adresse.pays }}</p>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div class="form">
+					<div class="form__heading"><h3>Modifier mon adresse :</h3></div>
+					<div class="form__content">
+						<div>
+							<div>
+								<p>Adresse*    : {{ form.adresse }}</p>
+								<p>code postal : {{ form.code_postal }}</p>
+							</div>
+							<div>
+								<p>Ville*      : {{ form.ville }}</p>
+								<p>Pays*       : {{ form.pays }}</p>
+								
+							</div>
+						</div>
+						<div><p>Image : {{ form.image }}</p></div>
+					</div>
+				</div>
+				<input type="submit" class="btn btn-default btn-lg" value="Valider">
+				{% if user.adresse %}
+					<div class="suppr">
+						<div class="suppr__heading"><h3>Supprimer mon adresse</h3></div>
+						<div class="suppr__content">
+							<p>
+								Attention : supprimer votre adresse supprimera aussi toutes les soirées se passant à celle-ci !
+							</p>
+							<a href="{% url 'account:parameters_delete_address' %}">Supprimer mon adresse</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>		
+		</form>
+	</div>
+{% endblock %}

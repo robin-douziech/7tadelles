@@ -17,7 +17,7 @@ from . import models, forms, admin
 def list(request) :
 
 	filtre = request.GET.get('filter', 'all') # hote, invitations, inscriptions, all
-	type_soiree = int(request.GET.get('type', 15))
+	type_soiree = int(request.GET.get('type', request.user.parameters['type_soiree_view']))
 
 	current_view = [f"{reverse('soiree:list')}?filter={filtre}&type={type_soiree}", []]
 
@@ -305,7 +305,18 @@ def change_invites(request) :
 						for invite in form.cleaned_data['invites_to_add'] :
 							soiree.invites.add(invite)
 							if soiree not in invite.invitations_received.all() :
-								invite_to_notice.append(invite)
+
+								TYPES_SOIREE = [
+									models.Soiree.TypeDeSoiree.PUB,
+									models.Soiree.TypeDeSoiree.PUB_INSC,
+									models.Soiree.TypeDeSoiree.PRIV_LIST_INSC,
+									models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM
+								]
+
+								for i in range(len(TYPES_SOIREE)) :
+									if soiree.type_soiree == TYPES_SOIREE[i] and (invite.parameters['type_soiree_notif']//(2**i))%2 == 1 :
+										invite_to_notice.append(invite)
+										
 						soiree.save()
 						return redirect(f"{reverse('soiree:detail')}?id={soiree.id}")
 			errors.pop('errors_count')

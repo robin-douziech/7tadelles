@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import lieu, user, account
+from .views import lieu, user, account, parameters
 
 app_name = "account"
 urlpatterns = [
@@ -34,7 +34,14 @@ urlpatterns = [
     path("address/update", account.change_address, name="change_address"),
     path("adress/delete", account.delete_address, name="delete_address"),
 
-    path("parameters", account.parameters, name="parameters"),
+    path("parameters", parameters.base, name="parameters_base"),
+    path("parameters/profile", parameters.profile, name="parameters_profile"),
+    path("parameters/address", parameters.address, name="parameters_address"),
+    path("parameters/address/delete", parameters.delete_address, name="parameters_delete_address"),
+    path("parameters/type-soiree", parameters.type_soiree, name="parameters_type_soiree"),
+    path("parameters/notif-mail", parameters.notif_mail, name="parameters_notif_mail"),
+    path("parameters/delete-profile-photo", parameters.delete_profile_photo, name="delete_profile_photo"),
+    path("parameters/delete-cover-photo", parameters.delete_cover_photo, name="delete_cover_photo"),
 
 
 
@@ -45,5 +52,6 @@ urlpatterns = [
     path("place/add", lieu.create_lieu, name="create_lieu"),
 
     path("clean-session", account.clean_session, name="clean_session"),
-    path("retour", account.retour, name="retour"),
+    path("retour1", account.retour1, name="retour1"),
+    path("retour2", account.retour2, name="retour2"),
 ]

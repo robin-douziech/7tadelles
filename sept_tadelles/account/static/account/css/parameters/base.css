@@ -1,0 +1,65 @@
+.foreground {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	width: 90%;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: start;
+}
+
+.foreground__content > div {
+	border: 1px solid black;
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 10px;
+	min-height: 100vh;
+	margin: 30px;
+}
+
+.menu {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	padding-top: 25px;
+
+	width: 25%;
+
+	font-size: 30px;
+
+	background-color: white;
+}
+
+.menu > a {
+	margin: 10px 0;
+}
+
+.menu > a > p {
+	margin: 0;
+}
+
+.button {
+	text-decoration: none;
+	color: black;
+}
+
+.trait {
+	height: 2px;
+	width: 90%;
+	background-color: #aaa;
+}
+
+.page {
+	flex: 1;
+	font-size: 30px;
+
+	background-color: white;
+}
+

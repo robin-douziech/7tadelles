@@ -1,0 +1,167 @@
+.page__heading {
+	text-align: center;
+}
+
+.page__heading > h2 {
+	margin: 0;
+}
+
+.page__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.page__content > form {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	width: 100%;
+}
+
+.form__block {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	width: 100%;
+}
+
+.form__block > p {
+	margin: 20px 30px;
+}
+
+.address {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	width: 100%;
+}
+
+.address__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+}
+
+.address__content > div {
+	width: 50%;
+}
+
+.address__fig {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.address__imgwrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	max-height: 80%;
+	max-width: 80%;
+	aspect-ratio: 1 / 1;
+}
+
+.address__imgwrapper > img {
+	max-height: 100%;
+	max-width: 100%;
+	aspect-ratio: auto;
+}
+
+.address__txt {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: justify;
+}
+
+.address__txt > p {
+	margin: 10px;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+	width: 100%;
+}
+
+.form__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.form__content > div {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.form__content > div > div {
+	margin: 10px;
+}
+
+.form__content > div > div > p {
+	margin: 10px;	
+}
+
+.form__content > div > p {
+	margin: 10px;
+}
+
+
+h3 {
+	margin: 10px 0 10px 10px;
+}
+
+
+input {
+	margin: 10px;
+	font-size: 20px;
+}
+
+.suppr {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+}
+
+.suppr__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.suppr__content > p {
+	margin: 10px 30px;
+}
+
+.suppr__content > a {
+	text-decoration: none;
+	color: white;
+	padding: 0 10px;
+	margin: 10px 30px;
+
+	border: 5px solid #a40e26;
+	border-radius: 10px;
+	background-color: #da3633;
+}

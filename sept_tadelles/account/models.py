@@ -13,6 +13,14 @@ def profile_photo_name(instance, filename) :
 def cover_photo_name(instance, filename) :
     return f"account/users/{instance.id}/cover_photo.png"
 
+def default_parameters() :
+    default_parameters = {
+        'type_soiree_view': 15,
+        'type_soiree_notif': 15,
+        'notif_mail': True,
+    }
+    return default_parameters
+
 
 
 
@@ -61,6 +69,8 @@ class User(AbstractUser):
 
     amis = models.ManyToManyField('self', blank=True)
     demandes_envoyees = models.ManyToManyField('self', symmetrical=False, blank=True, related_name="demandes_recues")
+
+    parameters = models.JSONField(verbose_name = "Paramètres", default = default_parameters)
 
     def __str__(self) :
         return self.username

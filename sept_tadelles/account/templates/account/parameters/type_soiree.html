@@ -1,0 +1,31 @@
+{% extends 'account/parameters/base.html' %}
+
+
+{% load static %}
+
+
+{% block parameters_base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'account/css/parameters/type_soiree.css' %}">
+{% endblock %}
+
+{% block parameters_base_page %}
+	<div class="page__heading"><h2>Type de soirées</h2></div>
+	<div class="page__content">
+		<form action="" method="post">
+			{% csrf_token %}
+			<div class="form__block">
+				<p>
+					Vous pouvez renseigner ici les types de soirées que vous voulez voir dans la liste des soirées auxquelles vous êtes invité (par exemple, si vous cochez "publique sur inscription", vous y verrez toutes les soirées publiques sur inscription (car tout le monde est invité à ces soirée) et pourrez vous y inscrire) :
+				</p>
+				{{ form.type_soiree_view }}
+			</div>
+			<div class="form__block">
+				<p>
+					Vous pouvez renseigner ici les types de soirées pour lesquelles vous voulez être informé quand vous y êtes invité (par enxemple, si vous cochez "publique", vous recevrez une notification à chaque nouvelle soirée publique créée puisque tout le monde est invité aux soirées publiques) :
+				</p>
+				{{ form.type_soiree_notif }}				
+			</div>
+			<input type="submit" class="btn btn-default btn-lg" value="Valider">			
+		</form>
+	</div>
+{% endblock %}

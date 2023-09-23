@@ -51,14 +51,15 @@ def send_notification(notification, users) :
 		html = render_to_string('account/user/notification_mail.html', {'notification': notification})
 		rcpt = [user.email for user in users]
 
-		send_mail(
-			subject="Nouvelle notification reçue",
-			message="",
-			from_email="info@7tadelles.com",
-			recipient_list=rcpt,
-			fail_silently=False,
-			html_message=html,
-		)
+		if user.parameters['notif_mail'] :
+			send_mail(
+				subject="Nouvelle notification reçue",
+				message="",
+				from_email="info@7tadelles.com",
+				recipient_list=rcpt,
+				fail_silently=False,
+				html_message=html,
+			)
 
 
 
@@ -81,24 +82,10 @@ def clean_user(user) :
 		soiree.delete()
 
 def get_actions(request) :
-	actions = [('Modifier ma photo de profil', 'account:update_profile_photo', '', ())]
-	if request.user.has_profile_photo :
-		actions += [('Supprimer ma photo de profil', 'account:delete_profile_photo', '', ())]
-	actions += [('Modifier ma photo de couverture', 'account:update_cover_photo', '', ())]
-	if request.user.has_cover_photo :
-		actions += [('Supprimer ma photo de couverture', 'account:delete_cover_photo', '', ())]
-	actions += [('Modifier mon mot de passe', 'account:password_reset_email', '', ())]
-	if request.user.adresse is not None :
-		actions += [
-			('Modifier mon adresse', 'account:change_address', '', ()),
-			('Supprimer mon adresse', 'account:delete_address', '', ())
-		]
-	else :
-		actions += [('Renseigner mon adresse', 'account:change_address', '', ())]
-	if not(request.user.discord_verified) :
-		actions += [('Lier mon compte discord', 'account:discord_verification_info', '', ())]
+	actions = [('Mon profil', 'account:detail', f'?id={request.user.id}', ())]
 	if soiree_admin.SoireeAdmin(soiree_models.Soiree, django_admin.site).has_add_permission(request) :
-		actions += [('Créer une soirée', 'soiree:creation_step_1', '', ())]
+		actions += [('Nouvelle soirée', 'soiree:creation_step_1', '', ())]
+	actions += [('Nouveau jeu', 'account:add_game', '', ())]
 	actions += [('Rechercher utilisateur', 'account:list', '', ())]
-	actions += [('Ajouter jeu', 'account:add_game', '', ())]
+	actions += [('Paramètres', 'account:parameters_base', '', ())]
 	return actions
