@@ -1,12 +1,19 @@
-.notifications {
+.block {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
 	margin: 10px 0;
 	padding: 0 10px 20px 10px;
 	box-shadow: 0 0 8px #9b9b9b;
 	border-radius: 10px;
 	background-color: white;
+
+	font-size: 25px;
 }
 
-.notifications__heading > h2 {
+.block-heading > h2 {
 	margin: 0;
 }
 
@@ -28,8 +35,8 @@
 	text-decoration: none;
 	color: black;
 
-	margin: 5px 0;
-	padding: 0 10px 5px 10px;
+	margin: 10px 0;
+	padding: 10px 20px 10px 20px;
 
 	box-shadow: 0 0 8px #9b9b9b;
 	border-radius: 1vw;
@@ -37,24 +44,12 @@
 
 .notification > div {
 	width: 100%;
+
 }
 
 .notification__heading > h3 {
 	margin: 0;
 
-}
-
-
-.amis {
-	margin: 10px 0;
-	padding: 0 10px 20px 10px;
-	box-shadow: 0 0 8px #9b9b9b;
-	border-radius: 10px;
-	background-color: white;
-}
-
-.amis__heading > h2 {
-	margin: 0;
 }
 
 .amis__content {
@@ -142,7 +137,6 @@
 	color: white;
 	padding: 0 5px 5px 5px;
 }
-
 
 
 

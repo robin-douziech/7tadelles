@@ -10,9 +10,9 @@
 
 {% block detail_base_foreground %}
 	{% if notifications %}
-		<div class="notifications">
-			<div class="notifications__heading"><h2>Notifications</h2></div>
-			<div class="notifications__content">
+		<div class="block notifications">
+			<div class="block-heading notifications__heading"><h2>Notifications</h2></div>
+			<div class="block-content notifications__content">
 				{% if no_notification %}
 					<p class="no_notification">Aucune notification</p>
 				{% else %}
@@ -41,11 +41,11 @@
 		</div>
 	{% endif %}
 	{% if user.amis.all|merge_querysets:user.demandes_envoyees.all %}
-		<div class="amis">
-			<div class="amis__heading"><h2>Amis</h2></div>
-			<div class="amis__content">
+		<div class="block amis">
+			<div class="block-heading amis__heading"><h2>Amis</h2></div>
+			<div class="block-content amis__content">
 				{% for person in user.amis.all|merge_querysets:user.demandes_envoyees.all %}
-					<div class="person">
+					<a class="person" href="{% url 'account:detail' %}?id={{person.id}}">
 						<div class="person__fig">
 							<div class="person__imgwrapper">
 								{% if person.has_profile_photo %}
@@ -67,7 +67,7 @@
 								<a class="result__info non_ami" href="{% url 'account:demande_ami' person.id %}">ajouter</a>
 							{% endif %}
 						</div>
-					</div>
+					</a>
 				{% endfor %}
 			</div>
 		</div>
