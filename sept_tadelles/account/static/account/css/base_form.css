@@ -4,7 +4,8 @@ body {
 	width: 100vw;
 	height: 100vh;
 
-	background-color: #BC9E82;
+	background-color: black;
+	font-family: 'Nexa-Heavy';
 }
 
 .container {
@@ -30,6 +31,8 @@ body {
 
 	border: 2px solid black;
 	border-radius: 10px;
+
+	box-shadow: 0 0 8px #9b9b9b inset;
 
 	background-color: white;
 }
@@ -59,7 +62,7 @@ body {
 }
 
 .pre-text > div {
-	width: 80%;
+	width: 85%;
 }
 
 .pre-text > div > p {
@@ -98,8 +101,5 @@ body {
 	text-align: center;
 	font-size: 1vw;
 }
-
-
-
 
 

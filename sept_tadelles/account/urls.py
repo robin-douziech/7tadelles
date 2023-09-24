@@ -15,24 +15,24 @@ urlpatterns = [
     path("user/refuse", user.refuse_friend, name="refuse_friend"),
     path("user/message", user.message_friend, name="message_friend"),
 
-    path("user/add", account.create, name="user_creation_form"),
+    path("user/create", account.create, name="user_creation_form"),
     path("verify-email/<str:user_id>/<str:token>/", account.verify_email, name="verify_email"),
 
     path("password-reset-email/", account.password_reset_email_form, name="password_reset_email"),
     path("password-reset/<str:user_id>/<str:token>/", account.password_reset_form, name="password_reset"),
 
-    path("profile-photo/update", account.update_profile_photo, name="update_profile_photo"),
-    path("profile-photo/delete", account.delete_profile_photo, name="delete_profile_photo"),
+    #path("profile-photo/update", account.update_profile_photo, name="update_profile_photo"),
+    #path("profile-photo/delete", account.delete_profile_photo, name="delete_profile_photo"),
 
-    path("cover-photo/update", account.update_cover_photo, name="update_cover_photo"),
-    path("cover-photo/delete", account.delete_cover_photo, name="delete_cover_photo"),
+    #path("cover-photo/update", account.update_cover_photo, name="update_cover_photo"),
+    #path("cover-photo/delete", account.delete_cover_photo, name="delete_cover_photo"),
 
-    path("discord-verification/", account.discord_verification_info, name="discord_verification_info"),
+    #path("discord-verification/", account.discord_verification_info, name="discord_verification_info"),
     path("discord-verification_send_email/<str:discord_name>/<str:discord_id>/<str:user_name>/<str:bot_token>", account.discord_verification_send_email, name="discord_verification_send_email"),
     path("discord-verification-link/<str:user_id>/<str:token>", account.discord_verification_link, name="discord_verification_link"),
     
-    path("address/update", account.change_address, name="change_address"),
-    path("adress/delete", account.delete_address, name="delete_address"),
+    #path("address/update", account.change_address, name="change_address"),
+    #path("adress/delete", account.delete_address, name="delete_address"),
 
     path("parameters", parameters.base, name="parameters_base"),
     path("parameters/profile", parameters.profile, name="parameters_profile"),
