@@ -107,6 +107,7 @@ def clean_user(user) :
 						post_args = None,
 						created_at = dt.datetime.now()
 					)
+					notifications.save()
 					send_notification(notification, [user])
 
 def get_actions(request) :
