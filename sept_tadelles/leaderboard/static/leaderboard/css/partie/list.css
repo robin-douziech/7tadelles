@@ -1,0 +1,112 @@
+.foreground {
+	width: 100%;
+}
+
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__heading > h2 {
+	margin: 10px;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.partie {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	text-decoration: none;
+
+	height: 200px;
+	width: 400px;
+
+	margin: 20px;
+	border-radius: 10px;
+
+	box-shadow: 0 0 8px green;
+	background-color: green;
+	color: white;
+	opacity: 0.5;
+}
+
+.finie {
+	box-shadow: 0 0 8px red;
+	background-color: red;
+	color: white;
+	opacity: 0.5;
+}
+
+.partie__heading {
+	text-align: center;
+}
+
+.partie__heading > h3 {
+	margin: 0;
+}
+
+.partie__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.partie__content > div {
+	margin: 10px 0;
+}
+
+.jeu > p {
+	margin: 0;
+}
+
+.joueurs {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.joueurs__heading > p {
+	margin: 0;
+}
+
+.joueurs__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.joueurs__content > p {
+	margin: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

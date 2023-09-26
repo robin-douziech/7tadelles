@@ -4,8 +4,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.utils.translation import gettext_lazy as _
 
-
-
+from wiki import models as wiki_models
 
 def profile_photo_name(instance, filename) :
     return f"account/users/{instance.id}/profile_photo.png"
@@ -71,6 +70,24 @@ class User(AbstractUser):
     demandes_envoyees = models.ManyToManyField('self', symmetrical=False, blank=True, related_name="demandes_recues")
 
     parameters = models.JSONField(verbose_name = "Paramètres", default = default_parameters)
+
+    def __init__(self, *args, **kwargs) :
+        super(User, self).__init__(*args, **kwargs)
+        if not('parties' in self.parameters.keys()) :
+            self.parameters['parties'] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+        else :
+            for game in wiki_models.Game.objects.filter(ranking=True) :
+                if not(game.name in self.parameters['parties'].keys()) :
+                    self.parameters['parties'][game.name] = []
+
+    def save(self, *args, **kwargs) :
+        if not('parties' in self.parameters.keys()) :
+            self.parameters['parties'] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+        else :
+            for game in wiki_models.Game.objects.filter(ranking=True) :
+                if not(game.name in self.parameters['parties'].keys()) :
+                    self.parameters['parties'][game.name] = []
+        super(User, self).save(*args, **kwargs)
 
     def __str__(self) :
         return self.username

@@ -37,7 +37,7 @@ def detail(request) :
 			return render(request, 'account/user/detail_change.html', {
 				'user_view': user,
 				'notifications': notifications,
-				'actions': helpers.get_actions(request)
+				'actions': helpers.get_actions(request),
 			})
 
 		elif admin.UserAdmin(models.User, django_admin.site).has_view_permission(request, user) :
@@ -46,15 +46,14 @@ def detail(request) :
 			return render(request, 'account/user/detail_view.html', {
 				'user_view': user,
 				'notifications': notifications,
-				'actions': helpers.get_actions(request)
+				'actions': helpers.get_actions(request),
 			})
 
 		else :
 			return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 @login_required
 def list(request) :
@@ -107,15 +106,13 @@ def add_friend(request) :
 
 			helpers.send_notification(notification, [user])
 
-			last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-			return redirect(last_view[0], *last_view[1])			
+			return redirect('account:retour1')
 
 		else :
 			return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 @login_required
 def accept_friend(request) :
@@ -151,15 +148,13 @@ def accept_friend(request) :
 
 			helpers.send_notification(notification, [user])
 
-			last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-			return redirect(last_view[0], *last_view[1])
+			return redirect('account:retour1')
 
 		else :
 			return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 @login_required
 def refuse_friend(request) :
@@ -180,15 +175,13 @@ def refuse_friend(request) :
 			user.demandes_envoyees.remove(request.user)
 			user.save()
 
-			last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-			return redirect(last_view[0], *last_view[1])
+			return redirect('account:retour1')
 
 		else :
 			return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 @login_required
 def message_friend(request) :
@@ -212,5 +205,4 @@ def message_friend(request) :
 			return render(request, 'account/error.html', {'error_txt': "Vous n'avez pas la permission de voir cet utilisateur"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')

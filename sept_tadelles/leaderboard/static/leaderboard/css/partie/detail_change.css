@@ -1,0 +1,52 @@
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__heading > h2 {
+	margin: 10px;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.joueurs {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.joueurs > input {
+	margin: 20px;
+	font-size: 20px;
+}
+
+.annuler_partie {
+	border: 5px solid #a40e26;
+	background-color: #da3633;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 0 5px 0 5px;
+	text-decoration: none;
+	color: white;
+}
+
+.terminer_partie {
+	border: 5px solid #2fa715;
+	background-color: #5dd300;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 0 5px 0 5px;
+	text-decoration: none;
+	color: white;
+}
+
+
+
+div , a, p {
+	border: 1px solid black	;
+}

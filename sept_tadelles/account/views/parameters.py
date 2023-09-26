@@ -97,8 +97,7 @@ def delete_profile_photo(request) :
 		request.user.has_profile_photo = False
 		request.user.profile_photo = None
 		request.user.save()
-	last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-	return redirect(last_view[0], *last_view[1])
+	return redirect('account:retour1')
 
 @login_required
 def delete_cover_photo(request) :
@@ -114,8 +113,7 @@ def delete_cover_photo(request) :
 		request.user.has_cover_photo = False
 		request.user.cover_photo = None
 		request.user.save()
-	last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-	return redirect(last_view[0], *last_view[1])
+	return redirect('account:retour1')
 
 @login_required
 def address(request) :
@@ -180,8 +178,7 @@ def delete_address(request) :
 		request.user.adresse.delete()
 		request.user.adresse = None
 		request.user.save()
-	last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-	return redirect(last_view[0], *last_view[1])
+	return redirect('account:retour1')
 
 
 

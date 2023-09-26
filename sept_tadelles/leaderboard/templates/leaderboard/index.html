@@ -1,0 +1,60 @@
+{% extends 'leaderboard/base.html' %}
+
+
+{% load static account_custom_filters %}
+
+
+{% block base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'leaderboard/css/index.css' %}">
+{% endblock %}
+
+{% block base_foreground %}
+	<div class="foreground__heading"><h2>Classements du mois</h2></div>
+	<div class="foreground__content">
+		<div class="global">
+			<div class="global__heading"><h3>Classement global</h3></div>
+			<div class="global__content">
+				<table>
+					<tr>
+						<td>Rank</td>
+						<td>Username</td>
+						<td>Points</td>
+					</tr>
+					{% for joueur in classements.global %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>{{ joueur.0 }}</td>
+							<td>{{ joueur.1 }}</td>
+						</tr>
+					{% endfor %}
+				</table>				
+			</div>
+		</div>
+		<div class="jeux">
+			<div class="jeux__heading"><h3>Classements par jeu</h3></div>
+			<div class="jeux__content">
+				{% for jeu in jeux %}
+					<div class="jeu">
+						<div class="jeu__heading">{{jeu.name}}</div>
+						<div class="jeu__content">
+							<table>
+								<tr>
+									<td>Rank</td>
+									<td>Username</td>
+									<td>Points</td>
+								</tr>
+								{% for joueur in classements|get_dict_value:jeu.name %}
+								<tr>
+									<td>{{ forloop.counter }}</td>
+									<td>{{ joueur.0 }}</td>
+									<td>{{ joueur.1 }}</td>
+								</tr>
+								{% endfor %}
+							</table>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

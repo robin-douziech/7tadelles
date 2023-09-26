@@ -3,6 +3,7 @@ __pycache__/
 .env
 staticfiles/
 db.sqlite3
+dump.sqlite3
 uploads/
 
 sept_tadelles/*/migrations/*
@@ -10,3 +11,4 @@ sept_tadelles/*/migrations/*
 
 django.log
 bot.log
+clear_migrations.sh

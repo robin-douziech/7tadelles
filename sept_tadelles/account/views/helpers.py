@@ -3,6 +3,7 @@ from account import models
 import datetime as dt
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from django.contrib import admin as django_admin
 from soiree import admin as soiree_admin
@@ -86,6 +87,12 @@ def get_actions(request) :
 	if soiree_admin.SoireeAdmin(soiree_models.Soiree, django_admin.site).has_add_permission(request) :
 		actions += [('Nouvelle soirée', 'soiree:creation_step_1', '', ())]
 	actions += [('Nouveau jeu', 'account:add_game', '', ())]
+	if request.user.username == settings.SITE_OWNER_PSEUDO :
+		actions += [('Nouvelle partie', 'leaderboard:partie_create', '', ())]
+	if request.user.username == settings.SITE_OWNER_PSEUDO :
+		actions += [('Parties en cours', 'leaderboard:partie_list', '?filter=open', ())]
 	actions += [('Rechercher utilisateur', 'account:list', '', ())]
+	if request.user.discord_verified :
+		actions += [('Classements', 'leaderboard:index', '', ())]
 	actions += [('Paramètres', 'account:parameters_base', '', ())]
 	return actions

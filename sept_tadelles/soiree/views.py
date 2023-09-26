@@ -115,8 +115,7 @@ def detail(request) :
 
 	else :
 
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 
 
@@ -147,7 +146,7 @@ def creation_step_1(request) :
 						soiree.invites.add(user)
 				soiree.save()
 				return redirect(f"{reverse('soiree:creation_step_2')}?id={soiree.id}")
-		helpers.register_view(request, current_view)
+		#helpers.register_view(request, current_view)
 		return render(request, 'soiree/soiree/creation_step_1.html', {'form': form})
 
 	else :
@@ -177,15 +176,15 @@ def creation_step_2(request) :
 					soiree.nb_joueurs = form.cleaned_data['nb_joueurs']
 					soiree.save()
 					return redirect(f"{reverse('soiree:creation_step_3')}?id={soiree.id}")
-			helpers.register_view(request, current_view)
+			#helpers.register_view(request, current_view)
 			return render(request, 'soiree/soiree/creation_step_2.html', {'form': form})
 
 		else :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		
+		return redirect('account:retour1')
 
 @login_required
 def creation_step_3(request) :
@@ -217,8 +216,8 @@ def creation_step_3(request) :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		
+		return redirect('account:retour1')
 
 @login_required
 def creation_step_4(request) :
@@ -252,15 +251,15 @@ def creation_step_4(request) :
 						soiree.save()
 						return render(request, 'soiree/soiree/creation_success.html', {})
 			errors.pop('errors_count')
-			helpers.register_view(request, current_view)
+			#helpers.register_view(request, current_view)
 			return render(request, 'soiree/soiree/creation_step_4.html', {'form': form, 'errors': errors})
 
 		else :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		
+		return redirect('account:retour1')
 
 @login_required
 def change_invites(request) :
@@ -320,15 +319,15 @@ def change_invites(request) :
 						soiree.save()
 						return redirect(f"{reverse('soiree:detail')}?id={soiree.id}")
 			errors.pop('errors_count')
-			helpers.register_view(request, current_view)
+			#helpers.register_view(request, current_view)
 			return render(request, 'soiree/soiree/change_invites.html', {'form': form, 'errors': errors})
 
 		else :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de modifier cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		
+		return redirect('account:retour1')
 
 @login_required
 def inscription(request) :
@@ -366,15 +365,14 @@ def inscription(request) :
 				errors.pop('errors_count')
 				return render(request, 'soiree/error.html', {'error_txt': "", 'errors': errors})
 
-			last_view = request.session.get('last_view', ['welcome:index', []])
-			return redirect(last_view[0], *last_view[1])
+			return redirect('account:retour1')
 
 		else :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de voir cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		
+		return redirect('account:retour1')
 
 @login_required
 def desinscription(request) :
@@ -408,15 +406,13 @@ def desinscription(request) :
 				errors.pop('errors_count')
 				return render(request, 'soiree/error.html', {'error_txt': "", 'errors': errors})
 
-			last_view = request.session.get('last_view', ['welcome:index', []])
-			return redirect(last_view[0], *last_view[1])
+			return redirect('account:retour1')
 
 		else :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de voir cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')
 
 
 @login_required
@@ -442,5 +438,4 @@ def delete_soiree(request) :
 			return render(request, 'soiree/error.html', {'error_txt': "Vous n'avez pas la permission de supprimer cette soirée"})
 
 	else :
-		last_view = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])[-1]
-		return redirect(last_view[0], *last_view[1])
+		return redirect('account:retour1')

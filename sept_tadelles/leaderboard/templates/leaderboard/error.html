@@ -1,0 +1,14 @@
+{% extends 'account/base_form.html' %}
+
+{% block pre-text %}
+	<p>{{ error_txt }}</p>
+{% endblock %}
+
+{% block errors %}
+	{% for error_name, value in errors.items %}
+		{% if value.0 %}
+			<p>{{ value.1 }}</p>
+		{% endif %}
+	{% endfor %}
+	<p><a href="{% url 'account:retour1' %}">retour</a></p>
+{% endblock %}

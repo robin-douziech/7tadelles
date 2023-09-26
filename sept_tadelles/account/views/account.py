@@ -46,109 +46,13 @@ def login_view(request) :
 				errors['auth_error'][0] = True
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view)
+	#helpers.register_view(request, current_view)
 	return render(request, 'account/registration/login.html', {'form': form, 'errors': errors})
 
 @login_required
 def logout_view(request) :
 	logout(request)
 	return render(request, 'account/registration/logout.html')
-
-@login_required
-def update_profile_photo(request) :
-
-	current_view = ['account:update_profile_photo', []]
-
-	form = forms.UpdateProfilePhotoForm()
-	if request.method == "POST" :
-		form = forms.UpdateProfilePhotoForm(request.POST, request.FILES)
-		if form.is_valid() :
-			if request.user.has_profile_photo :
-				if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}")) :
-					send_mail(
-						subject="Fichier mal supprimé sur le serveur",
-						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}",
-						from_email="info@7tadelles.com",
-						recipient_list=["robin.douziech27@gmail.com"],
-						fail_silently=False
-					)		
-			request.user.profile_photo = form.cleaned_data['profile_photo']
-			request.user.has_profile_photo = True
-			request.user.save()
-			return redirect(f"{reverse('account:detail')}?id={request.user.id}")
-
-	helpers.register_view(request, current_view)
-	return render(request, 'account/account/profile_photo.html', {'form': form})
-
-@login_required
-def delete_profile_photo(request) :
-
-	current_view = ['account:delete_profile_photo', []]
-
-	if request.user.has_profile_photo :
-
-		if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}")) :
-			send_mail(
-				subject="Fichier mal supprimé sur le serveur",
-				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.profile_photo.url[1:].split('/',1)[1]}",
-				from_email="info@7tadelles.com",
-				recipient_list=["robin.douziech27@gmail.com"],
-				fail_silently=False
-			)
-
-		request.user.has_profile_photo = False
-		request.user.profile_photo = None
-		request.user.save()
-
-	return redirect(f"{reverse('account:detail')}?id={request.user.id}")
-
-@login_required
-def update_cover_photo(request) :
-
-	current_view = ['account:update_cover_photo', []]
-
-	form = forms.UpdateCoverPhotoForm()
-	if request.method == "POST" :
-		form = forms.UpdateCoverPhotoForm(request.POST, request.FILES)
-		if form.is_valid() :
-			if request.user.has_cover_photo :
-				if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}")) :
-					send_mail(
-						subject="Fichier mal supprimé sur le serveur",
-						message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}",
-						from_email="info@7tadelles.com",
-						recipient_list=["robin.douziech27@gmail.com"],
-						fail_silently=False
-					)
-			request.user.cover_photo = form.cleaned_data['cover_photo']
-			request.user.has_cover_photo = True
-			request.user.save()
-			return redirect(f"{reverse('account:detail')}?id={request.user.id}")
-
-	helpers.register_view(request, current_view)
-	return render(request, 'account/account/cover_photo.html', {'form': form})
-
-@login_required
-def delete_cover_photo(request) :
-
-	current_view = ['account:delete_cover_photo', []]
-
-	if request.user.has_cover_photo :
-
-		if not(helpers.delete_media_file(f"{settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}")) :
-			send_mail(
-				subject="Fichier mal supprimé sur le serveur",
-				message=f"Une erreur est survenue lors de la suppression d'un fichier sur le serveur.\n\nChemin vers le fichier : {settings.MEDIA_ROOT}{request.user.cover_photo.url[1:].split('/',1)[1]}",
-				from_email="info@7tadelles.com",
-				recipient_list=["robin.douziech27@gmail.com"],
-				fail_silently=False
-			)
-
-		request.user.has_cover_photo = False
-		request.user.cover_photo = None
-		request.user.save()
-
-	return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
 def create(request) :
 
@@ -211,7 +115,7 @@ def create(request) :
 				return render(request, 'account/creation/activation_email_sent.html', {})
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view)
+	#helpers.register_view(request, current_view)
 	return render(request, "account/creation/creation_form.html", {"form": form, 'errors': errors})
 
 def verify_email(request, user_id, token):
@@ -289,7 +193,7 @@ def password_reset_email_form(request) :
 			return render(request, 'account/password_reset/password_reset_email_sent.html', {})
 
 	errors.pop('errors_count')
-	helpers.register_view(request, current_view)
+	#helpers.register_view(request, current_view)
 	return render(request, 'account/password_reset/password_reset_email_form.html', {'form': form, 'errors': errors})
 
 def password_reset_form(request, user_id, token) :
@@ -328,22 +232,12 @@ def password_reset_form(request, user_id, token) :
 					return render(request, 'account/password_reset/password_reset_complete.html', {})
 
 		errors.pop('errors_count')
-		helpers.register_view(request, current_view)
+		#helpers.register_view(request, current_view)
 		return render(request, 'account/password_reset/password_reset_confirm.html', {'form': form, 'errors': errors})
 
 	else :
 
 		return render(request, 'account/password_reset/password_reset_bad_link.html')
-
-@login_required
-def discord_verification_info(request) :
-
-	current_view = ['account:discord_verification_info', []]
-
-	if request.user.discord_verified :
-		return redirect(f"{reverse('account:detail')}?id={request.user.id}")
-	else :
-		return render(request, 'account/discord_verification/info.html', {})
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
@@ -420,66 +314,6 @@ def discord_verification_link(request, user_id, token) :
 	else :
 
 		return render(request, 'account/discord_verification/bad_link.html', {})
-
-@login_required
-def change_address(request) :
-
-	current_view = ['account:change_address', []]
-
-	form = forms.AddressForm()
-	errors = {
-		'errors_count': 0,
-		'code_postal_error': [False, "Le code postal doit être composé de 5 chiffres"]
-	}
-
-	if request.method == "POST" :
-
-		form = forms.AddressForm(request.POST, request.FILES)
-
-		if form.is_valid() :
-
-			if not(re.match(r"[0-9]{5}", form.cleaned_data['code_postal'])) :
-				errors['code_postal_error'][0] = True
-				errors['errors_count'] += 1
-
-			if errors['errors_count'] == 0 :
-
-				# on supprime l'ancienne adresse si elle existe
-				if request.user.adresse is not None :
-					request.user.adresse.delete()
-					request.user.adresse = None
-					request.user.save()
-
-				# on crée la nouvelle adresse
-				adresse = models.Lieu(
-					name=f"Chez {request.user.username}",
-					adresse=form.cleaned_data['adresse'],
-					complement=form.cleaned_data['complement'],
-					code_postal=form.cleaned_data['code_postal'],
-					ville=form.cleaned_data['ville'],
-					pays=form.cleaned_data['pays'],
-					image=form.cleaned_data['image']
-				)
-				adresse.save()
-
-				request.user.adresse = adresse
-				request.user.lieus.add(adresse)
-				request.user.save()
-
-				return render(request, 'account/adresse/success.html', {})
-
-	errors.pop('errors_count')
-	helpers.register_view(request, current_view)
-	return render(request, 'account/adresse/form.html', {'form':form, 'errors': errors})
-
-@login_required
-def delete_address(request) :
-	current_view = ['account:delete_address', []]
-	request.user.lieus.remove(request.user.adresse)
-	request.user.adresse.delete()
-	request.user.adresse = None
-	request.user.save()
-	return redirect(f"{reverse('account:detail')}?id={request.user.id}")
 
 @login_required
 def add_game(request) :
@@ -576,9 +410,9 @@ def add_game(request) :
 				)
 				game.save()
 
-				return redirect(f"{reverse('account:detail')}?id={request.user.id}")
+				return redirect('account:retour1')
 
-	helpers.register_view(request, current_view)
+	#helpers.register_view(request, current_view)
 	return render(request, 'account/game/form.html', {'form': form, 'errors': errors})
 
 @login_required

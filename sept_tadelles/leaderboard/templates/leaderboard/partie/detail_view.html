@@ -1,0 +1,25 @@
+{% extends 'leaderboard/base.html' %}
+
+
+{% load static account_custom_filters %}
+
+
+{% block base_headers %}
+	<link rel="stylesheet" type="text/css" href="{% static 'leaderboard/css/partie/detail_change.css' %}">
+{% endblock %}
+
+{% block base_foreground %}
+	<div class="foreground__heading"><h2>Partie de {{ partie.jeu }} créée à {{partie.created_at }}</h2></div>
+	<div class="foreground__content">
+		<div class="joueurs">
+			{% for joueur in positions %}
+				<p>{{ joueur.username }} : {{ positions|get_dict_value:joueur }}</p>
+			{% endfor %}
+		</div>
+		{% if partie.finie %}
+			<a class="annuler_partie" href="{% url 'leaderboard:partie_annuler' %}?id={{partie.id}}">Annuler la partie</a>
+		{% else %}
+			<a class="terminer_partie" href="{% url 'leaderboard:partie_terminer' %}?id={{partie.id}}">Terminer la partie</a>
+		{% endif %}
+	</div>
+{% endblock %}

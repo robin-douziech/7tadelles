@@ -8,6 +8,7 @@ urlpatterns = [
     path('wiki/', include('wiki.urls')),
     path('account/', include('account.urls')),
     path('soiree/', include('soiree.urls')),
+    path('leaderboard/', include('leaderboard.urls')),
     path('admin/', admin.site.urls),
 ]
 

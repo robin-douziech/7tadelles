@@ -1,0 +1,90 @@
+.foreground {
+	width: 80%;
+}
+
+.foreground__heading {
+	text-align: center;
+}
+
+.foreground__heading > h2 {
+	margin: 10px;
+}
+
+.foreground__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.foreground__content > div {
+	margin: 20px;
+}
+
+
+
+
+.global {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.global__heading {
+	text-align: center;
+}
+
+.global__content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+table, tr, td {
+	border: 1px solid black;
+	text-align: center;
+}
+
+td {
+	padding: 10px;
+}
+
+
+
+.jeux {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.jeux__heading {
+	text-align: center;
+}
+
+.jeux__content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.jeu {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+
+	margin: 20px;
+}
+
+.jeu__heading {
+	text-align: center;
+	margin: 10px;
+}
+
+
+

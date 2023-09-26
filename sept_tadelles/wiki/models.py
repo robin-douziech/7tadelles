@@ -73,6 +73,8 @@ class Game(models.Model) :
 
 	category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
 
+	ranking = models.BooleanField(default=False)
+
 	def __init__(self, *args, **kwargs) :
 		super(Game, self).__init__(*args, **kwargs)
 		self.short_name = unidecode.unidecode(self.name.replace(" ", "_").lower())
