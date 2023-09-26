@@ -4,6 +4,7 @@ import datetime as dt
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.db.models import Q
 
 from django.contrib import admin as django_admin
 from soiree import admin as soiree_admin
@@ -74,13 +75,39 @@ def month_str(date) :
 
 def clean_user(user) :
 
+	# on supprime les notifications trop anciennes et les soirées passées
 	notifications_to_del = user.user_notifications.filter(created_at__lte=dt.datetime.now()-dt.timedelta(days=7))
 	soirees_to_del = user.soirees_hote.filter(date__lte=dt.datetime.now()).union(user.invitations.filter(date__lte=dt.datetime.now()))
-	
 	for notification in notifications_to_del :
 		notification.delete()
 	for soiree in soirees_to_del :
 		soiree.delete()
+
+	# on vérifie qu'il est bien invité à toutes les soirées publiques
+	for soiree in soiree_models.Soiree.objects.filter(Q(type_soiree=soiree_models.Soiree.TypeDeSoiree.PUB_INSC) | Q(type_soiree=soiree_models.Soiree.TypeDeSoiree.PUB)) :
+		if user not in soiree.invites.all() :
+			soiree.invites.add(user)
+			soiree.save()
+		if soiree not in user.invitations_received.all() :
+
+			TYPES_SOIREE = [
+				soiree_models.Soiree.TypeDeSoiree.PUB,
+				soiree_models.Soiree.TypeDeSoiree.PUB_INSC,
+				soiree_models.Soiree.TypeDeSoiree.PRIV_LIST_INSC,
+				soiree_models.Soiree.TypeDeSoiree.PRIV_INVIT_CONFIRM
+			]
+
+			for i in range(len(TYPES_SOIREE)) :
+				if soiree.type_soiree == TYPES_SOIREE[i] and (user.parameters['type_soiree_notif']//(2**i))%2 == 1 :
+					notification = models.Notification(
+						title = "Nouvelle invitation à une soirée jeux",
+						text = f"{soiree.hote.username} vous invite à une soirée jeux le {week_day(soiree.date)} {soiree.date.day} {month_str(soiree.date)} {soiree.date.year}",
+						link = "soiree:list",
+						get_args = "",
+						post_args = None,
+						created_at = dt.datetime.now()
+					)
+					send_notification(notification, [user])
 
 def get_actions(request) :
 	actions = [('Mon profil', 'account:detail', f'?id={request.user.id}', ())]
