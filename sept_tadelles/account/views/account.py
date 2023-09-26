@@ -38,6 +38,7 @@ def login_view(request) :
 
 			if user is not None and user.verified :
 				login(request, user)
+				user.save()
 				helpers.clean_user(user)
 				return redirect('welcome:index')
 			elif user is not None :
