@@ -315,6 +315,7 @@ def change_invites(request) :
 								for i in range(len(TYPES_SOIREE)) :
 									if soiree.type_soiree == TYPES_SOIREE[i] and (invite.parameters['type_soiree_notif']//(2**i))%2 == 1 :
 										invite_to_notice.append(invite)
+										soiree.notification_send_to.add(invite)
 
 						helpers.send_notification(notification, invite_to_notice)
 										

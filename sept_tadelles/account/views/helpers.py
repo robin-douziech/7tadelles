@@ -88,7 +88,7 @@ def clean_user(user) :
 		if user not in soiree.invites.all() and user != soiree.hote :
 			soiree.invites.add(user)
 			soiree.save()
-		if soiree not in user.invitations_received.all() and user != soiree.hote :
+		if user not in soiree.notification_send_to.all() and user != soiree.hote :
 
 			TYPES_SOIREE = [
 				soiree_models.Soiree.TypeDeSoiree.PUB,
@@ -109,6 +109,8 @@ def clean_user(user) :
 					)
 					notification.save()
 					send_notification(notification, [user])
+					soiree.notification_send_to.add(user)
+					soiree.save()
 
 def get_actions(request) :
 	actions = [('Mon profil', 'account:detail', f'?id={request.user.id}', ())]
