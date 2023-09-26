@@ -85,10 +85,10 @@ def clean_user(user) :
 
 	# on vérifie qu'il est bien invité à toutes les soirées publiques
 	for soiree in soiree_models.Soiree.objects.filter(Q(type_soiree=soiree_models.Soiree.TypeDeSoiree.PUB_INSC) | Q(type_soiree=soiree_models.Soiree.TypeDeSoiree.PUB)) :
-		if user not in soiree.invites.all() :
+		if user not in soiree.invites.all() and user != soiree.hote :
 			soiree.invites.add(user)
 			soiree.save()
-		if soiree not in user.invitations_received.all() :
+		if soiree not in user.invitations_received.all() and user != soiree.hote :
 
 			TYPES_SOIREE = [
 				soiree_models.Soiree.TypeDeSoiree.PUB,
