@@ -242,8 +242,6 @@ def password_reset_form(request, user_id, token) :
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
-	print('ahahahahahahahahahahah')
-
 	current_view = ['account:discord_verification_send_email', [discord_name, discord_id, user_name, bot_token]]
 
 	if bot_token != settings.BOT_TOKEN :
