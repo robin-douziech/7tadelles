@@ -93,17 +93,26 @@ async def link_7tadellesbot(ctx, username=None) :
 
 @bot.command(name="classement")
 async def classement_7tadellesbot(ctx) :
-	if os.getenv('SITE_ENV') == "PROD" :
-		url = f"https://7tadelles.com/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
-	else :
-		url = f"http://127.0.0.1:8000/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
-	response = requests.get(url).json()['data']
-	if response['result'] == "success" :
-		options = [
-			discord.SelectOption(label="Général", value="Général"),
-			*[discord.SelectOption(label=game, value=game) for game in response['games']]
-		]
-		await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options))
+
+	dm_channel = ctx.author.dm_channel
+	if dm_channel == None :
+		dm_channel = await ctx.author.create_dm()
+
+	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
+
+	if ctx.channel == dm_channel and author_name in bot.members :
+
+		if os.getenv('SITE_ENV') == "PROD" :
+			url = f"https://7tadelles.com/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+		else :
+			url = f"http://127.0.0.1:8000/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+		response = requests.get(url).json()['data']
+		if response['result'] == "success" :
+			options = [
+				discord.SelectOption(label="Général", value="Général"),
+				*[discord.SelectOption(label=game, value=game) for game in response['games']]
+			]
+			await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options))
 
 
 
