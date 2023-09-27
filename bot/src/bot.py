@@ -75,7 +75,6 @@ async def link_7tadellesbot(ctx, username=None) :
 				requests.get(f"https://7tadelles.com/account/discord-verification-send-email/{ctx.author.name}/{ctx.author.id}/{username}/{os.getenv('TOKEN')}")
 			else :
 				requests.get(f"http://localhost:8000/account/discord-verification-send-email/{ctx.author.name}/{ctx.author.id}/{username}/{os.getenv('TOKEN')}")
-			
 		
 			msg =  f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail "
 			msg += f"de la part de info@7tadelles.com à l'adresse e-mail associée à ton compte sur le site. "
