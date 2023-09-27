@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class GameSelect(discord.ui.Select) :
+class ClassementSelect(discord.ui.Select) :
 
 	def __init__(self, *args, **kwargs) :
-		super(GameSelect, self).__init__(*args, **kwargs)
+		super(ClassementSelect, self).__init__(*args, **kwargs)
 
 	async def callback(self, interaction: discord.Interaction) :
 		user = interaction.user
@@ -24,11 +24,11 @@ class GameSelect(discord.ui.Select) :
 			await interaction.response.send_message(msg, ephemeral=True)
 
 
-class GameSelectView(discord.ui.View) :
+class ClassementSelectView(discord.ui.View) :
 
 	def __init__(self, options, *args, **kwargs) :
-		super(GameSelectView, self).__init__(*args, **kwargs)
-		self.add_item(GameSelect(
+		super(ClassementSelectView, self).__init__(*args, **kwargs)
+		self.add_item(ClassementSelect(
 			options=options,
 			placeholder="Sélectionnez un jeu",
 			custom_id="select-game",

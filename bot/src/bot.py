@@ -91,8 +91,8 @@ async def link_7tadellesbot(ctx, username=None) :
 
 
 
-@bot.command(name="score")
-async def score_7tadellesbot(ctx) :
+@bot.command(name="classement")
+async def classement_7tadellesbot(ctx) :
 	if os.getenv('SITE_ENV') == "PROD" :
 		url = f"https://7tadelles.com/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
 	else :
@@ -103,7 +103,7 @@ async def score_7tadellesbot(ctx) :
 			discord.SelectOption(label="Général", value="Général"),
 			*[discord.SelectOption(label=game, value=game) for game in response['games']]
 		]
-		await ctx.send("Quel classement voulez-vous voir ?", view=GameSelectView(options))
+		await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options))
 
 
 
