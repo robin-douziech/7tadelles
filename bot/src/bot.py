@@ -132,7 +132,7 @@ async def score_7tadellesbot(ctx) :
 				discord.SelectOption(label="Général", value="Général"),
 				*[discord.SelectOption(label=game, value=game) for game in response['games']]
 			]
-			await ctx.send("Quel classement voulez-vous voir ?", view=ScoreSelectView(options))
+			await ctx.send("À quel jeu voulez-vous connaitre votre score ?", view=ScoreSelectView(options))
 
 @bot.command(name="kill")
 async def kill_bot(ctx) :
