@@ -17,4 +17,6 @@ help_msg = """
 Bonjour ! Je suis 7tadellesBot. Voici ce que je peux faire pour toi :
 - **!help** : affiche ce message d'aide
 - **!link <pseudo>** : lie ton compte discord à ton compte sur 7tadelles.com
+- **!score** : Affiche ton score dans un jeu au choix ou au classement général
+- **!classement!** : Affiche un classement au choix
 """
