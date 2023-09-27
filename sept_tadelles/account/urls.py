@@ -37,6 +37,7 @@ urlpatterns = [
 
     path("bot/get-ranking-games/<str:bot_token>", bot.get_ranking_games, name="get_ranking_games"),
     path("bot/get-classement/<str:bot_token>", bot.get_classement, name="get_classement"),
+    path("bot/get-score/<str:bot_token>", bot.get_score, name="get_score"),
 
 
 

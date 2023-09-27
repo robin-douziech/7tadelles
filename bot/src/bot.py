@@ -2,7 +2,7 @@ from discord.ext import tasks, commands
 import requests, json, os, sys, discord
 
 from SeptTadellesBot import *
-from classement import *
+from interactions import *
 
 bot = SeptTadellesBot(members_file)
 
@@ -87,9 +87,6 @@ async def link_7tadellesbot(ctx, username=None) :
 			msg += f"!link [username] où username est ton nom d'utilisateur sur 7tadelles.com."
 			await dm_channel.send(msg)
 
-
-
-
 @bot.command(name="classement")
 async def classement_7tadellesbot(ctx) :
 
@@ -113,8 +110,28 @@ async def classement_7tadellesbot(ctx) :
 			]
 			await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options))
 
+@bot.command(name="score")
+async def score_7tadellesbot(ctx) :
 
+	dm_channel = ctx.author.dm_channel
+	if dm_channel == None :
+		dm_channel = await ctx.author.create_dm()
 
+	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
+
+	if ctx.channel == dm_channel and author_name in bot.members :
+
+		if os.getenv('SITE_ENV') == "PROD" :
+			url = f"https://7tadelles.com/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+		else :
+			url = f"http://127.0.0.1:8000/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+		response = requests.get(url).json()['data']
+		if response['result'] == "success" :
+			options = [
+				discord.SelectOption(label="Général", value="Général"),
+				*[discord.SelectOption(label=game, value=game) for game in response['games']]
+			]
+			await ctx.send("Quel classement voulez-vous voir ?", view=ScoreSelectView(options))
 
 @bot.command(name="kill")
 async def kill_bot(ctx) :

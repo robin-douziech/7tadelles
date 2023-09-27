@@ -24,6 +24,25 @@ class ClassementSelect(discord.ui.Select) :
 			await interaction.response.send_message(msg, ephemeral=True)
 
 
+class ScoreSelect(discord.ui.Select) :
+
+	def __init__(self, *args, **kwargs) :
+		super(ScoreSelect, self).__init__(*args, **kwargs)
+
+	async def callback(self, interaction: discord.Interaction) :
+		user = interaction.user
+		if os.getenv('SITE_ENV') == "PROD" :
+			url = f"https://7tadelles.com/account/bot/get-score/{os.getenv('TOKEN')}?game={self.values[0]}&id={user.id}"
+		else :
+			url = f"http://127.0.0.1:8000/account/bot/get-score/{os.getenv('TOKEN')}?game={self.values[0]}&id={user.id}"
+		response = requests.get(url).json()['data']
+		if response['result'] == "success" :
+			await interaction.response.send_message(f"Voici votre score : **{response['score']}**", ephemeral=True)
+		elif response['result'] == "failure" and 'error_msg' in response.keys() :
+			await interaction.response.send_message(f"Une erreur est intervenue lors de ma requête à 7tadelles.com : {response['error_msg']}", ephemeral=True)
+
+
+
 class ClassementSelectView(discord.ui.View) :
 
 	def __init__(self, options, *args, **kwargs) :
@@ -34,4 +53,13 @@ class ClassementSelectView(discord.ui.View) :
 			custom_id="select-game",
 		))
 
-	
+
+class ScoreSelectView(discord.ui.View) :
+
+	def __init__(self, options, *args, **kwargs) :
+		super(ScoreSelectView, self).__init__(*args, **kwargs)
+		self.add_item(ScoreSelect(
+			options=options,
+			placeholder="Sélectionnez un jeu",
+			custom_id="select-game",
+		))
