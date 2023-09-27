@@ -40,6 +40,7 @@ async def on_ready() :
 
 	bot.write_json(bot.members, bot.members_file)
 
+	bot.log(f"guild : {bot.bot_guild}")
 	bot.log(f"{bot.user.display_name} est prêt.")
 
 bot.remove_command('help')
