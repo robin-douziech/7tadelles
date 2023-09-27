@@ -242,6 +242,8 @@ def password_reset_form(request, user_id, token) :
 
 def discord_verification_send_email(request, discord_name, discord_id, user_name, bot_token) :
 
+	print('ahahahahahahahahahahah')
+
 	current_view = ['account:discord_verification_send_email', [discord_name, discord_id, user_name, bot_token]]
 
 	if bot_token != settings.BOT_TOKEN :
@@ -257,13 +259,16 @@ def discord_verification_send_email(request, discord_name, discord_id, user_name
 
 			token = helpers.generate_token(64)
 			user.discord_verification_token = token
-			user.discord_username = f"{discord_name}#{discord_id}"
+			user.discord_username = discord_name
+			user.discord_id = discord_id
 			user.save()
 
 			if settings.ENV == "PROD" :
 				verification_link = f"https://7tadelles.com/account/discord-verification-link/{user.id}/{token}"
+				print("ok")
 			else :
 				verification_link = f"http://localhost:8000/account/discord-verification-link/{user.id}/{token}"
+				print(verification_link)
 
 			send_mail(
 				subject="Lien avec votre compte discord",

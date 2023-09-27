@@ -14,7 +14,14 @@ logging.basicConfig(
 class SeptTadellesBot(commands.Bot) :
 
 	def __init__(self, members_file) :
-		super().__init__(command_prefix="!", intents=discord.Intents.all(), activity=discord.Game("shifumi avec GameBot"))
+
+		intents = discord.Intents.all()
+		intents.message_content = True
+		super().__init__(
+			command_prefix="!",
+			intents=intents,
+			activity=discord.Game("shifumi avec GameBot")
+		)
 
 		self.members_file = members_file
 		self.members = {}
@@ -35,13 +42,4 @@ class SeptTadellesBot(commands.Bot) :
 				return member
 		return None
 
-	async def verify_user(self, username, link) :
-
-		print(f"discord_username : {username}")
-
-		if username in self.members :
-
-			print("okok")
-
-			await self.fetch_member(username).dm_channel.send(f"Voici un lien pour lier votre compte discord : {link}")
-
+	

@@ -55,6 +55,7 @@ class User(AbstractUser):
 
     discord_verified = models.BooleanField(default=False)
     discord_username = models.CharField(max_length=50, null=True, blank=True)
+    discord_id = models.CharField(max_length=50, null=True, blank=True)
     discord_verification_token = models.CharField(max_length=64, null=True, blank=True)
 
     adresse = models.ForeignKey(Lieu, on_delete=models.SET_NULL, null=True, blank=True)

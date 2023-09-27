@@ -48,7 +48,7 @@ def index(request) :
 
 		for joueur in account_models.User.objects.filter(discord_verified=True) :
 			classements['global'].append((joueur, stats[joueur.username]['global_score']))
-			classements['global'] = sorted(classements['global'], key=lambda x: x[1])[::-1]
+		classements['global'] = sorted(classements['global'], key=lambda x: x[1])[::-1]
 
 		for game in wiki_models.Game.objects.filter(ranking=True) :
 			classements[game.name] = sorted([(joueur, stats[joueur.username][game.name]['score']) for joueur in account_models.User.objects.filter(discord_verified=True)], key=lambda x: x[1])[::-1]

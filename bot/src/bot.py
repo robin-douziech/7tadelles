@@ -2,6 +2,7 @@ from discord.ext import tasks, commands
 import requests, json, os, sys, discord
 
 from SeptTadellesBot import *
+from classement import *
 
 bot = SeptTadellesBot(members_file)
 
@@ -41,9 +42,9 @@ async def on_ready() :
 
 	bot.log(f"{bot.user.display_name} est prêt.")
 
-
-@bot.command(name="link")
-async def link_account(ctx, username=None) :
+bot.remove_command('help')
+@bot.command(name="help")
+async def help_7tadellesbot(ctx) :
 
 	dm_channel = ctx.author.dm_channel
 	if dm_channel == None :
@@ -51,14 +52,30 @@ async def link_account(ctx, username=None) :
 
 	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
 
-	if ctx.channel == dm_channel :
+	if ctx.channel == dm_channel and author_name in bot.members :
+
+		await ctx.channel.send(help_msg)
+
+
+
+@bot.command(name="link")
+async def link_7tadellesbot(ctx, username=None) :
+
+	dm_channel = ctx.author.dm_channel
+	if dm_channel == None :
+		dm_channel = await ctx.author.create_dm()
+
+	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
+
+	if ctx.channel == dm_channel and author_name in bot.members :
 
 		if username != None :
 
 			if os.getenv("SITE_ENV") == "PROD" :
-				requests.get(f"https://7tadelles.com/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")
+				requests.get(f"https://7tadelles.com/account/discord-verification-send-email/{ctx.author.name}/{ctx.author.id}/{username}/{os.getenv('TOKEN')}")
 			else :
-				requests.get(f"http://localhost:8000/account/discord_verification_send_email/{ctx.author.name}/{ctx.author.discriminator}/{username}/{os.getenv('TOKEN')}")			
+				requests.get(f"http://localhost:8000/account/discord-verification-send-email/{ctx.author.name}/{ctx.author.id}/{username}/{os.getenv('TOKEN')}")
+			
 		
 			msg =  f"Si {username} est bien ton nom d'utilisateur sur 7tadelles.com, tu devrais avoir reçu un mail "
 			msg += f"de la part de info@7tadelles.com à l'adresse e-mail associée à ton compte sur le site. "
@@ -73,6 +90,24 @@ async def link_account(ctx, username=None) :
 
 
 
+
+@bot.command(name="score")
+async def score_7tadellesbot(ctx) :
+	if os.getenv('SITE_ENV') == "PROD" :
+		url = f"https://7tadelles.com/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+	else :
+		url = f"http://127.0.0.1:8000/account/bot/get-ranking-games/{os.getenv('TOKEN')}"
+	response = requests.get(url).json()['data']
+	if response['result'] == "success" :
+		options = [
+			discord.SelectOption(label="Général", value="Général"),
+			*[discord.SelectOption(label=game, value=game) for game in response['games']]
+		]
+		await ctx.send("Quel classement voulez-vous voir ?", view=GameSelectView(options))
+
+
+
+
 @bot.command(name="kill")
 async def kill_bot(ctx) :
 
@@ -82,9 +117,7 @@ async def kill_bot(ctx) :
 
 	author_name = f"{ctx.author.name}#{ctx.author.discriminator}"
 
-	if ctx.channel == dm_channel :
+	if ctx.channel == dm_channel and ctx.author.id == bot_owner_id :
 
-		if ctx.author.id == bot_owner_id :
-
-			sys.exit()
+		sys.exit()
 
