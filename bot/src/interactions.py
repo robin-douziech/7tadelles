@@ -21,7 +21,7 @@ class ClassementSelect(discord.ui.Select) :
 		if response['result'] == "success" :
 			if self.values[0] == "Général" :
 				msg = "Classement général :\n"
-				await self.bot.change_presence(activity=discord.CustomActivity(f"{response['classement'][0][0]}", emoji=discord.PartialEmoji.from_str("<:first_place:878262504402604604>")))
+				await self.bot.change_presence(activity=discord.CustomActivity(f"\\:first_place: {response['classement'][0][0]}"))
 			else :
 				msg = f"Classement du jeu \"{self.values[0]}\" :\n"
 			for i,line in enumerate(response['classement']) :
