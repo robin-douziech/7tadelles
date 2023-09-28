@@ -6,8 +6,9 @@ load_dotenv()
 
 class ClassementSelect(discord.ui.Select) :
 
-	def __init__(self, *args, **kwargs) :
+	def __init__(self, bot, *args, **kwargs) :
 		super(ClassementSelect, self).__init__(*args, **kwargs)
+		self.bot = bot
 
 	async def callback(self, interaction: discord.Interaction) :
 		user = interaction.user
@@ -20,6 +21,7 @@ class ClassementSelect(discord.ui.Select) :
 		if response['result'] == "success" :
 			if self.values[0] == "Général" :
 				msg = "Classement général :\n"
+				await self.bot.change_presence(activity=discord.CustomActivity(f":first_place: {response['classement'][0][0]}"))
 			else :
 				msg = f"Classement du jeu \"{self.values[0]}\" :\n"
 			for i,line in enumerate(response['classement']) :
@@ -51,9 +53,10 @@ class ScoreSelect(discord.ui.Select) :
 
 class ClassementSelectView(discord.ui.View) :
 
-	def __init__(self, options, *args, **kwargs) :
+	def __init__(self, bot, options, *args, **kwargs) :
 		super(ClassementSelectView, self).__init__(*args, **kwargs)
 		self.add_item(ClassementSelect(
+			bot,
 			options=options,
 			placeholder="Sélectionnez un jeu",
 			custom_id="select-game",

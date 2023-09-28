@@ -109,7 +109,7 @@ async def classement_7tadellesbot(ctx) :
 				discord.SelectOption(label="Général", value="Général"),
 				*[discord.SelectOption(label=game, value=game) for game in response['games']]
 			]
-			await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options))
+			await ctx.send("Quel classement voulez-vous voir ?", view=ClassementSelectView(options, bot))
 
 @bot.command(name="score")
 async def score_7tadellesbot(ctx) :
