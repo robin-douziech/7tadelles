@@ -74,20 +74,39 @@ class User(AbstractUser):
 
     def __init__(self, *args, **kwargs) :
         super(User, self).__init__(*args, **kwargs)
-        if not('parties' in self.parameters.keys()) :
-            self.parameters['parties'] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+        if 'parties' in self.parameters.keys() :
+            self.parameters.pop('parties')
+        for key in ['month_games', 'all_games'] :
+            if not(key in self.parameters.keys()) :
+                self.parameters[key] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+            else :
+                for game in wiki_models.Game.objects.filter(ranking=True) :
+                    if not(game.name in self.parameters[key].keys()) :
+                        self.parameters[key][game.name] = []
+        if not('records' in self.parameters.keys()) :
+            self.parameters['records'] = {'global': 0, **{game.name: 0 for game in wiki_models.Game.objects.filter(ranking=True)}}
         else :
             for game in wiki_models.Game.objects.filter(ranking=True) :
-                if not(game.name in self.parameters['parties'].keys()) :
-                    self.parameters['parties'][game.name] = []
+                if not(game.name in self.parameters['records'].keys()) :
+                    self.parameters['records'][game.name] = 0
+
 
     def save(self, *args, **kwargs) :
-        if not('parties' in self.parameters.keys()) :
-            self.parameters['parties'] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+        if 'parties' in self.parameters.keys() :
+            self.parameters.pop('parties')
+        for key in ['month_games', 'all_games'] :
+            if not(key in self.parameters.keys()) :
+                self.parameters[key] = {game.name: [] for game in wiki_models.Game.objects.filter(ranking=True)}
+            else :
+                for game in wiki_models.Game.objects.filter(ranking=True) :
+                    if not(game.name in self.parameters[key].keys()) :
+                        self.parameters[key][game.name] = []
+        if not('records' in self.parameters.keys()) :
+            self.parameters['records'] = {'global': 0, **{game.name: 0 for game in wiki_models.Game.objects.filter(ranking=True)}}
         else :
             for game in wiki_models.Game.objects.filter(ranking=True) :
-                if not(game.name in self.parameters['parties'].keys()) :
-                    self.parameters['parties'][game.name] = []
+                if not(game.name in self.parameters['records'].keys()) :
+                    self.parameters['records'][game.name] = 0
         super(User, self).save(*args, **kwargs)
 
     def __str__(self) :

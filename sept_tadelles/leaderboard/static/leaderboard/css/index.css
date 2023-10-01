@@ -6,7 +6,7 @@
 	text-align: center;
 }
 
-.foreground__heading > h2 {
+.foreground__heading > h1 {
 	margin: 10px;
 }
 
@@ -14,77 +14,81 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
-	align-items: center;
+	align-items: justify;
 }
 
-.foreground__content > div {
+.block {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: justify;
+
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 30px;
+
 	margin: 20px;
 }
 
+.block-heading {
+	text-align: center;
+}
 
+.block-heading > h2 {
+	margin: 10px;
+}
 
-
-.global {
+.block-content {
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
-	align-items: center;
+	align-items: justify;
 }
 
-.global__heading {
-	text-align: center;
-}
-
-.global__content {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-table, tr, td {
-	border: 1px solid black;
-	text-align: center;
-}
-
-td {
-	padding: 10px;
-}
-
-
-
-.jeux {
+.subblock {
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
-	align-items: center;
+	align-items: justify;
 }
 
-.jeux__heading {
+.subblock-heading {
 	text-align: center;
 }
 
-.jeux__content {
+.subblock-heading > h3 {
+	margin: 10px;
+}
+
+.subblock-content {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	flex-wrap: wrap;
 }
 
-.jeu {
-	display: flex;
-	flex-direction: column;
-	justify-content: start;
-	align-items: center;
+.subblock-content > div {
+	margin: 40px;
 
-	margin: 20px;
+	box-shadow: 0 0 8px #9b9b9b;
+	border-radius: 10px;
+	padding: 20px;
 }
 
-.jeu__heading {
+.records__game__heading, .records__globaltable__heading, .classements__game__heading, .classements__globaltable__heading {
 	text-align: center;
-	margin: 10px;
 }
+
+.subblock-content > div > div > h4 {
+	margin-bottom: 20px;
+	margin-top: 0;
+}
+
+table, tr, td {
+	text-align: center;
+	border: 1px solid black;
+}
+
+
 
 
 

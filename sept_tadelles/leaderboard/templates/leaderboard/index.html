@@ -9,52 +9,119 @@
 {% endblock %}
 
 {% block base_foreground %}
-	<div class="foreground__heading"><h2>Classements du mois</h2></div>
+	<div class="foreground__heading"><h1>Classements et records</h1></div>
 	<div class="foreground__content">
-		<div class="global">
-			<div class="global__heading"><h3>Classement global</h3></div>
-			<div class="global__content">
-				<table>
-					<tr>
-						<td>Rank</td>
-						<td>Username</td>
-						<td>Points</td>
-					</tr>
-					{% for joueur in classements.global %}
-						<tr>
-							<td>{{ forloop.counter }}</td>
-							<td>{{ joueur.0 }}</td>
-							<td>{{ joueur.1 }}</td>
-						</tr>
-					{% endfor %}
-				</table>				
-			</div>
-		</div>
-		<div class="jeux">
-			<div class="jeux__heading"><h3>Classements par jeu</h3></div>
-			<div class="jeux__content">
-				{% for jeu in jeux %}
-					<div class="jeu">
-						<div class="jeu__heading">{{jeu.name}}</div>
-						<div class="jeu__content">
-							<table>
-								<tr>
-									<td>Rank</td>
-									<td>Username</td>
-									<td>Points</td>
-								</tr>
-								{% for joueur in classements|get_dict_value:jeu.name %}
-								<tr>
-									<td>{{ forloop.counter }}</td>
-									<td>{{ joueur.0 }}</td>
-									<td>{{ joueur.1 }}</td>
-								</tr>
-								{% endfor %}
-							</table>
+		<div class="block records">
+			<div class="block-heading records__heading"><h2>Records personnels</h2></div>
+			<div class="block-content records__content">
+				<div class="subblock records__global">
+					<div class="subblock-heading records__global__heading"></div>
+					<div class="subblock-content records__global__content">
+						<div class="records__globaltable">
+							<div class="records__globaltable__heading"><h4>Classement général</h4></div>
+							<div class="records__globaltable__content">
+								<table>
+									<tr>
+										<td>Position</td>
+										<td>Pseudo</td>
+										<td>Record</td>
+									</tr>
+									{% for joueur in records.global %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+											<td>{{ joueur.0 }}</td>
+											<td>{{ joueur.1 }}</td>
+										</tr>
+									{% endfor %}
+								</table>
+							</div>
 						</div>
 					</div>
-				{% endfor %}
+				</div>
+				<div class="subblock records__games">
+					<div class="subblock-heading records__games__heading"><h3>Classements par jeux</h3></div>
+					<div class="subblock-content records__games__content">
+						{% for game in games %}
+							<div class="records__game">
+								<div class="records__game__heading"><h4>{{ game.name }}</h4></div>
+								<div class="records__game__content">
+									<table>
+										<tr>
+											<td>Position</td>
+											<td>Pseudo</td>
+											<td>Record</td>
+										</tr>
+										{% for joueur in records|get_dict_value:game.name %}
+											<tr>
+												<td>{{ forloop.counter }}</td>
+												<td>{{ joueur.0 }}</td>
+												<td>{{ joueur.1 }}</td>
+											</tr>
+										{% endfor %}
+									</table>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
 			</div>
 		</div>
+		<div class="block classements">
+			<div class="block-heading classements__heading"><h2>Classements du mois</h2></div>
+			<div class="block-content classements__content">
+				<div class="subblock classements__global">
+					<div class="subblock-heading classements__global__heading"></div>
+					<div class="subblock-content classements__global__content">
+						<div class="classements__globaltable">
+							<div class="classements__globaltable__heading"><h4>Classement général</h4></div>
+							<div class="classements__globaltable__content">
+								<table>
+									<tr>
+										<td>Position</td>
+										<td>Pseudo</td>
+										<td>Score</td>
+									</tr>
+									{% for joueur in classements.global %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+											<td>{{ joueur.0 }}</td>
+											<td>{{ joueur.1 }}</td>
+										</tr>
+									{% endfor %}
+								</table>
+							</div>
+						</div>						
+					</div>
+				</div>
+				<div class="subblock classements__games">
+					<div class="subblock-heading classements__games__heading"><h3>Classements par jeux</h3></div>
+					<div class="subblock-content classements__games__content">
+						{% for game in games %}
+							<div class="classements__game">
+								<div class="classements__game__heading"><h4>{{ game.name }}</h4></div>
+								<div class="classements__game__content">
+									<table>
+										<tr>
+											<td>Position</td>
+											<td>Pseudo</td>
+											<td>Score</td>
+										</tr>
+										{% for joueur in classements|get_dict_value:game.name %}
+											<tr>
+												<td>{{ forloop.counter }}</td>
+												<td>{{ joueur.0 }}</td>
+												<td>{{ joueur.1 }}</td>
+											</tr>
+										{% endfor %}
+									</table>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+				
+			</div>
+		</div>
+
 	</div>
 {% endblock %}

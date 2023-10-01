@@ -1,5 +1,6 @@
 from discord.ext import tasks, commands
 import requests, json, os, sys, discord
+import datetime as dt
 
 from SeptTadellesBot import *
 from interactions import *
@@ -147,3 +148,25 @@ async def kill_bot(ctx) :
 
 		sys.exit()
 
+@tasks.loop(seconds=60)
+async def minutes_clock() :
+
+	now = dt.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+	date = now.split(', ')[0]
+	time = now.split(', ')[1]
+
+	month = date.split('/')[0]
+	day = date.split('/')[1]
+	year = date.split('/')[2]
+	hour = time.split(':')[0]
+	minute = time.split(':')[1]
+	second = time.split(':')[2]
+
+	if day == "01" and time == "00:01:00" :
+
+		if os.getenv('SITE_ENV') == "PROD" :
+			url = f"https://7tadelles.com/account/bot/month-end-validation/{os.getenv('TOKEN')}"
+		else :
+			url = f"http://127.0.0.1:8000/account/bot/month-end-validation/{os.getenv('TOKEN')}"
+		response = requests.get(url)['data']

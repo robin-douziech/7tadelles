@@ -427,10 +427,10 @@ def clean_session(request) :
 @login_required
 def retour1(request) :
 
-	last_views = request.session.get('last_views', [['welcome:index', []], ['welcome:index', []]])
+	last_views = request.session.get('last_views', [['welcome:index', []]])
 	view = last_views[-1]
 	if len(last_views) > 1 :
-		request.session['last_views'] = request.session['last_views'][:-1]
+		request.session['last_views'] = request.session['last_views'][:-1]	
 	return redirect(view[0], *view[1])
 
 @login_required

@@ -36,6 +36,8 @@ class Partie(models.Model) :
 
 	finie = models.BooleanField(default=False)
 
+	current_month = models.BooleanField(default=True)
+
 	created_at = models.DateTimeField(
         verbose_name="Created at",
         null=True,

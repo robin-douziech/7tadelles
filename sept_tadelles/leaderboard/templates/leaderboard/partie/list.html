@@ -12,7 +12,22 @@
 	<div class="foreground__heading"><h2>Parties de jeu de société</h2></div>
 	<div class="foreground__content">
 		{% for partie in parties %}
-			{% if partie.finie %}
+			{% if not partie.current_month %}
+				<a class="partie old" href="{% url 'leaderboard:partie_detail' %}?id={{partie.id}}">
+					<div class="partie__heading"><h3>toto</h3></div>
+					<div class="partie__content">
+						<div class="jeu"><p>Jeu : {{partie.jeu}}</p></div>
+						<div class="joueurs">
+							<div class="joueurs__heading"><p>Joueurs :</p></div>
+							<div class="joueurs__content">
+								{% for joueur in partie.joueurs.all %}
+									<p>{{ joueur }}</p>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</a>
+			{% elif partie.finie %}
 				<a class="partie finie" href="{% url 'leaderboard:partie_detail' %}?id={{partie.id}}">
 					<div class="partie__heading"><h3>toto</h3></div>
 					<div class="partie__content">

@@ -1,13 +1,13 @@
 from pathlib import Path
 from dotenv import load_dotenv
-import logging
-import os
+import logging, os
 
 load_dotenv()
 
 ENV = os.getenv('ENV')
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 SITE_OWNER_PSEUDO = os.getenv('SITE_OWNER_PSEUDO')
+JSON_FILENAME = os.getenv('JSON_FILENAME')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

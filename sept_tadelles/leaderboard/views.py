@@ -22,42 +22,49 @@ def index(request) :
 
 		stats = {}
 		classements = {
-			"global": []
+			'global': []
 		}
+		records = {
+			'global': []
+		}
+		
+		games = wiki_models.Game.objects.filter(ranking=True)
+		players = account_models.User.objects.filter(discord_verified=True)
 
-		jeux = wiki_models.Game.objects.filter(ranking=True)
-		joueurs = account_models.User.objects.filter(discord_verified=True)
-
-		for joueur in account_models.User.objects.filter(discord_verified=True) :
-			stats[joueur.username] = {
+		for player in players :
+			stats[player.username] = {
 				'global_score': 0
 			}
-			for game in wiki_models.Game.objects.filter(ranking=True) :
-				stats[joueur.username][game.name] = {
+			for game in games :
+				stats[player.username][game.name] = {
 					'nb_parties': 0,
 					'score': 0,
 					**{str(position): 0 for position in range(1, game.players_max+1)},
 				}
-				for partie in joueur.parameters['parties'][game.name] :
-					stats[joueur.username][game.name]['nb_parties'] += 1
-					stats[joueur.username][game.name][str(partie[1])] += 1
-					stats[joueur.username][game.name]['score'] += 1.0*(partie[2]-(partie[1]-1))
+				for partie in player.parameters['month_games'][game.name] :
+					stats[player.username][game.name]['nb_parties'] += 1
+					stats[player.username][game.name][str(partie[1])] += 1
+					stats[player.username][game.name]['score'] += 1.0*(partie[2]-(partie[1]-1))
 					if partie[1] == 1 :
-						stats[joueur.username][game.name]['score'] += 0.5*(partie[2]-(partie[1]-1))
-					stats[joueur.username]['global_score'] += stats[joueur.username][game.name]['score']
+						stats[player.username][game.name]['score'] += 0.5*(partie[2]-(partie[1]-1))
+				stats[player.username]['global_score'] += stats[player.username][game.name]['score']
 
-		for joueur in account_models.User.objects.filter(discord_verified=True) :
-			classements['global'].append((joueur, stats[joueur.username]['global_score']))
+		for player in players :
+			classements['global'].append((player, stats[player.username]['global_score']))
+			records['global'].append((player, player.parameters['records']['global']))
 		classements['global'] = sorted(classements['global'], key=lambda x: x[1])[::-1]
+		records['global'] = sorted(records['global'], key=lambda x: x[1])[::-1]
 
-		for game in wiki_models.Game.objects.filter(ranking=True) :
-			classements[game.name] = sorted([(joueur, stats[joueur.username][game.name]['score']) for joueur in account_models.User.objects.filter(discord_verified=True)], key=lambda x: x[1])[::-1]
+		for game in games :
+			classements[game.name] = sorted([(player, stats[player.username][game.name]['score']) for player in players], key=lambda x: x[1])[::-1]
+			records[game.name] = sorted([(player, player.parameters['records'][game.name]) for player in players], key=lambda x: x[1])[::-1]
 
 		helpers.register_view(request, current_view)
 		return render(request, 'leaderboard/index.html', {
-			'jeux': jeux,
-			'joueurs': joueurs,
+			'games': games,
+			'players': players,
 			'classements': classements,
+			'records' : records,
 			'actions': helpers.get_actions(request),
 		})
 
@@ -69,7 +76,9 @@ def reset_all_scores(request) :
 
 	if request.user.username == settings.SITE_OWNER_PSEUDO :
 		for joueur in account_models.User.objects.filter(discord_verified=True) :
-			joueur.parameters.pop('parties')
+			joueur.parameters.pop('month_games')
+			joueur.parameters.pop('all_games')
+			joueur.parameters.pop('records')
 			joueur.save()
 	return redirect('account:retour1')
 
@@ -118,8 +127,7 @@ def partie_detail(request) :
 		for joueur in partie.classement.all() :
 			positions[joueur] = models.PositionJoueur.objects.get(partie=partie, joueur=joueur).position
 
-
-		if admin.PartieAdmin(models.Partie, django_admin.site).has_change_permission(request, partie) :
+		if admin.PartieAdmin(models.Partie, django_admin.site).has_change_permission(request, partie) and partie.current_month :
 
 			if not(partie.finie) :
 
@@ -199,17 +207,24 @@ def partie_terminer(request) :
 
 		if admin.PartieAdmin(models.Partie, django_admin.site).has_change_permission(request, partie) :
 
-			if not(partie.finie) :
+			if partie.current_month :
 
-				if len(partie.classement.all()) == len(partie.joueurs.all()) :
+				if not(partie.finie) :
 
-					for joueur in partie.classement.all() :
-						position = models.PositionJoueur.objects.get(partie=partie, joueur=joueur).position
-						joueur.parameters['parties'][partie.jeu.name].append((partie.id,position,len(partie.joueurs.all())))
-						joueur.save()
+					if len(partie.classement.all()) == len(partie.joueurs.all()) :
 
-					partie.finie = True
-					partie.save()
+						for joueur in partie.classement.all() :
+							position = models.PositionJoueur.objects.get(partie=partie, joueur=joueur).position
+							joueur.parameters['month_games'][partie.jeu.name].append((partie.id,position,len(partie.joueurs.all())))
+							joueur.save()
+
+						partie.finie = True
+						partie.save()
+
+			else :
+
+				partie.finie = True
+				partie.save()
 
 	return redirect('account:retour1')
 
@@ -225,14 +240,14 @@ def partie_annuler(request) :
 		except :
 			partie = None
 
-		if admin.PartieAdmin(models.Partie, django_admin.site).has_change_permission(request, partie) :
+		if admin.PartieAdmin(models.Partie, django_admin.site).has_change_permission(request, partie) and partie.current_month :
 
 			if partie.finie :
 
 				for joueur in partie.classement.all() :
-					for result in joueur.parameters['parties'][partie.jeu.name] :
+					for result in joueur.parameters['month_games'][partie.jeu.name] :
 						if result[0] == partie.id :
-							joueur.parameters['parties'][partie.jeu.name].remove(result)
+							joueur.parameters['month_games'][partie.jeu.name].remove(result)
 					joueur.save()
 
 				partie.finie = False
